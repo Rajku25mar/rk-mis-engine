@@ -1,0 +1,48 @@
+{
+  "version": "rk-mis-hybrid-validation-protocol-v1",
+  "historical_validation_track": {
+    "anchors": ["2019-01-31", "2020-01-31", "2021-01-29"],
+    "eligible_features": "Only features with point-in-time primary evidence and adequate cross-company coverage.",
+    "rules": [
+      "Future outcomes join only after score construction.",
+      "No post-result changes to bands, weights or admission thresholds.",
+      "Missing evidence remains missing.",
+      "Parser/source corrections are allowed only for independently justified chronology/schema correctness and must replay retained raw evidence.",
+      "A component cannot be admitted merely because it improves one development anchor."
+    ]
+  },
+  "prospective_validation_track": {
+    "pillars": [
+      "growth_runway",
+      "business_moat",
+      "management_governance_qualitative",
+      "smart_money_high_quality",
+      "future_catalysts",
+      "execution_evidence",
+      "valuation_inputs_not_safely_reconstructable_historically"
+    ],
+    "snapshot_policy": "Persist universe, source hashes/URLs, normalized evidence, feature values, coverage, score, classification, funnel rank and thesis state before future return is known.",
+    "source_priority": [
+      "NSE/BSE/SEBI primary filings",
+      "issuer annual reports/results/concalls/investor presentations",
+      "auditor/credit-rating/regulatory primary documents",
+      "reviewed secondary evidence for context only"
+    ],
+    "review_policy": "Qualitative score-driving claims require explicit evidence and review; automated extraction alone cannot approve a qualitative score.",
+    "outcome_windows": ["1Y", "3Y", "5Y"],
+    "no_retroactive_mutation": true
+  },
+  "coverage_policy": {
+    "minimum_global_coverage": 65,
+    "diamond_minimum_coverage": 80,
+    "historically_sparse_pillar_rule": "Do not impute or backfill missing historical qualitative pillars simply to increase backtest coverage."
+  },
+  "current_empirical_decisions": {
+    "management_execution": "DIAGNOSTIC_ONLY_LOW_HISTORICAL_COVERAGE",
+    "valuation_reasonableness_extension": "REJECTED_UNDER_FROZEN_HOLDOUT_RULE",
+    "ebitda_margin_extension": "REJECTED_UNDER_CORRECTED_HOLDOUTS",
+    "technical_base_quality_candidate": "REJECTED_ON_UNTOUCHED_2021_HOLDOUT",
+    "objective_core": "USEFUL_DOWNSIDE_FILTER_BUT_UPSIDE_SELECTION_REGIME_DEPENDENT"
+  },
+  "official_historical_alpha_claim": false
+}
