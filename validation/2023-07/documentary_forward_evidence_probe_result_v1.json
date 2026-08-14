@@ -1,0 +1,38 @@
+{
+  "version": "rk-mis-documentary-forward-evidence-probe-result-v1",
+  "status": "FROZEN_METADATA_ONLY_PROBE_RESULT",
+  "protocol_path": "validation/2023-07/documentary_forward_evidence_protocol_v1.json",
+  "protocol_sha256": "ce67c9929a2dfc0fcdd7364be231c77b3584b64b14351819c478601931d927b2",
+  "rubric_path": "validation/2023-07/documentary_forward_evidence_rubric_v1.json",
+  "rubric_sha256": "c16e197a5a79da64acf86d3cca272033498d644684bbcf899f20187e7bc2e3cc",
+  "workflow_run_id": 31793071494,
+  "workflow_head_sha": "b32e50c621d49282948233cf800c6da306fbc484",
+  "artifact": {
+    "id": 9216302016,
+    "name": "rk-mis-2023-07-documentary-probe",
+    "sha256": "85985f7c323f6d7ac10973cedebd23bc7e62a8befe4c3b9c35cec75f83eccbf3"
+  },
+  "anchor_target": "2023-07-31",
+  "anchor_resolved_trading_date": "2023-07-31",
+  "document_window": ["2022-04-01", "2023-07-31"],
+  "eligible_company_universe_rows": 1561,
+  "sample_rows": 80,
+  "announcement_rows_returned_for_sample": 8780,
+  "symbols_with_any_announcement": 75,
+  "symbols_with_candidate_document": 75,
+  "candidate_documents": 855,
+  "candidate_document_coverage_pct": 93.75,
+  "symbols_by_keyword_family": {
+    "moat": 9,
+    "optionality": 48,
+    "orders": 2,
+    "runway": 28
+  },
+  "request_status_counts": {"OK": 80},
+  "official_requests_made": 82,
+  "metadata_source_hash_chain_sha256": "78ff6287daa0b0614a6b802cb4a763a87dca4a4d6a59d6d0910bc03122c78648",
+  "future_outcome_prices_loaded": false,
+  "documents_downloaded": false,
+  "automatic_keyword_hits_are_scores": false,
+  "decision": "PROCEED_TO_BOUNDED_DOCUMENT_ACQUISITION_WITH_PRE_DOCUMENT_TRIAGE; DO_NOT_RELAX_SCORING_OR_REVIEW_RULES"
+}
