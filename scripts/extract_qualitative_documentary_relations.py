@@ -36,11 +36,8 @@ ACTION_RE = re.compile(
 COMPANY_ATTRIBUTION_RE = re.compile(r"\b(we|our|us|the\s+company|company's|the\s+group|group's)\b", re.I)
 NEGATION_RE = re.compile(r"\b(no|not|without|cancelled|canceled|withdrawn|deferred|abandoned|indicative|aspirational)\b", re.I)
 INDUSTRY_PEER_RE = re.compile(r"\b(industry|sector|peer|competitor|competition\s+has|market\s+capacity|industry\s+capacity)\b", re.I)
-
 HIGH_INFO_SUBJECT_RE = re.compile(r"investor presentation|press release|analyst|institutional investor|con\.?\s*call|annual report", re.I)
 
-# High-precision category-specific relation requirements. Each alternative is a tuple
-# of regexes that all must match within one sentence or adjacent sentence pair.
 PATTERNS: dict[str, dict[str, list[tuple[re.Pattern[str], ...]]]] = {
     "runway": {
         "committed_capacity_expansion": [
@@ -149,6 +146,11 @@ def relation_candidates(text: str, subject: str | None) -> list[dict[str, Any]]:
         peer = bool(INDUSTRY_PEER_RE.search(chunk))
         attr = bool(COMPANY_ATTRIBUTION_RE.search(chunk))
         action = bool(ACTION_RE.search(chunk))
+        # Frozen review grammar: explicit negation/cancellation fails closed, and an
+        # industry/peer statement is not a company claim unless the same local context
+        # contains clear first-person/company attribution.
+        if neg or (peer and not attr):
+            continue
         for family, categories in PATTERNS.items():
             for category, alternatives in categories.items():
                 for alt_index, regexes in enumerate(alternatives, start=1):
@@ -173,7 +175,7 @@ def relation_candidates(text: str, subject: str | None) -> list[dict[str, Any]]:
                         "matched_terms": matched,
                         "company_attribution_flag": attr,
                         "action_or_status_flag": action,
-                        "negation_flag": neg,
+                        "negation_flag": False,
                         "industry_or_peer_context_flag": peer,
                         "high_information_document_subject_flag": high_info,
                         "sentence_index": sentence_index,
