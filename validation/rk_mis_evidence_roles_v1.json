@@ -1,0 +1,82 @@
+{
+  "version": "rk-mis-evidence-roles-v1",
+  "status": "EMPIRICAL_ARCHITECTURE_GUIDANCE_NOT_SCORE_MUTATION",
+  "purpose": "Translate completed independent holdouts and pre-outcome feasibility work into clear system roles without changing the frozen 100-point RK-MIS score.",
+  "official_100_point_score_mutated": false,
+  "roles": {
+    "DISCOVERY_PRIMARY": {
+      "components": [
+        "DOCUMENTARY_RUNWAY",
+        "DOCUMENTARY_MOAT",
+        "DOCUMENTARY_FORWARD_CATALYSTS",
+        "MANAGEMENT_EXECUTION_HISTORY"
+      ],
+      "current_evidence_state": "HYPOTHESIS_ACTIVE_NOT_YET_OUTCOME_VALIDATED_AT_REQUIRED_COHORT_SIZE",
+      "reason": "The completed standalone objective/technical holdouts did not establish reliable multibagger discovery alpha. The documentary pipeline remains blinded to future outcomes and is specifically designed to reconstruct forward-looking business evidence known at the anchor date.",
+      "next_gate": "STRICT_ALL_PREQUALIFIED_RELATION_REVIEW_THEN_COHORT_FEASIBILITY_CHECK_BEFORE_ANY_OUTCOME_LOAD"
+    },
+    "QUALITY_RISK_FILTER": {
+      "components": [
+        "RECENT_SALES_GROWTH",
+        "RECENT_PAT_GROWTH",
+        "INDUSTRIAL_LEVERAGE",
+        "INTEREST_COVERAGE",
+        "EBITDA_MARGIN",
+        "GOVERNANCE"
+      ],
+      "current_evidence_state": "PARTIALLY_SUPPORTED_AS_RISK_CONTEXT",
+      "reason": "The 2023 fundamental growth-quality holdout modestly reduced top-quartile losses but produced lower mean return, lower 2x/5x rates and a neutral-to-negative rank signal.",
+      "do_not_use_as": "STANDALONE_MULTIBAGGER_DISCOVERY_ENGINE"
+    },
+    "CONFIRMATION_TIMING": {
+      "components": [
+        "RELATIVE_STRENGTH",
+        "VOLUME_ACCUMULATION",
+        "PRICE_VS_200DMA",
+        "DISTANCE_FROM_52W_HIGH"
+      ],
+      "current_evidence_state": "SUPPORTED_ONLY_AS_CONTEXT_CONFIRMATION",
+      "reason": "The 2022 technical holdout improved 5x concentration and mean multiple in the top quartile but materially worsened loss rate and had negative rank correlation.",
+      "do_not_use_as": "STANDALONE_ALPHA_OR_DOWNSIDE_FILTER"
+    },
+    "SMART_MONEY_CONTEXT": {
+      "components": [
+        "PROMOTER_HOLDING_CHANGE",
+        "FII_MF_CHANGE",
+        "INSTITUTIONAL_BREADTH",
+        "DELIVERY_ACCUMULATION",
+        "BULK_BLOCK_BUYER_QUALITY"
+      ],
+      "current_evidence_state": "PROMOTER_CHANGE_ALONE_ADVERSE; FULL_PILLAR_NOT_YET_TESTED",
+      "reason": "The 2023 promoter-accumulation holdout showed lower mean return, lower 2x/5x rates, higher loss rate and negative rank correlation. Promoter change therefore cannot proxy the full smart-money pillar.",
+      "do_not_use_as": "PROMOTER_CHANGE_ALONE_AS_BUY_SIGNAL"
+    }
+  },
+  "decision_framework": {
+    "candidate_creation": "Prefer chronology-safe runway/moat/catalyst evidence once the strict documentary cohort becomes feasible.",
+    "candidate_rejection": "Use governance, weak cash/quality, excessive leverage and evidence gaps as fail-closed or risk-reducing context where applicable.",
+    "entry_confirmation": "Use technical accumulation only after the business thesis qualifies; do not let technical strength manufacture a thesis.",
+    "smart_money_confirmation": "Require multiple independent smart-money components rather than promoter holding change alone.",
+    "missing_evidence": "Never convert missing historical evidence to zero and never lower review rules to increase sample size.",
+    "weight_changes": "No pillar weight or band may change from one holdout; a separate preregistered admission decision is required."
+  },
+  "supporting_results": [
+    "validation/2022/technical_replay_result_v1.json",
+    "validation/2023/promoter_accumulation_result_v1.json",
+    "validation/2023/fundamental_growth_quality_result_v1.json",
+    "validation/2023-07/documentary_numeric_relation_result_v1.json",
+    "validation/2023-07/qualitative_documentary_relations_result_v1.json",
+    "validation/holdout_registry_v1.json"
+  ],
+  "pending_experiments": [
+    {
+      "id": "2023_OBJECTIVE_CORE_COMBINED",
+      "protocol": "validation/2023/objective_core_protocol_v1.json",
+      "purpose": "Test whether growth/quality interaction plus optional promoter change performs differently from the already-completed standalone component tests."
+    },
+    {
+      "id": "2023_07_QUALITATIVE_DOCUMENTARY_ALL_PREQUALIFIED",
+      "purpose": "Determine whether the expanded 383-document blinded evidence pool produces at least the frozen minimum cohort under strict two-family relation/review rules before loading future outcomes."
+    }
+  ]
+}
