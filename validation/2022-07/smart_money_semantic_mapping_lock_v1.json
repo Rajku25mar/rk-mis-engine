@@ -1,0 +1,38 @@
+{
+  "version": "rk-mis-smart-money-semantic-mapping-lock-2022-07-v1",
+  "status": "LOCKED_BEFORE_NUMERIC_4Q_FEATURE_RECONSTRUCTION_AND_OUTCOME_LOAD",
+  "purpose": "Freeze the chronology-safe XBRL semantics used to reconstruct already-approved Smart Money components before any 4-quarter company values or future returns are examined.",
+  "anchor_date": "2022-07-29",
+  "approved_component_mappings": {
+    "mf_holding_change_pp_4q": {
+      "category_member": "MutualFundsOrUtiMember",
+      "fact": "ShareholdingAsAPercentageOfTotalNumberOfShares",
+      "unit": "pure_percentage_points",
+      "change_rule": "LATEST_SAFE_QUARTER_VALUE_MINUS_VALUE_FOUR_QUARTERS_EARLIER"
+    },
+    "fii_holding_change_pp_4q": {
+      "normalization_note": "The approved FII field is normalized to the NSE shareholding taxonomy's institutional Foreign Portfolio Investor category; this is a source-label normalization, not a new scoring feature.",
+      "category_member": "InstitutionsForeignPortfolioInvestorMember",
+      "fact": "ShareholdingAsAPercentageOfTotalNumberOfShares",
+      "unit": "pure_percentage_points",
+      "change_rule": "LATEST_SAFE_QUARTER_VALUE_MINUS_VALUE_FOUR_QUARTERS_EARLIER",
+      "excluded_member": "ForeignPortfolioInvestorMember",
+      "excluded_reason": "Generic FPI member is not combined or substituted because both candidates were viable in the mapping probe and post-value selection would risk double counting or semantic drift."
+    },
+    "institutional_breadth_change_4q": {
+      "category_member": "InstitutionsMember",
+      "fact": "NumberOfShareholders",
+      "unit": "shareholder_count_change",
+      "change_rule": "LATEST_SAFE_QUARTER_COUNT_MINUS_COUNT_FOUR_QUARTERS_EARLIER"
+    }
+  },
+  "quarter_history_rule": "Require at least five distinct chronology-safe shareholding periods ending on or before the anchor; use the latest observation and the fifth-latest observation. Revisions known after the anchor are prohibited.",
+  "ambiguity_rule": "Any period with multiple incompatible aggregate facts for the locked member/fact pair is missing, not averaged or selected.",
+  "missing_data_rule": "No imputation and no zero substitution.",
+  "score_bands": "UNCHANGED_FROM_config/rk_mie_scoring.json",
+  "promoter_component": "NOT_PART_OF_THIS_MAPPING_LOCK; prior promoter evidence remains contextual and may be evaluated only as a separately reported extension.",
+  "bulk_block_component": "NOT_RECONSTRUCTED_BY_THIS_SOURCE",
+  "delivery_accumulation_component": "NOT_RECONSTRUCTED_BY_THIS_SOURCE",
+  "future_outcomes_seen": false,
+  "official_score_mutated": false
+}
