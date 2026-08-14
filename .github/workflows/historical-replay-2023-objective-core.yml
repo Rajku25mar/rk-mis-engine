@@ -2,16 +2,12 @@ name: RK-MIS 2023 Objective Core Replay
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/historical-replay-2023-objective-core.yml"
 
 permissions:
   contents: read
 
 jobs:
   replay-2023-objective-core:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap 2023 objective core replay')
     runs-on: ubuntu-latest
     timeout-minutes: 55
     steps:
