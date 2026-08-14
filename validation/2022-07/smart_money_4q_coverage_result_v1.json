@@ -1,0 +1,27 @@
+{
+  "version": "rk-mis-smart-money-4q-coverage-result-2022-07-v1",
+  "status": "FROZEN_PRE_OUTCOME_INSUFFICIENT_COHORT_AND_CHRONOLOGY_DIAGNOSTIC",
+  "protocol_path": "validation/2022-07/smart_money_4q_coverage_protocol_v1.json",
+  "protocol_sha256": "2b8483a9e963950e4daec819652417b3d571eddb6efaaccf8974ff16da430f16",
+  "semantic_mapping_lock_sha256": "e6a0433f2e482724e7f78225f993efac635dd0353bdb15fdd94e7bf6112201b2",
+  "workflow_run_id": 31817709140,
+  "artifact": {
+    "id": 9225683501,
+    "name": "rk-mis-2022-07-smart-money-4q-coverage",
+    "sha256": "30af14f396fdd6f93410e12489891e98a3221f449161dd0ff68b5024762b3d45"
+  },
+  "sample_rows": 100,
+  "sample_identity_sha256": "aa15c369e7b1233cceab1bdf5e0fd50e165265f9f7629a15991449468621e489",
+  "coverage": {
+    "five_safe_resolvable_periods": 15,
+    "five_xbrls_parsed_without_error": 13,
+    "all_three_locked_mappings_complete_across_five_periods": 13,
+    "minimum_future_holdout_cohort": 30
+  },
+  "period_span_days": {"min":273,"median":273.0,"max":456},
+  "finding": "The 100-company pre-outcome probe found only 13 companies with all three locked mappings complete across five distinct safe periods, below the minimum cohort 30. The aggregate span diagnostic also showed that five distinct filings can span less than a true four-quarter interval, so any expansion must reuse the already-established 330-400 day 4Q chronology guard from the prior promoter holdout.",
+  "decision": "NO_OUTCOME_LOAD_FROM_V1; ALLOW_ONE_PRE_OUTCOME_COVERAGE_EXPANSION_THAT_PRESERVES_THE_ORIGINAL_SAMPLE_AND_ADDS_THE_330_TO_400_DAY_4Q_SPAN_GUARD",
+  "company_level_numeric_values_published": false,
+  "future_outcomes_seen": false,
+  "official_score_mutated": false
+}
