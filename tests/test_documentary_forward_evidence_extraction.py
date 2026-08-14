@@ -25,7 +25,9 @@ class DocumentaryExtractionTests(unittest.TestCase):
         selected = MODULE.apply_triage(rows, lock)
         self.assertEqual(len(selected), 2)
         self.assertEqual(selected[0]["attachment_url"], "https://nsearchives.nseindia.com/c.pdf")
-        self.assertEqual(selected[1]["attachment_url"], "https://nsearchives.nseindia.com/d.pdf")
+        # Frozen triage: Investor Presentation = 12 priority points; a plain
+        # one-family moat metadata hit = 10. Therefore b.pdf correctly ranks second.
+        self.assertEqual(selected[1]["attachment_url"], "https://nsearchives.nseindia.com/b.pdf")
 
     def test_generic_approval_optionality_alone_is_not_downloaded(self) -> None:
         row = {"subject":"Dividend","attachment_url":"https://nsearchives.nseindia.com/a.pdf","keyword_families":["optionality"],"keyword_hits":{"optionality":["approval"]}}
