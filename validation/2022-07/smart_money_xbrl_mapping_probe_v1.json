@@ -1,0 +1,30 @@
+{
+  "version": "rk-mis-smart-money-xbrl-mapping-probe-2022-07-v1",
+  "status": "FROZEN_PRE_OUTCOME_CONTEXT_TO_FACT_MAPPING_DIAGNOSIS",
+  "purpose": "Validate whether chronology-safe NSE shareholding XBRL category contexts map unambiguously to the approved MF holding, FII holding and institutional breadth concepts before any numerical history or future outcome is loaded.",
+  "anchor_date": "2022-07-29",
+  "shareholding_window": {"from_date":"2021-04-01","to_date":"2022-07-29"},
+  "sample_size": 12,
+  "sample_salt": "RK-MIS-SMART-MONEY-SCHEMA|2022-07-29",
+  "max_xbrl_documents": 10,
+  "target_mappings": {
+    "mf_holding": {
+      "member": "MutualFundsOrUtiMember",
+      "fact": "ShareholdingAsAPercentageOfTotalNumberOfShares"
+    },
+    "fii_holding_candidates": [
+      {"member":"InstitutionsForeignPortfolioInvestorMember","fact":"ShareholdingAsAPercentageOfTotalNumberOfShares"},
+      {"member":"ForeignPortfolioInvestorMember","fact":"ShareholdingAsAPercentageOfTotalNumberOfShares"}
+    ],
+    "institutional_breadth": {
+      "member": "InstitutionsMember",
+      "fact": "NumberOfShareholders"
+    }
+  },
+  "aggregate_context_rule": "Target category member must be present on CategoryOfShareholdersAxis and the context must contain no typedMember detail dimension. Multiple incompatible facts fail closed.",
+  "allowed_output": ["context counts","fact counts","unitRef counts","ambiguity counts","source hashes","chronology metadata"],
+  "prohibited_output": ["holding percentages","shareholder counts","company-level numeric values","raw XBRL","future prices","future returns"],
+  "decision_rule": "A mapping may proceed only if it is present and unambiguous in at least 8 of 10 parsed probe documents. If both FPI candidate members are viable, do not choose one post hoc; require a taxonomy-semantic rule that distinguishes aggregate versus detail context before numeric reconstruction.",
+  "future_outcomes_seen": false,
+  "official_score_mutated": false
+}
