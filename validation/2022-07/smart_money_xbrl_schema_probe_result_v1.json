@@ -1,0 +1,39 @@
+{
+  "version": "rk-mis-smart-money-xbrl-schema-probe-2022-07-result-v1",
+  "status": "FROZEN_PRE_OUTCOME_TAXONOMY_DIAGNOSIS_SUPPORTS_NUMERIC_MAPPING_PROBE",
+  "protocol_path": "validation/2022-07/smart_money_xbrl_schema_probe_v1.json",
+  "protocol_sha256": "43072baaedbaca3061cc866eeea76d288c41768aa82acf6705c3a7f2acf62f8b",
+  "workflow_run_id": 31817017519,
+  "artifact": {
+    "id": 9225412216,
+    "name": "rk-mis-2022-07-smart-money-xbrl-schema-probe",
+    "sha256": "417552cd903924f4fc4f58c65bb2c9945678824ae9a12f093e2432f6c04a8eea"
+  },
+  "anchor_date": "2022-07-29",
+  "sample_rows": 12,
+  "safe_shareholding_rows": 42,
+  "safe_rows_with_resolvable_xbrl": 42,
+  "xbrl_documents_attempted": 10,
+  "xbrl_documents_parsed": 10,
+  "taxonomy_evidence": {
+    "mutual_fund_member": "MutualFundsOrUtiMember",
+    "foreign_portfolio_members": ["InstitutionsForeignPortfolioInvestorMember", "ForeignPortfolioInvestorMember"],
+    "institutional_aggregate_member": "InstitutionsMember",
+    "other_institutional_members_present": [
+      "InsuranceCompaniesMember",
+      "FinancialInstitutionOrBanksMember",
+      "IndianFinancialInstitutionsOrBanksMember",
+      "ProvidentFundsOrPensionFundsMember",
+      "AlternativeInvestmentFundsMember",
+      "OtherInstitutionsMember"
+    ],
+    "holding_percentage_fact": "ShareholdingAsAPercentageOfTotalNumberOfShares",
+    "shareholder_count_fact": "NumberOfShareholders",
+    "category_dimension": "CategoryOfShareholdersAxis"
+  },
+  "finding": "Chronology-safe July-2022 NSE shareholding XBRLs explicitly represent mutual funds, foreign portfolio investors, aggregate institutions and other institutional categories. The taxonomy therefore supports a separate pre-outcome context-to-fact mapping and coverage test for the approved MF/FII/institutional-breadth Smart Money components.",
+  "decision": "PROCEED_TO_NUMERIC_CONTEXT_MAPPING_AND_COVERAGE_PROBE_BEFORE_ANY_OUTCOME_LOAD; TAXONOMY_NAMES_ALONE_ARE_NOT_SCORES",
+  "numeric_holding_values_published": false,
+  "future_outcomes_seen": false,
+  "official_score_mutated": false
+}
