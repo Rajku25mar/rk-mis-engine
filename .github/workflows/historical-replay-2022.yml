@@ -1,5 +1,6 @@
 name: RK-MIS 2022 Technical Replay
 
+# Acquisition compatibility rerun v2: same frozen protocol and scoring rules.
 on:
   workflow_dispatch:
   push:
