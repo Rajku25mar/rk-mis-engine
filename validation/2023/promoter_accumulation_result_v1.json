@@ -1,0 +1,73 @@
+{
+  "version": "rk-mis-promoter-accumulation-2023-result-v1",
+  "status": "FROZEN_INDEPENDENT_HOLDOUT_RESULT",
+  "protocol_path": "validation/2023/promoter_accumulation_protocol_v1.json",
+  "protocol_sha256": "fde3f49aa6c2b099ceb26945668a1f4979a94c43ad068e45222d5acf9f054efd",
+  "workflow_run_id": 31792177319,
+  "workflow_head_sha": "9421f3412d0f80d5708e10febde93a8f2290628c",
+  "artifact": {
+    "id": 9215953697,
+    "name": "rk-mis-2023-promoter-accumulation",
+    "sha256": "9d5de7e871eee93dbd4a6a49b3d967f198720c26e4decb075f06d7b024262d3a"
+  },
+  "anchor": {
+    "target": "2023-01-31",
+    "resolved_trading_date": "2023-01-31",
+    "entry_date": "2023-02-01",
+    "outcome_date": "2026-01-30"
+  },
+  "data_integrity": {
+    "eligible_company_universe_rows": 1703,
+    "deterministic_sample_rows": 250,
+    "symbols_with_any_safe_shareholding_row": 233,
+    "shareholding_replay_grade_rows": 186,
+    "smart_money_component_coverage_pct": 74.4,
+    "calibration_safe_outcome_rows": 160,
+    "calibration_safe_outcome_coverage_of_scored_pct": 86.02,
+    "post_anchor_revision_rows_rejected": 56,
+    "predictor_snapshot_sha256": "c939e43bfa2bf555c0a34ae8509195b8dd4d1ae5b622806bb21c7d2f92f5419b",
+    "outcomes_seen_when_predictor_snapshot_frozen": false,
+    "raw_exchange_files_published": false
+  },
+  "outcome_status_counts": {
+    "OBSERVED_CALIBRATION_SAFE": 160,
+    "MISSING_EXIT_PRICE_OR_DELISTED": 16,
+    "UNRESOLVED_CORPORATE_ACTION": 10
+  },
+  "metrics": {
+    "cohort": {
+      "n": 160,
+      "mean_multiple": 1.8913,
+      "two_x_rate_pct": 30.0,
+      "five_x_rate_pct": 5.0,
+      "loss_rate_pct": 28.12
+    },
+    "top_quartile": {
+      "n": 40,
+      "mean_multiple": 1.4915,
+      "two_x_rate_pct": 20.0,
+      "five_x_rate_pct": 0.0,
+      "loss_rate_pct": 35.0
+    },
+    "top_quartile_mean_lift_x": 0.7886,
+    "spearman_raw_promoter_change_vs_forward_multiple": -0.0701,
+    "top_quartile_minus_cohort": {
+      "two_x_pp": -10.0,
+      "five_x_pp": -5.0,
+      "loss_pp": 6.88,
+      "mean_multiple": -0.3998
+    }
+  },
+  "interpretation": {
+    "standalone_promoter_accumulation_signal": "ADVERSE_IN_THIS_HOLDOUT",
+    "multibagger_concentration": "ADVERSE",
+    "loss_filtering": "ADVERSE",
+    "rank_signal": "ADVERSE",
+    "role_in_rk_mis": "KEEP_AS_ONE_CONTEXTUAL_SMART_MONEY_COMPONENT_ONLY; REQUIRE FII_MF_BREADTH_DELIVERY_OR_FUNDAMENTAL_CONFIRMATION; DO_NOT INCREASE WEIGHT"
+  },
+  "decision": "NO_OFFICIAL_SCORE_CHANGE",
+  "full_smart_money_pillar_claim": false,
+  "official_100_point_score_mutated": false,
+  "alpha_claim": false,
+  "no_post_result_tuning": true
+}
