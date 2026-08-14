@@ -23,6 +23,7 @@ INSTITUTIONAL_RE = re.compile(
     r"mutual|foreign|portfolio|institution|insurance|pension|provident|bank|fund|fii|fpi|dii|financialinstitution",
     re.I,
 )
+OFFICIAL_ARCHIVE_BASE = "https://nsearchives.nseindia.com"
 
 
 def local_name(tag: str) -> str:
@@ -35,14 +36,45 @@ def qname_tail(text: str | None) -> str | None:
     return str(text).strip().split(":")[-1]
 
 
+def xbrl_link_shape(value: Any) -> str:
+    raw = str(value or "").strip()
+    if not raw or raw == "-":
+        return "EMPTY"
+    if raw.startswith("https://"):
+        return "ABSOLUTE_HTTPS"
+    if raw.startswith("http://"):
+        return "ABSOLUTE_HTTP"
+    if raw.startswith("//"):
+        return "SCHEME_RELATIVE"
+    if raw.startswith("/"):
+        return "ROOT_RELATIVE"
+    if "/" in raw:
+        return "PATH_RELATIVE"
+    return "BARE_TOKEN_OR_FILENAME"
+
+
 def official_xbrl_url(value: Any) -> str | None:
-    url = str(value or "").strip()
-    if not url.startswith("https://") or url.endswith("/-"):
+    raw = str(value or "").strip()
+    if not raw or raw == "-":
         return None
-    host = (urllib.parse.urlparse(url).hostname or "").lower()
-    if host == "nseindia.com" or host.endswith(".nseindia.com"):
-        return url
-    return None
+    if raw.startswith("//"):
+        url = "https:" + raw
+    elif raw.startswith("/"):
+        url = OFFICIAL_ARCHIVE_BASE + raw
+    elif raw.startswith("https://") or raw.startswith("http://"):
+        url = raw
+    elif "/" in raw:
+        url = OFFICIAL_ARCHIVE_BASE + "/" + raw.lstrip("/")
+    else:
+        # Do not invent a directory for an opaque historical filename/token.
+        return None
+    parsed = urllib.parse.urlparse(url)
+    host = (parsed.hostname or "").lower()
+    if not (host == "nseindia.com" or host.endswith(".nseindia.com")):
+        return None
+    if parsed.scheme == "http":
+        url = urllib.parse.urlunparse(("https", parsed.netloc, parsed.path, parsed.params, parsed.query, parsed.fragment))
+    return url
 
 
 def latest_safe_xbrl(raw_rows: list[dict[str, Any]], anchor: str) -> dict[str, Any] | None:
@@ -122,7 +154,7 @@ def main() -> None:
     sample_size = int(protocol["sample_size"])
     max_docs = int(protocol["max_xbrl_documents"])
     window = protocol["shareholding_window"]
-    session = market.OfficialSession(request_budget=100, timeout=30, sleep_seconds=0.04)
+    session = market.OfficialSession(request_budget=120, timeout=30, sleep_seconds=0.04)
 
     resolved_anchor, anchor_raw, anchor_meta = market.resolve_on_or_before(anchor, session)
     universe = market.company_universe(market.parse_bhavcopy(anchor_raw), resolved_anchor)
@@ -139,6 +171,10 @@ def main() -> None:
     all_schema_refs: Counter[str] = Counter()
     xbrl_hashes: list[str] = []
     docs = []
+    link_shapes: Counter[str] = Counter()
+    safe_rows = 0
+    safe_rows_with_xbrl_value = 0
+    safe_rows_with_resolvable_xbrl = 0
 
     for member in sample:
         if len(docs) >= max_docs:
@@ -149,6 +185,19 @@ def main() -> None:
             window["from_date"],
             anchor,
         )
+        for raw in rows:
+            norm = promoter.normalize_shareholding_row(raw)
+            if not promoter.safe_at_anchor(norm, anchor):
+                continue
+            safe_rows += 1
+            value = raw.get("xbrl")
+            shape = xbrl_link_shape(value)
+            link_shapes[shape] += 1
+            if shape != "EMPTY":
+                safe_rows_with_xbrl_value += 1
+            if official_xbrl_url(value):
+                safe_rows_with_resolvable_xbrl += 1
+
         selected = latest_safe_xbrl(rows, anchor)
         if not selected:
             continue
@@ -156,10 +205,10 @@ def main() -> None:
             content = session.request(
                 selected["source_url"],
                 referer=promoter.REFERER,
-                accept="application/xml,text/xml,*/*",
+                accept="application/xml,text/xml,application/xhtml+xml,text/html,*/*",
             )
             if not content.lstrip().startswith(b"<"):
-                raise RuntimeError("not XML")
+                raise RuntimeError("not markup")
             inspected = inspect_xbrl(content)
         except Exception as exc:
             docs.append({
@@ -186,7 +235,7 @@ def main() -> None:
         })
 
     report = {
-        "version": "rk-mis-smart-money-xbrl-taxonomy-probe-v1",
+        "version": "rk-mis-smart-money-xbrl-taxonomy-probe-v1.1",
         "status": "PRE_OUTCOME_XBRL_TAXONOMY_DIAGNOSIS_COMPLETE",
         "protocol": str(args.protocol),
         "protocol_sha256": hashlib.sha256(args.protocol.read_bytes()).hexdigest(),
@@ -194,6 +243,10 @@ def main() -> None:
         "anchor_resolved_trading_date": resolved_anchor,
         "eligible_company_universe_rows": len(universe),
         "sample_rows": len(sample),
+        "safe_shareholding_rows": safe_rows,
+        "safe_rows_with_xbrl_value": safe_rows_with_xbrl_value,
+        "safe_rows_with_resolvable_xbrl": safe_rows_with_resolvable_xbrl,
+        "xbrl_link_shape_counts": dict(sorted(link_shapes.items())),
         "xbrl_documents_attempted": len(docs),
         "xbrl_documents_parsed": sum(d.get("status") == "PARSED" for d in docs),
         "document_chronology": docs,
@@ -209,8 +262,9 @@ def main() -> None:
         "official_requests_made": session.requests_made,
         "numeric_holding_values_published": False,
         "raw_xbrl_published": False,
+        "raw_xbrl_urls_published": False,
         "future_outcomes_seen": False,
-        "decision_note": "Taxonomy-name matches are not yet numeric features. A separate mapping/coverage protocol is required before any Smart Money score or outcome test.",
+        "decision_note": "Taxonomy-name matches are not yet numeric features. Bare opaque filenames are intentionally not mapped to guessed archive directories.",
     }
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
