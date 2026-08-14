@@ -1,0 +1,30 @@
+{
+  "version": "rk-mis-smart-money-schema-probe-2021-result-v1",
+  "status": "FROZEN_PRE_OUTCOME_SCHEMA_DIAGNOSIS",
+  "protocol_path": "validation/2021/smart_money_schema_probe_v1.json",
+  "protocol_sha256": "ec51f2d3c731773cddae62ed02a8c5d410f603288aa36c25c062a6954129a84c",
+  "workflow_run_id": 31816396844,
+  "artifact": {
+    "id": 9225174409,
+    "name": "rk-mis-2021-smart-money-schema-probe",
+    "sha256": "e0a6690c8cbc426bcc07f21235630475da68cb060050d0865e5e44eaf3818876"
+  },
+  "anchor_date": "2021-01-29",
+  "sample_rows": 12,
+  "symbols_with_shareholding_rows": 11,
+  "total_shareholding_rows_examined": 214,
+  "response_field_count": 33,
+  "candidate_institutional_top_level_fields": [],
+  "important_available_fields": [
+    "pr_and_prgrp",
+    "public_val",
+    "xbrl",
+    "broadcastDate",
+    "submissionDate",
+    "revisionDate"
+  ],
+  "finding": "The top-level historical NSE shareholding metadata response does not expose unambiguous MF, FII, DII or institutional breadth fields. It does expose an official XBRL link on the examined filings, creating a chronology-safe path to inspect detailed shareholding categories without using future outcomes.",
+  "decision": "DO_NOT_INFER_MF_FII_OR_INSTITUTIONAL_BREADTH_FROM_TOP_LEVEL_PUBLIC_OR_PROMOTER_FIELDS; PROBE_PRE_ANCHOR_SHAREHOLDING_XBRL_TAGS_NEXT",
+  "future_outcomes_seen": false,
+  "official_score_mutated": false
+}
