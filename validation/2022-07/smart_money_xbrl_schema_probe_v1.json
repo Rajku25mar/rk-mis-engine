@@ -1,0 +1,33 @@
+{
+  "version": "rk-mis-smart-money-xbrl-schema-probe-2022-07-v1",
+  "status": "FROZEN_PRE_OUTCOME_XBRL_TAXONOMY_DIAGNOSIS",
+  "purpose": "At a fresh later anchor, determine whether chronology-safe NSE shareholding metadata and official XBRL links expose explicit taxonomy categories suitable for the already-approved MF holding change, FII holding change and institutional breadth components. No future prices or holding values are loaded.",
+  "anchor_date": "2022-07-29",
+  "shareholding_window": {
+    "from_date": "2021-04-01",
+    "to_date": "2022-07-29"
+  },
+  "sample_size": 12,
+  "sample_salt": "RK-MIS-SMART-MONEY-SCHEMA|2022-07-29",
+  "max_xbrl_documents": 10,
+  "source": "OFFICIAL_NSE_SHAREHOLDING_METADATA_AND_PRE_ANCHOR_XBRL",
+  "allowed_output": [
+    "chronology-safe row counts",
+    "XBRL link-shape counts",
+    "XBRL element local names",
+    "XBRL explicit-member taxonomy names",
+    "dimension names",
+    "schema reference names",
+    "source hashes"
+  ],
+  "prohibited_output": [
+    "numeric holding values",
+    "company-level shareholding percentages",
+    "raw XBRL or raw URLs",
+    "future prices",
+    "future returns"
+  ],
+  "decision_rule": "Proceed to numeric Smart Money feature reconstruction only if at least one approved institutional concept is explicitly represented in parsed chronology-safe XBRLs and the taxonomy mapping is unambiguous. Outcome testing requires a separate protocol after coverage diagnosis.",
+  "future_outcomes_seen": false,
+  "official_score_mutated": false
+}
