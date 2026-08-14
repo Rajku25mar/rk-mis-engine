@@ -42,14 +42,16 @@
     "SMART_MONEY_CONTEXT": {
       "components": [
         "PROMOTER_HOLDING_CHANGE",
-        "FII_MF_CHANGE",
+        "MF_HOLDING_CHANGE",
+        "FII_OR_INSTITUTIONAL_FPI_CHANGE",
         "INSTITUTIONAL_BREADTH",
         "DELIVERY_ACCUMULATION",
         "BULK_BLOCK_BUYER_QUALITY"
       ],
-      "current_evidence_state": "PROMOTER_CHANGE_ALONE_ADVERSE_WHERE_TESTABLE; FULL_PILLAR_NOT_YET_TESTED",
-      "reason": "The standalone promoter-accumulation holdout was adverse. In the 2023 objective-core same-cohort extension, adding promoter change increased 2x incidence but reduced mean return, reduced rank correlation and increased top-quartile losses by 7.15 percentage points. At the 2020 anchor no replay-grade 4-quarter promoter series was available, so no additional promoter inference is allowed.",
-      "do_not_use_as": "PROMOTER_CHANGE_ALONE_AS_POSITIVE_SIGNAL"
+      "current_evidence_state": "PROMOTER_CHANGE_ADVERSE_WHERE_TESTABLE; INSTITUTIONAL_TAXONOMY_AND_MAPPING_VALIDATED_BUT_HISTORICAL_4Q_OUTCOME_TEST_BLOCKED_BY_SOURCE_COVERAGE; FULL_PILLAR_UNTESTED",
+      "reason": "Promoter change was adverse as a standalone signal and worsened loss rate when added to the 2023 objective core. Separately, chronology-safe July-2022 NSE XBRLs cleanly map the approved Mutual Fund, institutional-FPI and aggregate institutional shareholder-count concepts, but only 8 of 350 outcome-blind companies had all three mappings complete across five safe filings spanning the established 330-400 day four-quarter interval. The historical institutional Smart Money holdout therefore stopped before any future prices were loaded. This is a source-coverage limitation, not a negative return result for institutional accumulation.",
+      "do_not_use_as": "PROMOTER_CHANGE_ALONE_AS_POSITIVE_SIGNAL_OR_UNVERIFIED_HISTORICAL_INSTITUTIONAL_PROXY",
+      "next_gate": "PROSPECTIVE_LIVE_MF_FII_AND_INSTITUTIONAL_EVIDENCE_TRACKING_FROM_AUTHORIZED_STRUCTURED_DATA; KEEP_DELIVERY_AND_BULK_BLOCK_COMPONENTS_SEPARATE_UNTIL_EVIDENCED"
     }
   },
   "decision_framework": {
@@ -57,13 +59,18 @@
     "candidate_ranking": "Use recent growth and financial quality only as supporting ranking and risk context, because a positive 2023 interaction result failed independent time-anchor replication.",
     "candidate_rejection": "Use governance, weak cash/quality, excessive leverage and evidence gaps as fail-closed or risk-reducing context where applicable.",
     "entry_confirmation": "Use technical accumulation only after the business thesis qualifies; do not let technical strength manufacture a thesis.",
-    "smart_money_confirmation": "Require multiple independent smart-money components rather than promoter holding change alone.",
+    "smart_money_confirmation": "Require multiple independent Smart Money components. Track MF/FII/institutional changes prospectively from authorized structured sources; promoter change alone is insufficient. A 4Q holding feature requires five chronology-safe observations spanning 330-400 days.",
     "missing_evidence": "Never convert missing historical evidence to zero and never lower review rules to increase sample size.",
     "weight_changes": "No pillar weight or band may change from one holdout; independent replication and a separate preregistered admission decision are required."
   },
   "supporting_results": [
     "validation/2020/objective_core_replication_result_v1.json",
+    "validation/2021/smart_money_xbrl_schema_probe_result_v1.json",
     "validation/2022/technical_replay_result_v1.json",
+    "validation/2022-07/smart_money_xbrl_schema_probe_result_v1.json",
+    "validation/2022-07/smart_money_xbrl_mapping_result_v1.json",
+    "validation/2022-07/smart_money_semantic_mapping_lock_v1.json",
+    "validation/2022-07/smart_money_4q_coverage_expansion_result_v2.json",
     "validation/2023/promoter_accumulation_result_v1.json",
     "validation/2023/fundamental_growth_quality_result_v1.json",
     "validation/2023/objective_core_result_v1.json",
@@ -73,8 +80,8 @@
   ],
   "pending_experiments": [
     {
-      "id": "FULL_SMART_MONEY_CONFIRMATION",
-      "purpose": "Test promoter activity only as one component alongside FII/MF breadth, institutional participation, delivery accumulation and high-quality block/bulk activity."
+      "id": "PROSPECTIVE_SMART_MONEY_TRACK",
+      "purpose": "Persist current authorized MF/FII/institutional observations prospectively so genuine 4Q histories can accumulate without relying on sparse historical reconstruction; keep promoter, delivery, and bulk/block evidence as separate components."
     },
     {
       "id": "PROSPECTIVE_DOCUMENTARY_DISCOVERY_TRACK",
