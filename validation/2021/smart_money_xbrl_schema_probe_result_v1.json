@@ -1,0 +1,23 @@
+{
+  "version": "rk-mis-smart-money-xbrl-schema-probe-2021-result-v1",
+  "status": "STOPPED_PRE_OUTCOME_NO_CHRONOLOGY_SAFE_SHAREHOLDING_METADATA",
+  "protocol_path": "validation/2021/smart_money_xbrl_schema_probe_v1.json",
+  "protocol_sha256": "8b364eb1e43fc082ef7b5a7f1aaef0a55694b8eb91a4386fdcf68df3719ea550",
+  "latest_workflow_run_id": 31816807125,
+  "latest_artifact": {
+    "id": 9225332997,
+    "name": "rk-mis-2021-smart-money-xbrl-schema-probe",
+    "sha256": "61ea26cc4a8575c4c795df48720948fea6e294297b26e26eabe1aae3123b3580"
+  },
+  "anchor_date": "2021-01-29",
+  "sample_rows": 12,
+  "safe_shareholding_rows": 0,
+  "safe_rows_with_xbrl_value": 0,
+  "xbrl_documents_attempted": 0,
+  "xbrl_documents_parsed": 0,
+  "finding": "The current NSE shareholding metadata source did not return any rows whose filing period and known-at date were both on or before the 2021 anchor for the deterministic probe sample. Therefore historical MF/FII/institutional XBRL reconstruction cannot be performed at this anchor from this source without guessing archive locations or using post-anchor metadata.",
+  "decision": "STOP_2021_SMART_MONEY_PATH_BEFORE_OUTCOME_LOAD; TRY_A_LATER_FRESH_ANCHOR_WITH_RETAINED_PRE_ANCHOR_METADATA; DO_NOT_GUESS_XBRL_ARCHIVE_PATHS",
+  "evidence_against_smart_money_hypothesis": false,
+  "future_outcomes_seen": false,
+  "official_score_mutated": false
+}
