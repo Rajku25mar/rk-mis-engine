@@ -2,16 +2,12 @@ name: RK-MIS 2023 Promoter Accumulation Holdout
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/promoter-accumulation-2023.yml"
 
 permissions:
   contents: read
 
 jobs:
   promoter-accumulation-2023:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap 2023 promoter accumulation holdout')
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
