@@ -1,0 +1,46 @@
+{
+  "version": "rk-mis-fundamental-growth-quality-implementation-lock-v1",
+  "protocol_path": "validation/2023/fundamental_growth_quality_protocol_v1.json",
+  "status": "LOCKED_BEFORE_OUTCOME_LOAD",
+  "filing_metadata": {
+    "endpoint": "https://www.nseindia.com/api/corporates-financial-results",
+    "period": "Quarterly",
+    "known_at_order": ["broadcastDateTime", "exchdisstime", "filingDate", "broadcastDate"],
+    "point_in_time_filter": "period_end <= anchor and known_at <= anchor",
+    "dedupe": "for each period_end + scope retain the latest version known by anchor"
+  },
+  "scope_selection": "For each symbol choose the scope with the greatest count of valid pre-anchor XBRL filing rows; consolidated wins an exact count tie.",
+  "latest_quarter": "Latest selected period_end in chosen scope with a replay-grade 75-105 day current-quarter XBRL context.",
+  "prior_year_quarter": "Latest earlier replay-grade quarter in same scope whose period_end is 325-405 days before latest quarter.",
+  "xbrl_context": {
+    "quarter_duration_days_min": 75,
+    "quarter_duration_days_max": 105,
+    "period_end_must_equal_filing_period_end": true,
+    "scope_mismatch_fails_closed": true,
+    "ambiguous_context_fails_closed": true,
+    "ambiguous_metric_fails_closed": true,
+    "supported_money_units": ["INR", "INR_MILLIONS", "INR-LAKHS", "INR_CRORES"]
+  },
+  "metric_tags": {
+    "revenue": ["RevenueFromOperations", "RevenueFromSaleOfProductsAndServices", "RevenueFromSaleOfProducts"],
+    "pat": ["ProfitLossForPeriod", "ProfitLossForPeriodFromContinuingOperations"],
+    "finance_cost": ["FinanceCosts", "FinanceCost"],
+    "pbt": ["ProfitBeforeTax"],
+    "depreciation": ["DepreciationDepletionAndAmortisationExpense", "DepreciationAndAmortisationExpense"],
+    "debt_equity": ["DebtEquityRatio"]
+  },
+  "derived_metrics": {
+    "latest_sales_growth_yoy_pct": "(latest_revenue / prior_year_revenue - 1) * 100",
+    "latest_pat_growth_yoy_pct": "(latest_pat / prior_year_pat - 1) * 100; unavailable if prior PAT is zero",
+    "interest_coverage": "(latest_pbt + latest_finance_cost) / latest_finance_cost; unavailable if finance cost is zero or missing",
+    "ebitda_margin_pct": "(latest_pbt + latest_finance_cost + latest_depreciation) / latest_revenue * 100",
+    "debt_equity": "latest quarter DebtEquityRatio pure-unit fact"
+  },
+  "guardrails": [
+    "Do not use post-anchor filings, revisions or outcomes to choose scope or metric context.",
+    "Do not substitute annual or YTD contexts for a missing current-quarter context.",
+    "Do not impute missing metrics.",
+    "Do not score bank/NBFC/financial-business rows with industrial leverage or EBITDA logic.",
+    "Do not change existing RK-MIS feature bands or effective weights."
+  ]
+}
