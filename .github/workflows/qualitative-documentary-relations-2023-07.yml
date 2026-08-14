@@ -1,5 +1,6 @@
 name: RK-MIS July 2023 Strict Qualitative Documentary Relations
 
+# Post-fix bootstrap: frozen qualitative review grammar unchanged.
 on:
   workflow_dispatch:
   push:
