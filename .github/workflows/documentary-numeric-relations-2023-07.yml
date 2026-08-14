@@ -1,11 +1,7 @@
 name: RK-MIS July 2023 Strict Documentary Numeric Review
 
-# Post-fix bootstrap: strict review rules unchanged; parser commit is CI-green.
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/documentary-numeric-relations-2023-07.yml"
 
 permissions:
   contents: read
@@ -13,7 +9,6 @@ permissions:
 
 jobs:
   strict-numeric-relations:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap July 2023 strict documentary numeric review')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
