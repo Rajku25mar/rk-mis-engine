@@ -1,0 +1,68 @@
+name: RK-MIS July 2022 Smart Money Final 4Q Coverage Expansion
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/smart-money-4q-coverage-expansion-2022-07.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  smart-money-4q-coverage-expansion:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap final July 2022 Smart Money coverage expansion')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile final pre-outcome expansion
+        run: |
+          python -m py_compile \
+            scripts/probe_smart_money_4q_coverage_expansion.py \
+            scripts/probe_smart_money_4q_coverage.py \
+            scripts/probe_smart_money_xbrl_mapping.py \
+            scripts/probe_smart_money_xbrl_schema.py \
+            scripts/run_promoter_accumulation_replay.py \
+            scripts/run_technical_replay.py
+
+      - name: Run frozen final coverage expansion
+        run: |
+          python scripts/probe_smart_money_4q_coverage_expansion.py \
+            --protocol validation/2022-07/smart_money_4q_coverage_expansion_v2.json \
+            --output artifacts/2022-07-smart-money-4q-expansion
+
+      - name: Enforce aggregate-only pre-outcome boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('artifacts/2022-07-smart-money-4q-expansion')
+          files={p.name for p in root.iterdir() if p.is_file()}
+          assert files=={'report.json'}, files
+          report=json.loads((root/'report.json').read_text(encoding='utf-8'))
+          assert report['sampling']['base_identity_preserved'] is True
+          assert report['sampling']['base_extension_overlap'] == 0
+          assert report['company_level_numeric_values_published'] is False
+          assert report['company_level_coverage_rows_published'] is False
+          assert report['raw_xbrl_published'] is False
+          assert report['future_outcomes_seen'] is False
+          assert report['official_score_mutated'] is False
+          print('RK_MIS_SMART_MONEY_FINAL_COVERAGE_BOUNDARY=PASS')
+          PY
+
+      - name: Show final aggregate coverage report
+        run: cat artifacts/2022-07-smart-money-4q-expansion/report.json
+
+      - name: Upload final aggregate coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rk-mis-2022-07-smart-money-4q-coverage-expansion
+          path: artifacts/2022-07-smart-money-4q-expansion/report.json
+          retention-days: 14
+          if-no-files-found: error
