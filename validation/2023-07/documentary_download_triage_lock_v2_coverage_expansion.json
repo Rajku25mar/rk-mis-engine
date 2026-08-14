@@ -1,0 +1,43 @@
+{
+  "version": "rk-mis-documentary-download-triage-lock-v2-coverage-expansion",
+  "status": "LOCKED_AFTER_FIRST_EXTRACTION_BEFORE_DOCUMENT_REVIEW_AND_OUTCOME_LOAD",
+  "purpose": "Expand evidence completeness because first-pass mechanical eligibility upper bound (26) was below the preregistered minimum interpretable cohort (30), without changing feature definitions, score bands, eligibility rules or using outcomes.",
+  "inputs": "same frozen metadata candidate index from workflow run 31793071494",
+  "future_outcomes_seen": false,
+  "approved_document_reviews_seen": false,
+  "first_pass_fact_used": "mechanical candidate coverage only: upper bound 26 versus protocol minimum 30",
+  "inclusion_rules": [
+    "retain any candidate with runway, moat or orders keyword-family metadata",
+    "retain optionality candidate only if it has a specific optionality term other than generic approval or qualification, unless it also qualifies through a high-information subject",
+    "retain Investor Presentation",
+    "retain Press Release",
+    "retain Analysts/Institutional Investor Meet/Con. Call Updates",
+    "retain Annual Report when identifiable from subject or attachment filename"
+  ],
+  "ranking_points_for_download_priority": {
+    "each_runway_moat_orders_family": 10,
+    "each_specific_optionality_hit_excluding_approval_qualification": 5,
+    "investor_presentation_subject": 12,
+    "press_release_subject": 10,
+    "analyst_institutional_meet_or_concall_subject": 8,
+    "annual_report_subject_or_filename": 7
+  },
+  "tie_break": "latest known_at first, then subject lexicographically",
+  "maximum_documents_per_symbol": 5,
+  "estimated_from_same_frozen_metadata_only": {
+    "symbols_retained": 65,
+    "documents_retained": 269
+  },
+  "changes_vs_v1": "download cap only: 3 -> 5 documents per retained symbol",
+  "unchanged": [
+    "documentary_forward_evidence_protocol_v1 scoring rules",
+    "documentary_forward_evidence_rubric_v1 categories",
+    "minimum 3 covered features",
+    "require at least one numeric catalyst",
+    "require at least one approved documentary score",
+    "all feature bands and experimental weights",
+    "outcome blinding"
+  ],
+  "scoring_effect": "NONE",
+  "no_post_result_tuning": true
+}
