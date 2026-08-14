@@ -15,6 +15,15 @@
       "system_role": "BASE_GROWTH_PLUS_QUALITY_REMAINS_QUALITY_RISK_AND_SUPPORTING_RANKING_CONTEXT_NOT_PRIMARY_DISCOVERY"
     },
     {
+      "id": "2021_SMART_MONEY_SOURCE_AVAILABILITY",
+      "anchor_date": "2021-01-29",
+      "status": "STOPPED_PRE_OUTCOME_NO_CHRONOLOGY_SAFE_SHAREHOLDING_METADATA",
+      "result_path": "validation/2021/smart_money_xbrl_schema_probe_result_v1.json",
+      "finding": "The current NSE shareholding metadata source did not retain chronology-safe pre-anchor rows for the deterministic 2021 probe, so institutional XBRL reconstruction could not be attempted without guessing archive paths or using post-anchor metadata.",
+      "future_outcomes_loaded": false,
+      "system_role": "SOURCE_AVAILABILITY_FAILURE_NOT_EVIDENCE_AGAINST_SMART_MONEY"
+    },
+    {
       "id": "2022_TECHNICAL_ACCUMULATION",
       "anchor_date": "2022-01-31",
       "outcome_target": "2025-01-31",
@@ -22,6 +31,19 @@
       "result_path": "validation/2022/technical_replay_result_v1.json",
       "finding": "Improved 5x concentration and mean return in the top quartile but materially worsened loss rate and had negative rank correlation.",
       "system_role": "CONFIRMATION_TIMING_CONTEXT_ONLY"
+    },
+    {
+      "id": "2022_07_INSTITUTIONAL_SMART_MONEY_4Q",
+      "anchor_date": "2022-07-29",
+      "status": "STOPPED_PRE_OUTCOME_HISTORICAL_SOURCE_PATH_INFEASIBLE",
+      "taxonomy_result_path": "validation/2022-07/smart_money_xbrl_schema_probe_result_v1.json",
+      "mapping_result_path": "validation/2022-07/smart_money_xbrl_mapping_result_v1.json",
+      "semantic_mapping_lock_path": "validation/2022-07/smart_money_semantic_mapping_lock_v1.json",
+      "coverage_result_path": "validation/2022-07/smart_money_4q_coverage_expansion_result_v2.json",
+      "workflow_run_id": 31818066929,
+      "finding": "The official pre-anchor XBRL taxonomy and context mappings cleanly support Mutual Funds, institutional Foreign Portfolio Investors and aggregate institutional shareholder count. However, after preserving the original 100-company sample and expanding to 350 outcome-blind companies, only 8 had all three mappings complete across five chronology-safe filings spanning the established 330-400 day four-quarter interval, below the minimum cohort 30.",
+      "future_outcomes_loaded": false,
+      "system_role": "INSTITUTIONAL_SMART_MONEY_HYPOTHESIS_REMAINS_UNTESTED_ON_RETURNS; HISTORICAL_NSE_SOURCE_PATH_CLOSED; USE_PROSPECTIVE_OR_BROADER_AUTHORIZED_DATA"
     },
     {
       "id": "2023_PROMOTER_ACCUMULATION",
@@ -85,6 +107,7 @@
     "Preregister predictors and evaluation rules before future outcome load.",
     "Do not convert missing historical evidence to zero.",
     "Do not relax eligibility or review rules to meet cohort-size targets.",
+    "A 4-quarter shareholding feature requires five chronology-safe snapshots spanning 330-400 days; irregular five-filing sequences are not treated as 4Q evidence.",
     "Stop infeasible designs before outcome load rather than tune after results.",
     "Keep raw exchange/XBRL/PDF evidence out of public workflow artifacts.",
     "Automated documentary page candidates are not scores until the frozen relation/review gate approves them.",
