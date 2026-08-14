@@ -1,0 +1,52 @@
+{
+  "version": "rk-mis-smart-money-4q-coverage-expansion-result-2022-07-v2",
+  "status": "FROZEN_PRE_OUTCOME_HISTORICAL_SOURCE_PATH_INFEASIBLE",
+  "protocol_path": "validation/2022-07/smart_money_4q_coverage_expansion_v2.json",
+  "protocol_sha256": "255f91a8717bb19fb9f4a4689ded46b9338882e30cac281ab8830a18fae283c7",
+  "semantic_mapping_lock_sha256": "e6a0433f2e482724e7f78225f993efac635dd0353bdb15fdd94e7bf6112201b2",
+  "workflow_run_id": 31818066929,
+  "workflow_head_sha": "48fa4eb7cffc514970d909257d9f093f1f90f180",
+  "artifact": {
+    "id": 9225837154,
+    "name": "rk-mis-2022-07-smart-money-4q-coverage-expansion",
+    "sha256": "74ef1acf3eea0a1724e1b82dcc6e37060f137e20e937f1e8d955937076592574"
+  },
+  "sampling": {
+    "base_rows": 100,
+    "base_identity_sha256": "aa15c369e7b1233cceab1bdf5e0fd50e165265f9f7629a15991449468621e489",
+    "base_identity_preserved": true,
+    "extension_rows": 250,
+    "extension_identity_sha256": "2009a800bd82be4ed3fe006596f9cc2b00cda74e84811cc125049dfe95cb6639",
+    "base_extension_overlap": 0,
+    "total_rows": 350,
+    "expanded_identity_sha256": "4afa4200c0d944936cdec3ddc499fe1a1e492f25b5e6e799e04885c07a947239"
+  },
+  "coverage": {
+    "five_safe_resolvable_periods": 45,
+    "valid_330_to_400_day_4q_sequences": 10,
+    "five_xbrls_parsed_and_valid_4q_span": 8,
+    "mf_valid_4q_complete": 8,
+    "fii_valid_4q_complete": 8,
+    "institutional_breadth_valid_4q_complete": 8,
+    "all_three_components_valid_4q_complete": 8,
+    "all_three_coverage_pct": 2.29,
+    "minimum_future_holdout_cohort": 30
+  },
+  "period_span_days": {
+    "all_five_period_sequences_n": 45,
+    "all_min": 111,
+    "all_median": 273.0,
+    "all_max": 456,
+    "valid_4q_sequences_n": 10,
+    "valid_min": 338,
+    "valid_median": 365.0,
+    "valid_max": 365
+  },
+  "finding": "The official NSE shareholding XBRL taxonomy supports the approved MF, institutional-FPI and institutional-breadth concepts, but retained chronology-safe historical filing sequences are too sparse and irregular for a credible four-quarter cohort. Of 350 outcome-blind companies, only 8 had all three locked mappings complete across five filings spanning the established 330-400 day 4Q interval.",
+  "decision": "STOP_HISTORICAL_NSE_SMART_MONEY_HOLDOUT_BEFORE_OUTCOME_LOAD; PRESERVE_THE_APPROVED_SMART_MONEY_HYPOTHESIS_FOR_PROSPECTIVE_OR_BROADER_AUTHORIZED_DATA_TRACKING; DO_NOT_RELAX_4Q_OR_MAPPING_RULES",
+  "evidence_against_smart_money_hypothesis": false,
+  "company_level_numeric_values_published": false,
+  "future_outcomes_seen": false,
+  "official_score_mutated": false,
+  "no_post_result_tuning": true
+}
