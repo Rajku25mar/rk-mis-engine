@@ -1,0 +1,41 @@
+{
+  "version": "rk-mis-technical-replay-2022-protocol-v1",
+  "status": "PREREGISTERED_BEFORE_2022_OUTCOME_OBSERVATION",
+  "parent_protocol": "validation/2022/objective_replay_protocol_v1.json",
+  "anchor_date": "2022-01-31",
+  "entry_rule": "First valid NSE trading day strictly after the anchor, maximum 5 calendar days later.",
+  "outcome_target_date": "2025-01-31",
+  "outcome_rule": "Latest valid NSE trading day on or before the outcome target, maximum 5 calendar days earlier.",
+  "lookback_start": "2021-02-01",
+  "sample_size": 250,
+  "sampling": "SHA256 outcome-blind deterministic sample from anchor-date NSE EQ operating-company securities; INF-prefixed fund/ETF ISINs are excluded.",
+  "score_scope": "Technical Accumulation historical partial slice only; no claim that this is the complete 100-point RK-MIS score.",
+  "included_features": [
+    {"field": "relative_strength_percentile", "approved_technical_weight": 25},
+    {"field": "volume_accumulation_score", "approved_technical_weight": 25},
+    {"field": "price_above_200dma_pct", "approved_technical_weight": 15},
+    {"field": "distance_from_52w_high_pct", "approved_technical_weight": 15}
+  ],
+  "excluded_feature": {
+    "field": "base_quality_score",
+    "reason": "The post-2019 Base Quality candidate failed the untouched 2021 holdout and is not permitted in this replay."
+  },
+  "score_normalization": "Earned points are divided by the 80 evidenced feature-weight units above and expressed on a 0-100 technical-partial scale. Approved feature bands are read directly from config/rk_mie_scoring.json.",
+  "technical_replay_grade": "At least 200 corporate-action-safe daily observations and all four included feature values available before the anchor.",
+  "corporate_action_rule": "Pre-anchor price history and entry price are adjusted only through deterministic split/bonus/consolidation/fully-resolved-rights factors. A material unresolved action makes the affected replay unsafe rather than guessed.",
+  "outcome_isolation": "Technical scores and their SHA-256 snapshot are frozen before entry/outcome prices are acquired and joined.",
+  "metrics": [
+    "cohort 2x rate",
+    "top-quartile 2x rate",
+    "cohort 5x rate",
+    "top-quartile 5x rate",
+    "cohort loss rate",
+    "top-quartile loss rate",
+    "top-quartile mean return lift",
+    "Spearman technical-score vs forward-multiple"
+  ],
+  "raw_publication": false,
+  "official_score_mutated": false,
+  "alpha_claim": false,
+  "no_post_result_tuning": true
+}
