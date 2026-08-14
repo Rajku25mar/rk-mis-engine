@@ -1,0 +1,28 @@
+{
+  "version": "rk-mis-strict-qualitative-documentary-relations-result-v1",
+  "status": "FROZEN_PRE_REVIEW_PRE_OUTCOME_RELATION_RESULT",
+  "qualitative_protocol_path": "validation/2023-07/qualitative_documentary_forward_evidence_protocol_v1.json",
+  "review_lock_path": "validation/2023-07/qualitative_documentary_review_lock_v1.json",
+  "workflow_run_id": 31796015249,
+  "workflow_head_sha": "4f0dded80f8c7317133338ea8651e66a592f6689",
+  "artifact": {
+    "id": 9217434092,
+    "name": "rk-mis-2023-07-qualitative-relations",
+    "sha256": "fde22c0e5ddde4c4361ed82bb071278b5b52c7f1af7f3395aa9b427a40ca90d8"
+  },
+  "documents_with_qualitative_candidate_pages": 134,
+  "document_status_counts": {"PARSED": 134},
+  "symbols_with_any_strict_relation_candidate": 39,
+  "symbols_with_strict_runway_relation_candidate": 14,
+  "symbols_with_strict_moat_relation_candidate": 27,
+  "symbols_with_strict_optionality_relation_candidate": 18,
+  "symbols_with_two_or_more_relation_families": 16,
+  "mechanical_review_upper_bound_eligible_under_qualitative_protocol": 16,
+  "protocol_minimum_ranking_eligible_rows": 30,
+  "future_outcome_prices_loaded": false,
+  "approved_review_decisions_seen": false,
+  "raw_pdf_files_published": false,
+  "raw_page_text_published": false,
+  "strict_relations_are_scores": false,
+  "decision": "DO_NOT_LOWER_TWO_FEATURE_OR_MINIMUM_COHORT_RULE; EXPAND_SOURCE_COVERAGE_TO_ALL_PREQUALIFIED_PRE_ANCHOR_DOCUMENTS_BEFORE_REVIEW_OR_OUTCOME_LOAD"
+}
