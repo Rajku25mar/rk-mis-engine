@@ -1,0 +1,61 @@
+{
+  "version": "rk-mis-objective-core-replication-2020-protocol-v1",
+  "status": "FROZEN_BEFORE_OUTCOME_ACQUISITION",
+  "purpose": "Independent time-anchor replication of the 2023 base objective-core finding using the same approved growth and financial-quality feature logic, with promoter change retained only as a secondary contextual extension.",
+  "anchor_date": "2020-01-31",
+  "entry_rule": "FIRST_NSE_TRADING_DAY_AFTER_ANCHOR",
+  "outcome_target_date": "2023-01-31",
+  "outcome_rule": "LAST_NSE_TRADING_DAY_ON_OR_BEFORE_TARGET",
+  "horizon": "APPROX_3Y_INCLUDING_COVID_SHOCK_AND_RECOVERY",
+  "sample_size": 250,
+  "universe": "NSE_EQ_COMPANY_SECURITIES_TRADING_AT_ANCHOR",
+  "sampling": {
+    "method": "SHA256_OUTCOME_BLIND_STRATIFIED",
+    "salt": "RK-MIS-OBJECTIVE-CORE|2020-01-31",
+    "strata_fields": ["market_type"],
+    "identity_key": "ISIN"
+  },
+  "evidence_cutoff": "2020-01-31",
+  "financial_filing_window_start": "2018-01-01",
+  "financial_source": "NSE_CORPORATES_FINANCIAL_RESULTS_AND_OFFICIAL_NSE_XBRL",
+  "shareholding_source": "NSE_CORPORATE_SHARE_HOLDINGS_MASTER",
+  "predictor_features": [
+    {"pillar":"growth_execution","field":"latest_sales_growth_yoy_pct","official_inner_weight":15,"official_pillar_weight":12,"official_100pt_slice_weight":1.8},
+    {"pillar":"growth_execution","field":"latest_pat_growth_yoy_pct","official_inner_weight":15,"official_pillar_weight":12,"official_100pt_slice_weight":1.8},
+    {"pillar":"financial_quality","field":"debt_equity","official_inner_weight":15,"official_pillar_weight":14,"official_100pt_slice_weight":2.1},
+    {"pillar":"financial_quality","field":"interest_coverage","official_inner_weight":15,"official_pillar_weight":14,"official_100pt_slice_weight":2.1,"historical_proxy":"(PBT + FINANCE_COST) / FINANCE_COST"},
+    {"pillar":"financial_quality","field":"ebitda_margin_pct","official_inner_weight":10,"official_pillar_weight":14,"official_100pt_slice_weight":1.4,"historical_proxy":"(PBT + FINANCE_COST + DEPRECIATION) / REVENUE * 100"},
+    {"pillar":"smart_money","field":"promoter_holding_change_pp_4q","official_inner_weight":15,"official_pillar_weight":10,"official_100pt_slice_weight":1.5}
+  ],
+  "total_selected_official_100pt_slice_weight": 10.7,
+  "scoring": {
+    "bands_and_directions": "EXACTLY_FROM_config/rk_mie_scoring.json_AT_PROTOCOL_FREEZE",
+    "missing_values": "NO_IMPUTATION_NO_ZERO_PENALTY; MISSING_FEATURE_CONTRIBUTES_ZERO_COVERED_WEIGHT",
+    "partial_score": "EARNED_SELECTED_OFFICIAL_SLICE_WEIGHT_DIVIDED_BY_COVERED_SELECTED_OFFICIAL_SLICE_WEIGHT_X_100",
+    "minimum_selected_slice_coverage_pct": 60,
+    "minimum_growth_requirements": "BOTH_LATEST_SALES_YOY_AND_LATEST_PAT_YOY_REQUIRED",
+    "minimum_financial_quality_requirements": "AT_LEAST_TWO_OF_DEBT_EQUITY_INTEREST_COVERAGE_EBITDA_MARGIN_REQUIRED",
+    "promoter_change_optional_for_BASE_CORE_SCORE": true
+  },
+  "business_model_guard": {
+    "rule": "PRE_ANCHOR_NSE_BANK_FLAG_OR_PRE_ANCHOR_COMPANY_NAME_FINANCIAL_SIGNAL_WITHHOLDS_INDUSTRIAL_DEBT_EQUITY_INTEREST_COVERAGE_AND_EBITDA_MARGIN",
+    "replacement_score": "NONE",
+    "financial_businesses": "NOT_RANKING_ELIGIBLE_UNLESS_BANK_SPECIFIC_HISTORICAL_MODEL_IS_SEPARATELY_PREREGISTERED"
+  },
+  "primary_test": "BASE_OBJECTIVE_CORE_TOP_QUARTILE_VS_SAME_COHORT",
+  "secondary_test": "PROMOTER_EXTENSION_ON_SAME_PROMOTER_COVERAGE_COHORT_BASE_VS_BASE_PLUS_PROMOTER",
+  "metrics": ["mean_forward_multiple_3y","two_x_rate_pct","five_x_rate_pct","loss_rate_pct","top_quartile_mean_lift_x","spearman_rank_correlation"],
+  "replication_decision_rule": {
+    "base_supportive_if": "TOP_QUARTILE_MEAN_LIFT_X_AT_LEAST_1.0 AND SPEARMAN_NON_NEGATIVE AND LOSS_RATE_DELTA_NOT_WORSE_THAN_PLUS_5PP AND AT_LEAST_ONE_OF_2X_OR_5X_RATE_IS_POSITIVE_WITH_NEITHER_WORSE_THAN_MINUS_5PP",
+    "promoter_extension_supportive_if": "TOP_QUARTILE_LOSS_RATE_IS_NON_ADVERSE_VS_BASE AND RANK_SIGNAL_IS_NON_NEGATIVE; PROMOTER_CHANGE_ALONE_CANNOT_TRIGGER_SCORE_ADMISSION",
+    "weight_change_from_this_holdout": false,
+    "next_step_if_base_replication_positive": "OPEN_SEPARATE_PREREGISTERED_ADMISSION_REVIEW; DO_NOT AUTO_CHANGE_SCORE",
+    "next_step_if_base_replication_negative": "KEEP_BASE_CORE_AS_QUALITY_RISK_CONTEXT_ONLY"
+  },
+  "corporate_actions": "FAIL_CLOSED_IF_PRICE_ADJUSTING_ACTION_CANNOT_BE_DETERMINISTICALLY_RESOLVED",
+  "chronology_guard": "PREDICTOR_SNAPSHOT_HASH_MUST_BE_COMPUTED_BEFORE_ENTRY_OR OUTCOME_PRICE_ACQUISITION",
+  "public_artifact_boundary": "ONLY_DERIVED_AGGREGATE_REPORT_AND_SOURCE_METADATA; NO_RAW_EXCHANGE_XML_CSV_ZIP_PDF",
+  "no_post_result_tuning": true,
+  "official_100_point_score_mutated": false,
+  "alpha_claim_allowed": false
+}
