@@ -233,6 +233,7 @@ def main() -> None:
     allowed_triage_statuses = {
         "LOCKED_AFTER_METADATA_PROBE_BEFORE_DOCUMENT_DOWNLOAD_AND_OUTCOME_LOAD",
         "LOCKED_AFTER_FIRST_EXTRACTION_BEFORE_DOCUMENT_REVIEW_AND_OUTCOME_LOAD",
+        "LOCKED_AFTER_STRICT_RELATION_COVERAGE_DIAGNOSIS_BEFORE_REVIEW_AND_OUTCOME_LOAD",
     }
     if triage_lock.get("status") not in allowed_triage_statuses:
         raise ExtractionError("download triage not frozen")
