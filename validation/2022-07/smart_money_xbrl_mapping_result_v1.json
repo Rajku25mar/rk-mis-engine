@@ -1,0 +1,25 @@
+{
+  "version": "rk-mis-smart-money-xbrl-mapping-result-2022-07-v1",
+  "status": "FROZEN_PRE_OUTCOME_MAPPING_DIAGNOSIS",
+  "protocol_path": "validation/2022-07/smart_money_xbrl_mapping_probe_v1.json",
+  "protocol_sha256": "91b602dd32f6a16231eabf8d98f209d8c5a37f4dadfd81e1eb696ce79703955f",
+  "workflow_run_id": 31817224952,
+  "artifact": {
+    "id": 9225494555,
+    "name": "rk-mis-2022-07-smart-money-xbrl-mapping-probe",
+    "sha256": "f1a84ab95f027d00d1bc33a1b53eaa935e0c635e514d071c7239b54b2ce7fc84"
+  },
+  "documents_parsed": 10,
+  "required_unambiguous_documents": 8,
+  "mapping_results": {
+    "mf_holding": {"member":"MutualFundsOrUtiMember","fact":"ShareholdingAsAPercentageOfTotalNumberOfShares","unambiguous_docs":10,"status":"PASS"},
+    "institutional_breadth": {"member":"InstitutionsMember","fact":"NumberOfShareholders","unambiguous_docs":10,"status":"PASS"},
+    "fpi_candidate_institutions_specific": {"member":"InstitutionsForeignPortfolioInvestorMember","fact":"ShareholdingAsAPercentageOfTotalNumberOfShares","unambiguous_docs":10,"status":"PASS"},
+    "fpi_candidate_generic": {"member":"ForeignPortfolioInvestorMember","fact":"ShareholdingAsAPercentageOfTotalNumberOfShares","unambiguous_docs":10,"status":"PASS_BUT_NOT_SELECTED_TO_AVOID_AMBIGUOUS_DOUBLE_COUNTING"}
+  },
+  "finding": "MF holding and aggregate institutional shareholder count map unambiguously to chronology-safe XBRL contexts. Two FPI-labelled members are independently present, so the numeric replay must use a pre-value semantic lock rather than select or combine them after seeing data.",
+  "decision": "LOCK_CANONICAL_SEMANTIC_MAPPING_BEFORE_NUMERIC_4Q_COVERAGE_PROBE",
+  "numeric_values_published": false,
+  "future_outcomes_seen": false,
+  "official_score_mutated": false
+}
