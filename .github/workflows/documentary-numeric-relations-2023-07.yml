@@ -1,5 +1,6 @@
 name: RK-MIS July 2023 Strict Documentary Numeric Review
 
+# Post-fix bootstrap: strict review rules unchanged; parser commit is CI-green.
 on:
   workflow_dispatch:
   push:
