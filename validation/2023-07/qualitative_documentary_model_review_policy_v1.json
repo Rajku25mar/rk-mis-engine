@@ -1,0 +1,45 @@
+{
+  "version": "rk-mis-qualitative-documentary-model-review-policy-v1",
+  "status": "LOCKED_BEFORE_RELATION_RESULT_REVIEW_AND_OUTCOME_LOAD",
+  "protocol_path": "validation/2023-07/qualitative_documentary_forward_evidence_protocol_v1.json",
+  "review_lock_path": "validation/2023-07/qualitative_documentary_review_lock_v1.json",
+  "future_outcomes_seen": false,
+  "purpose": "Constrain blinded model/human approval decisions on structured qualitative relation candidates before any 2026 outcome prices are loaded.",
+  "global_approval_guards": [
+    "review_state can be APPROVED only for a relation emitted by the frozen strict relation extractor",
+    "negation_flag must be false",
+    "industry_or_peer_context_flag may be true only when company_attribution_flag is true and the category claim unambiguously refers to the filing company",
+    "either company_attribution_flag or high_information_document_subject_flag must be true",
+    "matched_terms must satisfy the exact frozen pattern semantics; reviewer may not infer a stronger claim than the structured relation",
+    "post-anchor information is prohibited",
+    "duplicate same-company same-category relations count once",
+    "when ambiguity remains, PENDING or REJECTED is mandatory; coverage targets are never a reason to approve"
+  ],
+  "category_specific_approval": {
+    "runway.committed_capacity_expansion": "action_or_status_flag must be true",
+    "runway.multi_phase_growth_roadmap": "phase relation plus plant/facility/capacity/expansion/project context is sufficient when global guards pass",
+    "runway.funding_visibility": "specific funding source and capex/expansion/project linkage required",
+    "runway.physical_or_operational_headroom": "physical headroom plus explicit expansion/capacity linkage required; generic land ownership rejected",
+    "runway.ramp_or_utilisation_headroom": "ramp/underutilisation relation must refer to company plant/capacity/facility/line; generic industry utilisation rejected",
+    "moat.proprietary_or_ip": "patent/proprietary/owned technology/know-how must be linked to company product/process/technology/capability",
+    "moat.qualification_or_regulatory_barrier": "approved-vendor/qualified-supplier/customer/regulatory barrier relation required; generic ISO certification rejected",
+    "moat.customer_stickiness": "repeat order/business, long-term agreement/contract, dated customer tenure, or design-in/win evidence required",
+    "moat.cost_process_or_scale_advantage": "specific backward-integration/cost/process/yield/scale relation required; generic efficiency rejected",
+    "moat.market_position_or_limited_competition": "company_attribution_flag is required for market-leader claims unless relation is sole supplier/single source/only manufacturer/limited qualified competition",
+    "optionality.new_product_or_platform": "action_or_status_flag must be true",
+    "optionality.new_customer_or_vendor_approval": "commercial/customer/vendor relationship must be explicit; customer list alone rejected",
+    "optionality.new_geography": "action_or_status_flag must be true and market/geography entry relation explicit",
+    "optionality.export_expansion": "new/expanded export market/customer/order/action required; static export mix rejected",
+    "optionality.adjacent_vertical_or_use_case": "specific adjacent/new vertical/segment/use-case deployment relation required"
+  },
+  "review_output": {
+    "approved_relation_fields": [
+      "sample_isin","sample_symbol","known_at","source_url","source_sha256","page",
+      "evidence_family","evidence_category","pattern_id","review_state","review_note"
+    ],
+    "raw_page_text": false,
+    "matched_terms_may_be_retained_for_audit": true
+  },
+  "minimum_cohort_policy": "If fewer than 30 companies remain ranking-eligible after review, stop the holdout before outcome load. Do not relax review or eligibility rules.",
+  "no_post_result_tuning": true
+}
