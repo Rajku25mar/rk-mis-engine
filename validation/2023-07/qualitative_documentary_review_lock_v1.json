@@ -1,0 +1,118 @@
+{
+  "version": "rk-mis-qualitative-documentary-review-lock-v1",
+  "status": "LOCKED_BEFORE_STRICT_RELATION_EXTRACTION_REVIEW_AND_OUTCOME_LOAD",
+  "protocol_path": "validation/2023-07/qualitative_documentary_forward_evidence_protocol_v1.json",
+  "rubric_path": "validation/2023-07/documentary_forward_evidence_rubric_v1.json",
+  "future_outcomes_seen": false,
+  "purpose": "Create high-precision structured review candidates from pre-anchor pages while rejecting generic marketing and context-free keyword hits.",
+  "general_guards": {
+    "known_at_must_be_on_or_before_anchor": true,
+    "source_must_match_frozen_v2_document_hash": true,
+    "negation_or_cancellation_near_match": "REJECT",
+    "generic_aspiration_without_action_or_status": "REJECT",
+    "industry_or_peer_statement_without_company_attribution": "REJECT",
+    "automatic_relation_match": "PENDING_REVIEW_NOT_SCORE",
+    "raw_page_text_publication": false
+  },
+  "high_confidence_patterns": {
+    "runway": {
+      "committed_capacity_expansion": [
+        "capacity expansion + committed status/action verb",
+        "greenfield/brownfield/new plant/new facility + implementation/commissioning/action verb",
+        "adding/increasing/expanding installed capacity with company attribution"
+      ],
+      "multi_phase_growth_roadmap": [
+        "phase II/2 or phase III/3 + plant/facility/expansion/project context",
+        "explicit next/multiple phase growth roadmap"
+      ],
+      "funding_visibility": [
+        "internal accrual(s) + capex/expansion/funding context",
+        "sanctioned term loan/finance + capex/expansion context",
+        "completed fund raise specifically linked to expansion/capex"
+      ],
+      "physical_or_operational_headroom": [
+        "land bank/spare land + expansion context",
+        "expandable/modular installed capacity or explicit physical headroom"
+      ],
+      "ramp_or_utilisation_headroom": [
+        "ramp-up/ramping + recently commissioned/new capacity",
+        "underutilised/underutilized capacity + explicit ramp/demand path"
+      ]
+    },
+    "moat": {
+      "proprietary_or_ip": [
+        "patent/patented + company product/process/technology context",
+        "proprietary/owned technology/know-how + product/process capability context"
+      ],
+      "qualification_or_regulatory_barrier": [
+        "approved vendor/vendor approval/qualified by named or customer-class evidence",
+        "regulatory approval specifically required for the product/market"
+      ],
+      "customer_stickiness": [
+        "repeat order(s)",
+        "long-term supply/agreement",
+        "customer since + tenure",
+        "design-in/design win/embedded qualification evidence"
+      ],
+      "cost_process_or_scale_advantage": [
+        "backward integration + cost/supply/process benefit",
+        "specific cost/process/yield/scale advantage rather than generic efficiency"
+      ],
+      "market_position_or_limited_competition": [
+        "market leader/market leadership with product/segment context",
+        "sole supplier/single source/only manufacturer/limited qualified competition"
+      ]
+    },
+    "optionality": {
+      "new_product_or_platform": [
+        "new product/platform/solution + launch/commercialisation/approval/production action"
+      ],
+      "new_customer_or_vendor_approval": [
+        "new customer/customer addition + commercial context",
+        "new vendor approval/qualified supplier status"
+      ],
+      "new_geography": [
+        "enter/entered/entry into a specific new market/geography",
+        "new geographic market/distribution expansion with action/status"
+      ],
+      "export_expansion": [
+        "export expansion/growth + identified market/customer/capacity/action",
+        "new export market/customer + commercial action"
+      ],
+      "adjacent_vertical_or_use_case": [
+        "new/adjacent vertical, segment or use case + product/capability deployment"
+      ]
+    }
+  },
+  "explicit_low_confidence_rejections": [
+    "leading company/leading player without market-position evidence",
+    "ISO or generic certification alone",
+    "approval/qualification mentioned only as a generic process",
+    "growth/capacity opportunity without company commitment",
+    "export percentage or existing export mix without expansion action",
+    "new product mentioned only as a category heading without launch/development/commercial action",
+    "market/industry capacity expansion rather than company capacity",
+    "customer list alone"
+  ],
+  "structured_review_output": [
+    "sample_isin",
+    "sample_symbol",
+    "known_at",
+    "source_url",
+    "source_sha256",
+    "page",
+    "evidence_family",
+    "evidence_category",
+    "pattern_id",
+    "matched_terms",
+    "company_attribution_flag",
+    "action_or_status_flag",
+    "negation_flag",
+    "industry_or_peer_context_flag",
+    "document_subject",
+    "review_state",
+    "review_note"
+  ],
+  "review_policy": "A model/human reviewer may mark APPROVED only when the structured relation passes all guards and the category meaning is unambiguous. Otherwise REJECTED or PENDING. No return information may be available during review.",
+  "no_post_result_tuning": true
+}
