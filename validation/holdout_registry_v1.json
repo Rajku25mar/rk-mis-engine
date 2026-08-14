@@ -1,0 +1,67 @@
+{
+  "version": "rk-mis-holdout-registry-v1",
+  "purpose": "Single auditable index of independent empirical holdouts, pre-outcome feasibility stops, and current documentary validation state. No entry changes the official 100-point score unless a separate future admission decision explicitly says so.",
+  "official_100_point_score_mutated_by_registry": false,
+  "holdouts": [
+    {
+      "id": "2022_TECHNICAL_ACCUMULATION",
+      "anchor_date": "2022-01-31",
+      "outcome_target": "2025-01-31",
+      "status": "COMPLETED_NO_WEIGHT_CHANGE",
+      "result_path": "validation/2022/technical_replay_result_v1.json",
+      "finding": "Improved 5x concentration and mean return in the top quartile but materially worsened loss rate and had negative rank correlation.",
+      "system_role": "CONFIRMATION_TIMING_CONTEXT_ONLY"
+    },
+    {
+      "id": "2023_PROMOTER_ACCUMULATION",
+      "anchor_date": "2023-01-31",
+      "outcome_target": "2026-01-31",
+      "status": "COMPLETED_NO_WEIGHT_CHANGE",
+      "result_path": "validation/2023/promoter_accumulation_result_v1.json",
+      "finding": "Top quartile had lower mean return, lower 2x and 5x rates, higher loss rate, and negative rank correlation.",
+      "system_role": "CONTEXTUAL_SMART_MONEY_COMPONENT_ONLY"
+    },
+    {
+      "id": "2023_FUNDAMENTAL_GROWTH_QUALITY",
+      "anchor_date": "2023-01-31",
+      "outcome_target": "2026-01-31",
+      "status": "COMPLETED_NO_WEIGHT_CHANGE",
+      "result_path": "validation/2023/fundamental_growth_quality_result_v1.json",
+      "finding": "Recent growth, margin, leverage and coverage snapshot modestly reduced losses but selected fewer multibaggers and had neutral-to-negative rank signal.",
+      "system_role": "QUALITY_AND_RISK_CONTEXT_NOT_STANDALONE_DISCOVERY"
+    },
+    {
+      "id": "2023_07_DOCUMENTARY_NUMERIC_PLUS_QUALITATIVE",
+      "anchor_date": "2023-07-31",
+      "outcome_target": "2026-07-31",
+      "status": "STOPPED_PRE_OUTCOME_INFEASIBLE",
+      "protocol_path": "validation/2023-07/documentary_forward_evidence_protocol_v1.json",
+      "feasibility_result_path": "validation/2023-07/documentary_numeric_relation_result_v1.json",
+      "finding": "Only five companies had strict reviewable historic numeric capacity/order-book relation candidates versus the preregistered minimum cohort of 30.",
+      "future_outcomes_loaded": false,
+      "system_role": "REJECTED_HISTORICAL_RECONSTRUCTION_DESIGN_NOT_EVIDENCE_AGAINST_QUALITATIVE_RUNWAY_MOAT"
+    },
+    {
+      "id": "2023_07_QUALITATIVE_DOCUMENTARY_FORWARD_EVIDENCE",
+      "anchor_date": "2023-07-31",
+      "outcome_target": "2026-07-31",
+      "status": "PRE_OUTCOME_EVIDENCE_COVERAGE_EXPANSION_IN_PROGRESS",
+      "protocol_path": "validation/2023-07/qualitative_documentary_forward_evidence_protocol_v1.json",
+      "review_lock_path": "validation/2023-07/qualitative_documentary_review_lock_v1.json",
+      "review_policy_path": "validation/2023-07/qualitative_documentary_model_review_policy_v1.json",
+      "latest_frozen_relation_result_path": "validation/2023-07/qualitative_documentary_relations_result_v1.json",
+      "current_coverage_lock_path": "validation/2023-07/documentary_download_triage_lock_v3_all_prequalified.json",
+      "finding_so_far": "Top-five-document pass yielded 16 mechanically eligible two-family strict-relation companies; final all-383 already-prequalified document pass is running without changing review or scoring rules.",
+      "future_outcomes_loaded": false,
+      "system_role": "ACTIVE_FORWARD_EVIDENCE_HYPOTHESIS"
+    }
+  ],
+  "global_guardrails": [
+    "Preregister predictors and evaluation rules before future outcome load.",
+    "Do not convert missing historical evidence to zero.",
+    "Do not relax eligibility or review rules to meet cohort-size targets.",
+    "Stop infeasible designs before outcome load rather than tune after results.",
+    "Keep raw exchange/XBRL/PDF evidence out of public workflow artifacts.",
+    "One holdout cannot mutate official RK-MIS pillar weights."
+  ]
+}
