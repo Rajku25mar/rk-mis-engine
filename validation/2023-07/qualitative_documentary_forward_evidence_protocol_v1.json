@@ -1,0 +1,103 @@
+{
+  "version": "rk-mis-qualitative-documentary-forward-evidence-holdout-v1",
+  "status": "PREREGISTERED_AFTER_PRE_OUTCOME_DATA_AVAILABILITY_DIAGNOSIS_BEFORE_REVIEW_AND_OUTCOME_LOAD",
+  "relationship_to_prior_protocol": {
+    "prior_protocol": "validation/2023-07/documentary_forward_evidence_protocol_v1.json",
+    "prior_status": "PRE_OUTCOME_INFEASIBLE_DUE_TO_STRICT_NUMERIC_CATALYST_COVERAGE",
+    "new_hypothesis": true,
+    "not_a_rule_change_to_prior_protocol": true,
+    "design_information_used": "Only pre-outcome source availability/coverage diagnostics. No 2026 prices, returns or outcomes were loaded."
+  },
+  "purpose": "Test whether pre-anchor qualitative documentary evidence of reinvestment runway, business moat and commercial optionality improves three-year multibagger concentration when scored under the already-frozen evidence rubric.",
+  "scope": "QUALITATIVE_PARTIAL_FORWARD_EVIDENCE_SLICE_NOT_OFFICIAL_100_POINT_SCORE",
+  "anchor_date": "2023-07-31",
+  "entry_rule": "first valid NSE EQ trading day strictly after anchor_date",
+  "outcome_target_date": "2026-07-31",
+  "outcome_rule": "last valid NSE EQ trading day on or before outcome_target_date",
+  "sample_size": 80,
+  "sample_rule": "same deterministic outcome-blind 80-company NSE EQ sample already frozen under documentary_forward_evidence_protocol_v1",
+  "sample_salt": "RK-MIS-DOCUMENTARY-FORWARD-EVIDENCE|2023-07-31",
+  "evidence_inputs": {
+    "metadata_probe_run_id": 31793071494,
+    "document_extraction_v2_run_id": 31794298533,
+    "document_window": ["2022-04-01", "2023-07-31"],
+    "rubric": "validation/2023-07/documentary_forward_evidence_rubric_v1.json",
+    "review_ledger_schema": "validation/2023-07/documentary_review_ledger_schema_v1.json",
+    "future_outcomes_seen": false,
+    "automatic_candidate_hits_are_scores": false
+  },
+  "features": [
+    {
+      "field": "reinvestment_runway_score",
+      "pillar": "growth_runway",
+      "existing_pillar_weight": 12,
+      "existing_within_pillar_weight": 20,
+      "effective_100_point_weight": 2.4,
+      "direction": "higher",
+      "bands": [[80,1.0],[65,0.75],[50,0.5],[35,0.25]],
+      "category_scoring": "20 points per independently APPROVED runway category, cap 100, as frozen in documentary_forward_evidence_rubric_v1.json"
+    },
+    {
+      "field": "moat_evidence_score",
+      "pillar": "business_moat",
+      "existing_pillar_weight": 12,
+      "existing_within_pillar_weight": 35,
+      "effective_100_point_weight": 4.2,
+      "direction": "higher",
+      "bands": [[85,1.0],[70,0.75],[55,0.5],[40,0.25]],
+      "category_scoring": "20 points per independently APPROVED moat category, cap 100, as frozen in documentary_forward_evidence_rubric_v1.json"
+    },
+    {
+      "field": "new_product_export_optionalities_score",
+      "pillar": "future_catalysts",
+      "existing_pillar_weight": 10,
+      "existing_within_pillar_weight": 20,
+      "effective_100_point_weight": 2.0,
+      "direction": "higher",
+      "bands": [[80,1.0],[65,0.75],[50,0.5],[35,0.25]],
+      "category_scoring": "20 points per independently APPROVED optionality category, cap 100, as frozen in documentary_forward_evidence_rubric_v1.json"
+    }
+  ],
+  "slice_total_effective_100_point_weight": 8.6,
+  "ranking_eligibility": {
+    "minimum_covered_features": 2,
+    "must_cover_runway_or_moat": true,
+    "optionality_alone_not_eligible": true,
+    "missing_data_imputation": false,
+    "score_rule": "weighted earned/covered normalization using effective 100-point weights only for covered approved qualitative features",
+    "rank_rule": "qualitative_documentary_partial_score descending, symbol ascending"
+  },
+  "review_blinding": {
+    "future_prices_available_during_review": false,
+    "post_anchor_information_prohibited": true,
+    "automated_extraction_candidate_only": true,
+    "ambiguous_or_generic_marketing_language": "REJECT_OR_PENDING_NO_SCORE",
+    "duplicate_category": "COUNT_ONCE"
+  },
+  "evaluation": {
+    "minimum_ranking_eligible_rows": 30,
+    "calibration_safe_outcome_minimum_pct_of_scored": 75,
+    "primary": [
+      "top_quartile_mean_multiple_lift_vs_scored_cohort",
+      "top_quartile_2x_rate_delta_pp",
+      "top_quartile_5x_rate_delta_pp",
+      "top_quartile_loss_rate_delta_pp",
+      "spearman_qualitative_documentary_score_vs_forward_multiple"
+    ],
+    "decision_rule": "Positive diagnostic requires either higher mean multiple or higher 5x concentration, no more than 5 percentage points adverse loss-rate delta, and non-negative rank correlation. One anchor can justify further holdouts but cannot change official weights."
+  },
+  "explicit_non_claims": [
+    "This test does not validate the failed numeric+qualitative documentary protocol.",
+    "This is not the full Growth Runway, Business Moat or Future Catalysts pillar.",
+    "Qualitative evidence indices are not direct return forecasts.",
+    "No 100-point RK-MIS weight may be changed from this single holdout."
+  ],
+  "outcome_safety": {
+    "identity": "ISIN-first",
+    "corporate_actions": "deterministic factors only; unresolved material actions fail closed",
+    "missing_exit": "retain missing/delisted status; no imputation",
+    "raw_exchange_files_publication": false
+  },
+  "no_post_result_tuning": true,
+  "official_100_point_score_mutated": false
+}
