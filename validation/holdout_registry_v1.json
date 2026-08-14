@@ -4,6 +4,17 @@
   "official_100_point_score_mutated_by_registry": false,
   "holdouts": [
     {
+      "id": "2020_OBJECTIVE_CORE_REPLICATION",
+      "anchor_date": "2020-01-31",
+      "outcome_target": "2023-01-31",
+      "status": "COMPLETED_NEGATIVE_REPLICATION_NO_WEIGHT_CHANGE",
+      "protocol_path": "validation/2020/objective_core_replication_protocol_v1.json",
+      "result_path": "validation/2020/objective_core_replication_result_v1.json",
+      "workflow_run_id": 31815896910,
+      "finding": "The independent 2020-to-2023 replication failed the preregistered support rule: top-quartile mean lift was 0.8288, Spearman was -0.3891, 2x concentration was 15.09 percentage points lower than cohort, and loss rate was 5.12 points higher. Historical promoter-extension coverage was zero, so no promoter inference is allowed at this anchor.",
+      "system_role": "BASE_GROWTH_PLUS_QUALITY_REMAINS_QUALITY_RISK_AND_SUPPORTING_RANKING_CONTEXT_NOT_PRIMARY_DISCOVERY"
+    },
+    {
       "id": "2022_TECHNICAL_ACCUMULATION",
       "anchor_date": "2022-01-31",
       "outcome_target": "2025-01-31",
@@ -34,12 +45,12 @@
       "id": "2023_OBJECTIVE_CORE_COMBINED",
       "anchor_date": "2023-01-31",
       "outcome_target": "2026-01-31",
-      "status": "COMPLETED_NO_WEIGHT_CHANGE",
+      "status": "COMPLETED_POSITIVE_SINGLE_HOLDOUT_NOT_REPLICATED",
       "protocol_path": "validation/2023/objective_core_protocol_v1.json",
       "result_path": "validation/2023/objective_core_result_v1.json",
       "workflow_run_id": 31815490760,
-      "finding": "The base growth-plus-financial-quality core was modestly positive across mean multiple, 2x rate, 5x rate, loss rate and rank correlation. Adding promoter holding change increased 2x incidence but worsened mean return and increased top-quartile losses by 7.15 percentage points, failing the frozen promoter admission guardrail.",
-      "system_role": "BASE_CORE_REQUIRES_FURTHER_INDEPENDENT_TIME_ANCHOR_VALIDATION; PROMOTER_CHANGE_REMAINS_CONTEXTUAL_ONLY"
+      "finding": "The base growth-plus-financial-quality core was modestly positive at this anchor, but that finding subsequently failed the independent 2020-to-2023 replication. Adding promoter holding change increased 2x incidence but worsened mean return and increased top-quartile losses by 7.15 percentage points.",
+      "system_role": "ANCHOR_SPECIFIC_POSITIVE_RESULT_ONLY; BASE_CORE_NOT_ADMITTED_AS_PRIMARY_DISCOVERY; PROMOTER_CHANGE_CONTEXTUAL_ONLY"
     },
     {
       "id": "2023_07_DOCUMENTARY_NUMERIC_PLUS_QUALITATIVE",
