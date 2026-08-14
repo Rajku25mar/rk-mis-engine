@@ -2,16 +2,12 @@ name: RK-MIS July 2022 Smart Money 4Q Coverage Gate
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/smart-money-4q-coverage-2022-07.yml"
 
 permissions:
   contents: read
 
 jobs:
   smart-money-4q-coverage:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap July 2022 Smart Money 4Q coverage gate')
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
