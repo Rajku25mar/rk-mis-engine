@@ -1,0 +1,44 @@
+{
+  "version": "rk-mis-objective-replay-2022-protocol-v1",
+  "status": "PREREGISTERED_BEFORE_OUTCOME_REPLAY",
+  "anchor_date": "2022-01-31",
+  "outcome_target_date": "2025-01-31",
+  "sample_size": 250,
+  "sample_rule": "Deterministic sample from the point-in-time NSE common-equity universe using an anchor-specific SHA-256 salt; no future-return input is permitted in sampling.",
+  "trading_date_fallback": {
+    "anchor": "Use the latest valid trading date on or before 2022-01-31, maximum 5 calendar days earlier.",
+    "outcome": "Use the latest valid trading date on or before 2025-01-31, maximum 5 calendar days earlier."
+  },
+  "predictor_scope": "Existing frozen objective RK-MIS core only. This replay cannot introduce, tune or admit a new score-driving feature.",
+  "chronology_rule": "Every filing normalizer receives the anchor date explicitly at runtime. A filing or reporting period after the anchor is ineligible.",
+  "outcome_isolation": "Future outcomes are acquired and joined only after the anchor universe, predictor evidence and objective scores are frozen.",
+  "business_model_rule": "Bank/NBFC and other non-industrial business-model guards remain in force; industrial leverage/valuation logic must not be applied where the frozen guard blocks it.",
+  "missing_evidence_rule": "Missing evidence remains missing. No imputation, post-anchor backfill or survivor replacement is allowed.",
+  "raw_data_policy": "Official-source downloads are ephemeral CI working files. Raw bhavcopy, XBRL, PDF or exchange archives are not published from the public repository.",
+  "public_outputs": [
+    "derived aggregate replay report",
+    "safe sample/outcome status counts",
+    "source URLs and cryptographic hashes where redistributable as metadata",
+    "coverage and replay-integrity diagnostics"
+  ],
+  "primary_metrics": [
+    "cohort 2x rate",
+    "top-quartile 2x rate",
+    "cohort 5x rate",
+    "top-quartile 5x rate",
+    "cohort loss rate",
+    "top-quartile loss rate",
+    "top-quartile mean return lift",
+    "Spearman rank correlation"
+  ],
+  "comparison_rule": "Metric definitions must remain identical to the corrected 2019-2021 objective-core diagnostic. Results are reported even when adverse.",
+  "anti_overfit_rules": [
+    "No score bands, weights, sample rules or metric definitions may be changed after observing 2022 outcomes.",
+    "A parser correction is allowed only for independently demonstrable chronology/schema correctness and must be replayed from retained ephemeral raw evidence in the same run.",
+    "No company may be removed because its future return is poor.",
+    "No alpha or calibrated-probability claim is created by this single anchor."
+  ],
+  "purpose": "Independent regime validation of the existing objective RK-MIS core and validation infrastructure before prospective Runway/Moat/Catalyst evidence is layered in.",
+  "official_100_point_score_mutated": false,
+  "alpha_claim": false
+}
