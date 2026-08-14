@@ -1,0 +1,67 @@
+{
+  "version": "rk-mis-documentary-review-ledger-schema-v1",
+  "status": "LOCKED_BEFORE_DOCUMENT_REVIEW_AND_OUTCOME_LOAD",
+  "required_top_level": ["version", "anchor_date", "reviews"],
+  "required_review_fields": [
+    "sample_isin",
+    "sample_symbol",
+    "known_at",
+    "source_url",
+    "source_sha256",
+    "page",
+    "evidence_family",
+    "evidence_category",
+    "review_state",
+    "review_note"
+  ],
+  "optional_review_fields": [
+    "metric_name",
+    "metric_value",
+    "metric_unit",
+    "denominator_name",
+    "denominator_value",
+    "derived_metric_name",
+    "derived_metric_value"
+  ],
+  "review_states": ["APPROVED", "REJECTED", "PENDING"],
+  "evidence_families": ["runway", "moat", "optionality", "numeric_catalyst"],
+  "qualitative_categories": {
+    "runway": [
+      "committed_capacity_expansion",
+      "multi_phase_growth_roadmap",
+      "funding_visibility",
+      "physical_or_operational_headroom",
+      "ramp_or_utilisation_headroom"
+    ],
+    "moat": [
+      "proprietary_or_ip",
+      "qualification_or_regulatory_barrier",
+      "customer_stickiness",
+      "cost_process_or_scale_advantage",
+      "market_position_or_limited_competition"
+    ],
+    "optionality": [
+      "new_product_or_platform",
+      "new_customer_or_vendor_approval",
+      "new_geography",
+      "export_expansion",
+      "adjacent_vertical_or_use_case"
+    ]
+  },
+  "numeric_metrics": {
+    "orderbook_to_sales": {
+      "accepted_direct_metric_name": "orderbook_to_sales",
+      "accepted_components": ["orderbook_cr", "revenue_cr"],
+      "rule": "direct approved ratio preferred; otherwise orderbook_cr/revenue_cr when both are approved and comparable"
+    },
+    "planned_capacity_increase_pct": {
+      "accepted_direct_metric_name": "planned_capacity_increase_pct",
+      "accepted_components": ["incremental_capacity", "pre_expansion_capacity"],
+      "rule": "direct approved percentage preferred; otherwise incremental/pre-expansion * 100 when units are identical"
+    }
+  },
+  "dedupe": "same sample_isin + evidence_family + evidence_category counts once; additional approved sources strengthen provenance but not category score",
+  "conflict_rule": "if approved records conflict materially on a numeric metric at the same effective disclosure date, metric remains missing pending resolution",
+  "post_anchor_rule": "known_at after anchor invalidates record regardless of content",
+  "outcome_blinding": true
+}
