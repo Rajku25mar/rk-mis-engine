@@ -2,18 +2,12 @@ name: RK-MIS 2021 Smart Money XBRL Taxonomy Probe
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/smart-money-xbrl-schema-probe-2021.yml"
 
 permissions:
   contents: read
 
 jobs:
   smart-money-xbrl-schema-probe:
-    # Bootstrap v2 tests historical official-link normalization only; predictor
-    # semantics, sample and pre-outcome boundary remain frozen.
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap 2021 smart money XBRL taxonomy probe')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
