@@ -122,7 +122,11 @@ def apply_triage(candidate_index: list[dict[str, Any]], triage_lock: dict[str, A
         )[:cap]
         for row in rows:
             selected.append({**row, "download_priority": download_priority(row)})
-    expected = triage_lock.get("estimated_from_frozen_metadata_only") or {}
+    expected = (
+        triage_lock.get("estimated_from_frozen_metadata_only")
+        or triage_lock.get("estimated_from_same_frozen_metadata_only")
+        or {}
+    )
     if expected:
         if len(selected) != int(expected["documents_retained"]):
             raise ExtractionError(f"frozen triage mismatch: expected {expected['documents_retained']} docs, got {len(selected)}")
@@ -226,7 +230,11 @@ def main() -> None:
         raise ExtractionError("protocol not frozen")
     if rubric.get("status") != "LOCKED_BEFORE_DOCUMENT_REVIEW_AND_OUTCOME_LOAD":
         raise ExtractionError("rubric not frozen")
-    if triage_lock.get("status") != "LOCKED_AFTER_METADATA_PROBE_BEFORE_DOCUMENT_DOWNLOAD_AND_OUTCOME_LOAD":
+    allowed_triage_statuses = {
+        "LOCKED_AFTER_METADATA_PROBE_BEFORE_DOCUMENT_DOWNLOAD_AND_OUTCOME_LOAD",
+        "LOCKED_AFTER_FIRST_EXTRACTION_BEFORE_DOCUMENT_REVIEW_AND_OUTCOME_LOAD",
+    }
+    if triage_lock.get("status") not in allowed_triage_statuses:
         raise ExtractionError("download triage not frozen")
 
     payload = json.loads(args.candidate_index.read_text(encoding="utf-8"))
