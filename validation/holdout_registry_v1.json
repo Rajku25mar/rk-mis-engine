@@ -34,11 +34,12 @@
       "id": "2023_OBJECTIVE_CORE_COMBINED",
       "anchor_date": "2023-01-31",
       "outcome_target": "2026-01-31",
-      "status": "ACQUISITION_RUN_CANCELLED_OPTIMIZATION_IN_PROGRESS",
+      "status": "COMPLETED_NO_WEIGHT_CHANGE",
       "protocol_path": "validation/2023/objective_core_protocol_v1.json",
-      "workflow_run_id": 31800650918,
-      "finding_so_far": "The first frozen-protocol run was cancelled by the 55-minute workflow timeout during serial historical evidence acquisition. No result artifact was produced. Scoring bands, sample definition and admission rules remain frozen while acquisition is optimized.",
-      "system_role": "CONTROLLED_COMPONENT_INTERACTION_TEST_NO_WEIGHT_CHANGE_ALLOWED_FROM_SINGLE_HOLDOUT"
+      "result_path": "validation/2023/objective_core_result_v1.json",
+      "workflow_run_id": 31815490760,
+      "finding": "The base growth-plus-financial-quality core was modestly positive across mean multiple, 2x rate, 5x rate, loss rate and rank correlation. Adding promoter holding change increased 2x incidence but worsened mean return and increased top-quartile losses by 7.15 percentage points, failing the frozen promoter admission guardrail.",
+      "system_role": "BASE_CORE_REQUIRES_FURTHER_INDEPENDENT_TIME_ANCHOR_VALIDATION; PROMOTER_CHANGE_REMAINS_CONTEXTUAL_ONLY"
     },
     {
       "id": "2023_07_DOCUMENTARY_NUMERIC_PLUS_QUALITATIVE",
