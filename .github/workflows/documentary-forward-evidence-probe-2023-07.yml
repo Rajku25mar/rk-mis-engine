@@ -1,0 +1,59 @@
+name: RK-MIS July 2023 Documentary Evidence Probe
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/documentary-forward-evidence-probe-2023-07.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  documentary-evidence-probe:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap July 2023 documentary evidence probe')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile probe
+        run: python -m py_compile scripts/probe_documentary_forward_evidence.py scripts/run_technical_replay.py
+
+      - name: Run frozen metadata-only documentary probe
+        run: |
+          python scripts/probe_documentary_forward_evidence.py \
+            --protocol validation/2023-07/documentary_forward_evidence_protocol_v1.json \
+            --rubric validation/2023-07/documentary_forward_evidence_rubric_v1.json \
+            --output artifacts/2023-07-documentary-probe
+
+      - name: Enforce public artifact boundary
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          root = Path('artifacts/2023-07-documentary-probe')
+          allowed = {'report.json', 'candidate_index.json'}
+          files = {p.name for p in root.iterdir() if p.is_file()}
+          assert files == allowed, f'Unexpected public artifacts: {sorted(files)}'
+          for p in root.iterdir():
+              if p.is_file():
+                  assert p.suffix.lower() == '.json', p
+          print('RK_MIS_PUBLIC_ARTIFACT_BOUNDARY=PASS')
+          PY
+
+      - name: Show probe report
+        run: cat artifacts/2023-07-documentary-probe/report.json
+
+      - name: Upload safe metadata artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rk-mis-2023-07-documentary-probe
+          path: |
+            artifacts/2023-07-documentary-probe/report.json
+            artifacts/2023-07-documentary-probe/candidate_index.json
+          retention-days: 14
+          if-no-files-found: error
