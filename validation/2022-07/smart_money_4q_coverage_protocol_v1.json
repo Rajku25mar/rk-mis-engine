@@ -1,0 +1,42 @@
+{
+  "version": "rk-mis-smart-money-4q-coverage-2022-07-v1",
+  "status": "FROZEN_PRE_OUTCOME_4Q_COVERAGE_DIAGNOSIS",
+  "purpose": "Determine whether the chronology-safe NSE shareholding/XBRL archive can reconstruct five-quarter histories for the already-locked MF holding, institutional-FPI holding and institutional-breadth Smart Money components at a cohort size sufficient for a later outcome-blind holdout.",
+  "anchor_date": "2022-07-29",
+  "shareholding_window": {"from_date":"2021-04-01","to_date":"2022-07-29"},
+  "sample_size": 100,
+  "sample_rule": "SHA256 outcome-blind deterministic NSE EQ company sample at the anchor",
+  "sample_salt": "RK-MIS-SMART-MONEY-4Q|2022-07-29",
+  "semantic_mapping_lock": "validation/2022-07/smart_money_semantic_mapping_lock_v1.json",
+  "required_distinct_safe_periods": 5,
+  "period_selection_rule": "For each distinct period use the latest filing version whose known-at date is on or before the anchor; then use the latest five distinct safe periods. No post-anchor revision is permitted.",
+  "component_completeness": {
+    "mf_holding_change_pp_4q": "Locked member/fact mapping must be present and unambiguous in all five selected periods.",
+    "fii_holding_change_pp_4q": "Locked institutional-FPI member/fact mapping must be present and unambiguous in all five selected periods.",
+    "institutional_breadth_change_4q": "Locked InstitutionsMember/NumberOfShareholders mapping must be present and unambiguous in all five selected periods."
+  },
+  "minimum_future_holdout_cohort": 30,
+  "future_holdout_eligibility_diagnostic": {
+    "preferred": "ALL_THREE_COMPONENTS_COMPLETE",
+    "secondary": "AT_LEAST_TWO_OF_THREE_COMPONENTS_COMPLETE",
+    "note": "This feasibility probe does not itself authorize a two-of-three score. Any later partial-score eligibility rule must be preregistered before outcomes."
+  },
+  "missing_data_rule": "NO_IMPUTATION_NO_ZERO_SUBSTITUTION",
+  "allowed_output": [
+    "aggregate coverage counts and percentages",
+    "period-span diagnostics",
+    "source hash chains",
+    "request/error counts",
+    "sample identity hash"
+  ],
+  "prohibited_output": [
+    "company-level holding percentages",
+    "company-level shareholder counts",
+    "company-level 4Q changes",
+    "raw XBRL or raw shareholding rows",
+    "future prices or returns"
+  ],
+  "decision_rule": "Proceed to a separately preregistered July-2022 Smart Money partial holdout only if at least 30 sampled companies have all three locked five-period component mappings complete. If all-three is below 30, stop before outcome load rather than weaken the five-period or semantic rules.",
+  "future_outcomes_seen": false,
+  "official_score_mutated": false
+}
