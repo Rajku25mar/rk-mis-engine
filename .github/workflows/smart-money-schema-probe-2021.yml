@@ -2,16 +2,12 @@ name: RK-MIS 2021 Smart Money Schema Probe
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/smart-money-schema-probe-2021.yml"
 
 permissions:
   contents: read
 
 jobs:
   smart-money-schema-probe:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap 2021 smart money schema probe')
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
