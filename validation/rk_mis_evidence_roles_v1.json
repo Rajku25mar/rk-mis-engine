@@ -24,9 +24,9 @@
         "EBITDA_MARGIN",
         "GOVERNANCE"
       ],
-      "current_evidence_state": "MIXED_BUT_MODESTLY_POSITIVE_WHEN_COMBINED_UNDER_STRICT_COVERAGE",
-      "reason": "The standalone 2023 fundamental growth-quality holdout was neutral-to-adverse for multibagger concentration, but the larger 250-company objective-core interaction holdout produced modestly higher mean multiple, 2x and 5x incidence, lower loss rate and positive rank correlation. The evidence is therefore not robust enough for a weight change, but supports retaining growth plus quality as a ranking and risk context rather than rejecting the slice.",
-      "do_not_use_as": "SOLE_MULTIBAGGER_DISCOVERY_ENGINE"
+      "current_evidence_state": "RETAIN_AS_QUALITY_RISK_AND_SUPPORTING_RANKING_CONTEXT_NOT_PRIMARY_DISCOVERY",
+      "reason": "The 2023 objective-core interaction holdout was modestly positive, but the independent 2020-to-2023 replication failed across mean lift, rank correlation, 2x concentration and loss control. The positive 2023 result therefore does not generalize sufficiently to admit this slice as a primary multibagger discovery signal.",
+      "do_not_use_as": "SOLE_OR_PRIMARY_MULTIBAGGER_DISCOVERY_ENGINE"
     },
     "CONFIRMATION_TIMING": {
       "components": [
@@ -47,21 +47,22 @@
         "DELIVERY_ACCUMULATION",
         "BULK_BLOCK_BUYER_QUALITY"
       ],
-      "current_evidence_state": "PROMOTER_CHANGE_ALONE_ADVERSE_IN_STANDALONE_AND_COMBINED_EXTENSION_TESTS; FULL_PILLAR_NOT_YET_TESTED",
-      "reason": "The standalone promoter-accumulation holdout was adverse. In the objective-core same-cohort extension, adding promoter change increased 2x incidence but reduced mean return, reduced rank correlation and increased top-quartile losses by 7.15 percentage points, breaching the frozen promoter admission guardrail. Promoter change therefore cannot proxy the full smart-money pillar.",
+      "current_evidence_state": "PROMOTER_CHANGE_ALONE_ADVERSE_WHERE_TESTABLE; FULL_PILLAR_NOT_YET_TESTED",
+      "reason": "The standalone promoter-accumulation holdout was adverse. In the 2023 objective-core same-cohort extension, adding promoter change increased 2x incidence but reduced mean return, reduced rank correlation and increased top-quartile losses by 7.15 percentage points. At the 2020 anchor no replay-grade 4-quarter promoter series was available, so no additional promoter inference is allowed.",
       "do_not_use_as": "PROMOTER_CHANGE_ALONE_AS_POSITIVE_SIGNAL"
     }
   },
   "decision_framework": {
     "candidate_creation": "Prefer chronology-safe runway, moat, catalyst and management-execution evidence when available; use broader authorized sources or prospective live evidence rather than weakening historical review rules.",
-    "candidate_ranking": "Use growth plus financial quality as a supporting ranking context because the combined holdout was modestly positive, while requiring further independent time-anchor validation before any score change.",
+    "candidate_ranking": "Use recent growth and financial quality only as supporting ranking and risk context, because a positive 2023 interaction result failed independent time-anchor replication.",
     "candidate_rejection": "Use governance, weak cash/quality, excessive leverage and evidence gaps as fail-closed or risk-reducing context where applicable.",
     "entry_confirmation": "Use technical accumulation only after the business thesis qualifies; do not let technical strength manufacture a thesis.",
     "smart_money_confirmation": "Require multiple independent smart-money components rather than promoter holding change alone.",
     "missing_evidence": "Never convert missing historical evidence to zero and never lower review rules to increase sample size.",
-    "weight_changes": "No pillar weight or band may change from one holdout; a separate preregistered admission decision is required."
+    "weight_changes": "No pillar weight or band may change from one holdout; independent replication and a separate preregistered admission decision are required."
   },
   "supporting_results": [
+    "validation/2020/objective_core_replication_result_v1.json",
     "validation/2022/technical_replay_result_v1.json",
     "validation/2023/promoter_accumulation_result_v1.json",
     "validation/2023/fundamental_growth_quality_result_v1.json",
@@ -72,16 +73,16 @@
   ],
   "pending_experiments": [
     {
-      "id": "OBJECTIVE_CORE_INDEPENDENT_TIME_ANCHOR",
-      "purpose": "Test whether the modestly positive base growth-plus-quality interaction replicates at a different historical anchor before any admission discussion."
-    },
-    {
       "id": "FULL_SMART_MONEY_CONFIRMATION",
       "purpose": "Test promoter activity only as one component alongside FII/MF breadth, institutional participation, delivery accumulation and high-quality block/bulk activity."
     },
     {
       "id": "PROSPECTIVE_DOCUMENTARY_DISCOVERY_TRACK",
       "purpose": "Track current runway, moat, catalyst and management-execution evidence prospectively under the same strict approval rules, avoiding sparse historical document reconstruction."
+    },
+    {
+      "id": "SECTOR_AND_BUSINESS_MODEL_SPECIFIC_QUALITY_GUARDS",
+      "purpose": "Preserve financial-quality usefulness by testing sector-appropriate risk guards rather than assuming a universal industrial ranking signal."
     }
   ]
 }
