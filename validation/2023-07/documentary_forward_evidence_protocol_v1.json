@@ -1,0 +1,132 @@
+{
+  "version": "rk-mis-documentary-forward-evidence-holdout-v1",
+  "status": "PREREGISTERED_BEFORE_DOCUMENT_REVIEW_AND_OUTCOME_LOAD",
+  "purpose": "Test whether pre-anchor documentary evidence of runway, moat and forward catalysts improves three-year multibagger concentration beyond snapshot-style price, ownership and financial signals.",
+  "scope": "EXPERIMENTAL_DOCUMENTARY_PARTIAL_SLICE_NOT_OFFICIAL_100_POINT_SCORE",
+  "anchor_date": "2023-07-31",
+  "entry_rule": "first valid NSE EQ trading day strictly after anchor_date",
+  "outcome_target_date": "2026-07-31",
+  "outcome_rule": "last valid NSE EQ trading day on or before outcome_target_date",
+  "sample_size": 80,
+  "sample_rule": "SHA256_OUTCOME_BLIND_SAMPLE_FROM_NSE_EQ_COMPANY_UNIVERSE_USING_ISIN_IDENTITY",
+  "sample_salt": "RK-MIS-DOCUMENTARY-FORWARD-EVIDENCE|2023-07-31",
+  "document_window": {
+    "from_date": "2022-04-01",
+    "to_date": "2023-07-31",
+    "source_surface": "NSE corporate announcements and attachments",
+    "allowed_source_hosts": ["nseindia.com", "archives.nseindia.com", "nsearchives.nseindia.com"],
+    "known_at_rule": "exchange broadcast/dissemination timestamp must be on or before anchor_date",
+    "post_anchor_revision_rule": "reject any document version or revision first disseminated after anchor",
+    "raw_document_publication": false
+  },
+  "discovery": {
+    "metadata_endpoint": "https://www.nseindia.com/api/corporate-announcements",
+    "referer": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+    "request_mode": "bounded symbol-by-symbol manual workflow; no scheduled full-market crawl",
+    "priority_subjects": [
+      "Investor Presentation",
+      "Analysts/Institutional Investor Meet/Con. Call Updates",
+      "Press Release",
+      "General Updates",
+      "Award of Order / Receipt of Order",
+      "Updates",
+      "Expansion",
+      "Acquisition",
+      "Agreements / Contracts / Arrangements / MOU"
+    ],
+    "keyword_families": {
+      "runway": ["capacity", "expansion", "capex", "greenfield", "brownfield", "utilisation", "utilization", "commission", "plant", "facility", "phase"],
+      "moat": ["patent", "proprietary", "technology", "certification", "qualification", "approved vendor", "sole supplier", "long-term customer", "repeat order", "switching", "market leader"],
+      "orders": ["order book", "orderbook", "order received", "purchase order", "contract value", "letter of award", "loa"],
+      "optionality": ["new product", "new customer", "new geography", "export", "approval", "qualification", "launch", "adjacent", "vertical"]
+    }
+  },
+  "features": [
+    {
+      "field": "orderbook_to_sales",
+      "pillar": "future_catalysts",
+      "existing_within_pillar_weight": 20,
+      "experimental_slice_weight": 20,
+      "direction": "higher",
+      "bands": [[3,1.0],[2,0.8],[1,0.5],[0.5,0.2]],
+      "evidence_rule": "latest explicit total order book known by anchor divided by trailing revenue known by anchor; company-specific executable order book only; pipeline/tender opportunity excluded"
+    },
+    {
+      "field": "planned_capacity_increase_pct",
+      "pillar": "future_catalysts",
+      "existing_within_pillar_weight": 20,
+      "experimental_slice_weight": 20,
+      "direction": "higher",
+      "bands": [[100,1.0],[60,0.8],[30,0.5],[15,0.25]],
+      "evidence_rule": "announced incremental nameplate capacity divided by pre-expansion nameplate capacity; vague capex without measurable capacity earns missing"
+    },
+    {
+      "field": "reinvestment_runway_score",
+      "pillar": "growth_runway",
+      "existing_within_pillar_weight": 20,
+      "experimental_slice_weight": 20,
+      "direction": "higher",
+      "bands": [[80,1.0],[65,0.75],[50,0.5],[35,0.25]],
+      "evidence_rule": "derive only from approved evidence categories in documentary_forward_evidence_rubric_v1.json"
+    },
+    {
+      "field": "moat_evidence_score",
+      "pillar": "business_moat",
+      "existing_within_pillar_weight": 35,
+      "experimental_slice_weight": 20,
+      "direction": "higher",
+      "bands": [[85,1.0],[70,0.75],[55,0.5],[40,0.25]],
+      "evidence_rule": "derive only from approved evidence categories in documentary_forward_evidence_rubric_v1.json"
+    },
+    {
+      "field": "new_product_export_optionalities_score",
+      "pillar": "future_catalysts",
+      "existing_within_pillar_weight": 20,
+      "experimental_slice_weight": 20,
+      "direction": "higher",
+      "bands": [[80,1.0],[65,0.75],[50,0.5],[35,0.25]],
+      "evidence_rule": "derive only from approved evidence categories in documentary_forward_evidence_rubric_v1.json"
+    }
+  ],
+  "ranking_eligibility": {
+    "minimum_feature_coverage_count": 3,
+    "must_include_at_least_one_numeric_catalyst": true,
+    "must_include_at_least_one_approved_documentary_score": true,
+    "missing_data_imputation": false,
+    "score_rule": "weighted earned/covered normalization using only covered features; no missing feature earns zero",
+    "rank_rule": "documentary_partial_score descending, symbol ascending"
+  },
+  "review_blinding": {
+    "future_price_outcomes_available_during_document_review": false,
+    "reviewer_must_not_use_post_anchor_information": true,
+    "automatic_keyword_detection_can_only_create_review_candidates": true,
+    "ambiguous_claims": "PENDING_REVIEW_NOT_SCORED"
+  },
+  "outcome_safety": {
+    "identity": "ISIN-first",
+    "corporate_actions": "deterministic factors only; unresolved material actions fail closed",
+    "missing_exit": "retain missing/delisted status; no imputation",
+    "raw_exchange_files_publication": false
+  },
+  "evaluation": {
+    "primary": [
+      "top_quartile_mean_multiple_lift_vs_scored_cohort",
+      "top_quartile_2x_rate_delta_pp",
+      "top_quartile_5x_rate_delta_pp",
+      "top_quartile_loss_rate_delta_pp",
+      "spearman_documentary_score_vs_forward_multiple"
+    ],
+    "minimum_ranking_eligible_rows": 30,
+    "calibration_safe_outcome_minimum_pct_of_scored": 75,
+    "decision_rule": "Positive diagnostic requires better 5x concentration or mean multiple, no more than 5pp adverse loss-rate delta, and non-negative rank correlation. One anchor can support further testing but cannot mutate official weights."
+  },
+  "explicit_non_claims": [
+    "This is not the full Growth Runway pillar.",
+    "This is not the full Business Moat pillar.",
+    "This is not the full Future Catalysts pillar.",
+    "Documentary category scores are evidence indices, not direct valuation or return forecasts.",
+    "No official 100-point RK-MIS weight may change from this holdout."
+  ],
+  "no_post_result_tuning": true,
+  "official_100_point_score_mutated": false
+}
