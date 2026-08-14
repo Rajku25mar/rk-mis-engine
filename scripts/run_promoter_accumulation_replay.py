@@ -476,18 +476,18 @@ def main() -> None:
         "minimum_coverage_tests_pass": interpretable,
         "metrics": metrics,
         "smart_money_scope": "PROMOTER_HOLDING_CHANGE_ONLY",
-        "full_smart_money_pillar_claim": false,
-        "official_100_point_score_mutated": false,
-        "alpha_claim": false,
-        "no_post_result_tuning": true
+        "full_smart_money_pillar_claim": False,
+        "official_100_point_score_mutated": False,
+        "alpha_claim": False,
+        "no_post_result_tuning": True,
     }
     manifest = {
         "anchor_source": anchor_meta,
         "predictor": predictor_manifest,
         "outcomes": outcome_manifest,
         "official_requests_made": session.requests_made,
-        "raw_exchange_files_published": false,
-        "public_artifact_contains_only_derived_aggregate_results_and_source_metadata": true
+        "raw_exchange_files_published": False,
+        "public_artifact_contains_only_derived_aggregate_results_and_source_metadata": True,
     }
     (args.output / "report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     (args.output / "manifest.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
