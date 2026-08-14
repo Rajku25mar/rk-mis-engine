@@ -1,0 +1,44 @@
+{
+  "version": "rk-mis-documentary-forward-evidence-extraction-result-v2",
+  "status": "FROZEN_PRE_OUTCOME_EXTRACTION_RESULT",
+  "protocol_path": "validation/2023-07/documentary_forward_evidence_protocol_v1.json",
+  "protocol_sha256": "ce67c9929a2dfc0fcdd7364be231c77b3584b64b14351819c478601931d927b2",
+  "rubric_path": "validation/2023-07/documentary_forward_evidence_rubric_v1.json",
+  "rubric_sha256": "c16e197a5a79da64acf86d3cca272033498d644684bbcf899f20187e7bc2e3cc",
+  "triage_lock_path": "validation/2023-07/documentary_download_triage_lock_v2_coverage_expansion.json",
+  "triage_lock_sha256": "8c32f7acd18b8226dae1a111164194c23b9d1fc7c97aefc938ffdd8441172748",
+  "workflow_run_id": 31794298533,
+  "workflow_head_sha": "b72ff25e6868903339b8ad4771ea24cff098371e",
+  "artifact": {
+    "id": 9216861308,
+    "name": "rk-mis-2023-07-documentary-extraction-v2",
+    "sha256": "48d49c1535a373712db2457a3c048ec4ecf44b1ef1e8a987e5cda236f2474d30"
+  },
+  "selected_symbols": 65,
+  "selected_documents": 269,
+  "document_status_counts": {
+    "PARSED": 267,
+    "DOWNLOAD_ERROR": 1,
+    "SKIPPED_NON_PDF": 1
+  },
+  "total_downloaded_bytes": 427830656,
+  "symbols_with_any_page_candidate": 58,
+  "symbols_with_qualitative_candidates": {
+    "runway": 48,
+    "moat": 47,
+    "optionality": 37
+  },
+  "symbols_with_numeric_candidates": {
+    "capacity": 36,
+    "orderbook": 7
+  },
+  "mechanical_potential_ranking_eligible_upper_bound": 33,
+  "protocol_minimum_ranking_eligible_rows": 30,
+  "source_hash_chain_sha256": "22fcd21f39fccee507a13bab4bdc90f10facdb777311743f1b84a71dac55b629",
+  "future_outcome_prices_loaded": false,
+  "approved_document_reviews_seen": false,
+  "raw_pdf_files_published": false,
+  "raw_pdf_text_published": false,
+  "automated_candidates_are_scores": false,
+  "decision": "PROCEED_TO_BLINDED_SOURCE_PAGE_REVIEW_UNDER_FROZEN_RUBRIC; DO_NOT_LOAD_2026_OUTCOMES_UNTIL_APPROVED_PREDICTOR_SNAPSHOT_IS_FROZEN"
+}
