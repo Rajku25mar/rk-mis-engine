@@ -1,0 +1,82 @@
+{
+  "version": "rk-mis-technical-replay-2022-result-v1",
+  "status": "FROZEN_INDEPENDENT_HOLDOUT_RESULT",
+  "protocol_path": "validation/2022/technical_replay_protocol_v1.json",
+  "protocol_sha256": "d9fa4e276a30f93977fdd713c22f02913081b391c9adbad088939ef5b6dcf8f9",
+  "workflow_run_id": 31791340614,
+  "workflow_head_sha": "bb08ded1c4d9d3b0dd79ab45727dca4b1bdb90de",
+  "artifact": {
+    "id": 9215644720,
+    "name": "rk-mis-2022-technical-replay",
+    "sha256": "5cb4f6576031080fabb49ffe001114c9bec52282b3d30ea7dc7a0323b9814040"
+  },
+  "anchor": {
+    "target": "2022-01-31",
+    "resolved_trading_date": "2022-01-31",
+    "entry_date": "2022-02-01",
+    "outcome_date": "2025-01-31"
+  },
+  "data_integrity": {
+    "eligible_company_universe_rows": 1520,
+    "deterministic_sample_rows": 250,
+    "technical_replay_grade_rows": 180,
+    "technical_score_coverage_pct": 72.0,
+    "calibration_safe_outcome_rows": 142,
+    "calibration_safe_outcome_coverage_of_scored_pct": 78.89,
+    "lookback_trading_archives_fetched": 248,
+    "lookback_weekday_archives_missing": 13,
+    "predictor_snapshot_sha256": "547c39fb1a49f4f81decbeb2baf9abaf04187e9bc8775f250c271d1390aded19",
+    "outcomes_seen_when_predictor_snapshot_frozen": false,
+    "raw_exchange_files_published": false
+  },
+  "source_transition": {
+    "anchor_format": "NSE_CM_LEGACY_BHAVCOPY",
+    "outcome_format": "NSE_CM_UDIFF_BHAVCOPY",
+    "outcome_source_url": "https://nsearchives.nseindia.com/content/cm/BhavCopy_NSE_CM_0_0_0_20250131_F_0000.csv.zip",
+    "outcome_source_sha256": "482e70225923c2de88522a54c09b097a4e6a448f0c66737b36cb20567d9303ca",
+    "methodology_change": false,
+    "note": "UDiFF support was an acquisition/schema compatibility correction only. The frozen sample, score bands, feature weights and evaluation rules were not changed."
+  },
+  "outcome_status_counts": {
+    "OBSERVED_CALIBRATION_SAFE": 142,
+    "MISSING_EXIT_PRICE_OR_DELISTED": 29,
+    "UNRESOLVED_CORPORATE_ACTION": 9
+  },
+  "metrics": {
+    "cohort": {
+      "n": 142,
+      "mean_multiple": 1.8433,
+      "two_x_rate_pct": 29.58,
+      "five_x_rate_pct": 4.23,
+      "loss_rate_pct": 29.58
+    },
+    "top_quartile": {
+      "n": 36,
+      "mean_multiple": 2.0227,
+      "two_x_rate_pct": 30.56,
+      "five_x_rate_pct": 11.11,
+      "loss_rate_pct": 41.67
+    },
+    "top_quartile_mean_lift_x": 1.0973,
+    "spearman": -0.0905,
+    "top_quartile_minus_cohort": {
+      "two_x_pp": 0.98,
+      "five_x_pp": 6.88,
+      "loss_pp": 12.09,
+      "mean_multiple": 0.1794
+    }
+  },
+  "interpretation": {
+    "five_x_concentration": "POSITIVE",
+    "mean_return_lift": "POSITIVE",
+    "two_x_selection": "NEAR_NEUTRAL",
+    "loss_filtering": "ADVERSE",
+    "rank_signal": "ADVERSE",
+    "standalone_alpha": "NOT_ESTABLISHED",
+    "role_in_rk_mis": "KEEP_AS_CONFIRMATION_TIMING_CONTEXT_WITHIN_MULTI_PILLAR_SYSTEM; DO_NOT INCREASE WEIGHT FROM THIS HOLDOUT"
+  },
+  "decision": "NO_OFFICIAL_SCORE_CHANGE",
+  "official_100_point_score_mutated": false,
+  "alpha_claim": false,
+  "no_post_result_tuning": true
+}
