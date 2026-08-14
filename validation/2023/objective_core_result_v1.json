@@ -1,0 +1,86 @@
+{
+  "version": "rk-mis-objective-core-2023-result-v1",
+  "status": "FROZEN_INDEPENDENT_HOLDOUT_RESULT",
+  "protocol_path": "validation/2023/objective_core_protocol_v1.json",
+  "protocol_sha256": "edc5aeecc06c62b9a48fe9d5a2899f63df94a7ae63902e000f98a8627afb7472",
+  "workflow_run_id": 31815490760,
+  "workflow_head_sha": "bd862a14b0c80646ece48bdd70f72fe50f6252c4",
+  "artifact": {
+    "id": 9224862557,
+    "name": "rk-mis-2023-objective-core-replay",
+    "sha256": "733977dad9ac8b1b7d4a6d3eafc7091ccaa3b2de7af5056eab446224411bb317"
+  },
+  "anchor": {
+    "target": "2023-01-31",
+    "resolved_trading_date": "2023-01-31",
+    "entry_date": "2023-02-01",
+    "outcome_date": "2026-01-30"
+  },
+  "data_integrity": {
+    "eligible_company_universe_rows": 1703,
+    "deterministic_sample_rows": 250,
+    "objective_core_replay_grade_rows": 160,
+    "objective_core_score_coverage_pct": 64.0,
+    "promoter_extension_rows": 129,
+    "calibration_safe_outcome_rows": 135,
+    "calibration_safe_outcome_coverage_of_scored_pct": 84.38,
+    "financial_businesses_guarded": 7,
+    "symbols_with_both_growth_metrics": 171,
+    "symbols_with_promoter_4q_change": 183,
+    "predictor_snapshot_sha256": "0f62f201c2c7c4a1d8651af80b4a3cf6120bccf99c2b08708f3f5ebe0bbdf5e6",
+    "outcomes_seen_when_predictor_snapshot_frozen": false,
+    "parallel_workers": 4,
+    "official_requests_made": 993,
+    "raw_exchange_files_published": false
+  },
+  "base_objective_core": {
+    "ranked_n": 135,
+    "cohort": {
+      "mean_multiple": 1.5825,
+      "two_x_rate_pct": 24.44,
+      "five_x_rate_pct": 2.22,
+      "loss_rate_pct": 34.81
+    },
+    "top_quartile": {
+      "n": 34,
+      "mean_multiple": 1.6899,
+      "two_x_rate_pct": 26.47,
+      "five_x_rate_pct": 2.94,
+      "loss_rate_pct": 32.35
+    },
+    "top_quartile_mean_lift_x": 1.0679,
+    "spearman": 0.1393,
+    "interpretation": "MODESTLY_POSITIVE_ACROSS_PRIMARY_DIRECTIONS_BUT_NOT_SUFFICIENT_FOR_WEIGHT_CHANGE"
+  },
+  "promoter_extension_same_cohort": {
+    "same_cohort_n": 111,
+    "base_top_quartile": {
+      "mean_multiple": 1.5673,
+      "two_x_rate_pct": 21.43,
+      "five_x_rate_pct": 0.0,
+      "loss_rate_pct": 32.14,
+      "spearman": 0.1331
+    },
+    "base_plus_promoter_top_quartile": {
+      "mean_multiple": 1.5233,
+      "two_x_rate_pct": 25.0,
+      "five_x_rate_pct": 0.0,
+      "loss_rate_pct": 39.29,
+      "spearman": 0.1227
+    },
+    "delta_two_x_pp": 3.57,
+    "delta_five_x_pp": 0.0,
+    "delta_loss_pp": 7.15,
+    "delta_mean_multiple": -0.044,
+    "interpretation": "FAILS_PROMOTER_ADMISSION_GUARDRAIL_DUE_TO_ADVERSE_LOSS_RATE_AND_LOWER_MEAN_RETURN"
+  },
+  "decision": {
+    "base_objective_core": "KEEP_FOR_FURTHER_INDEPENDENT_VALIDATION_AS_QUALITY_PLUS_RANKING_CONTEXT",
+    "promoter_change": "KEEP_CONTEXTUAL_ONLY_DO_NOT_INCREASE_WEIGHT_OR_USE_AS_STANDALONE_POSITIVE_SIGNAL",
+    "official_score_change": false,
+    "next_validation_priority": "INDEPENDENT_TIME_ANCHOR_FOR_BASE_OBJECTIVE_CORE_AND_BROADER_SMART_MONEY_CONFIRMATION_BEYOND_PROMOTER_CHANGE"
+  },
+  "official_100_point_score_mutated": false,
+  "alpha_claim": false,
+  "no_post_result_tuning": true
+}
