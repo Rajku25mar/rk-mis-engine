@@ -8,7 +8,7 @@ import json
 import re
 import sys
 import time
-from collections import Counter, defaultdict
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -24,13 +24,13 @@ TECH_SPEC.loader.exec_module(TECH)
 
 MAX_DOCUMENT_BYTES = 15_000_000
 NUM = r"([0-9][0-9,]*(?:\.[0-9]+)?)"
-PCT = r"([0-9]+(?:\.[0-9]+)?)\s*%"
+PCT = r"\b([0-9]+(?:\.[0-9]+)?)\s*%"
 CUR = r"(?:₹|rs\.?|inr)\s*" + NUM + r"\s*(crore|cr|million|mn|billion|bn|lakh|lakhs)?"
 UNIT = r"(mtpa|tpa|tpd|mt|tonnes?|tons?|mw|mwp|gw|gwp|units?(?:\s+per\s+annum)?|million\s+units?|mn\s+units?|lakh\s+units?|lakhs\s+units?)"
 
 DIRECT_PCT_PATTERNS = [
-    re.compile(r"capacity.{0,70}(?:increase|increased|expand|expanded|expansion|enhance|enhanced|addition|additional).{0,45}\bby\b.{0,20}" + PCT, re.I),
-    re.compile(r"(?:increase|increased|expand|expanded|enhance|enhanced).{0,45}capacity.{0,45}\bby\b.{0,20}" + PCT, re.I),
+    re.compile(r"capacity.{0,70}(?:increase|increased|expand|expanded|expansion|enhance|enhanced|addition|additional).{0,45}\bby\b.{0,20}?" + PCT, re.I),
+    re.compile(r"(?:increase|increased|expand|expanded|enhance|enhanced).{0,45}capacity.{0,45}\bby\b.{0,20}?" + PCT, re.I),
 ]
 FROM_TO_PATTERNS = [
     re.compile(r"capacity.{0,80}\bfrom\b\s*" + NUM + r"\s*" + UNIT + r".{0,80}\bto\b\s*" + NUM + r"\s*" + UNIT, re.I),
@@ -136,8 +136,6 @@ def capacity_relations(text: str) -> list[dict[str, Any]]:
                 if has_negation_near(m.group(0)):
                     continue
                 a, au, b, bu = fnum(m.group(1)), normalize_unit(m.group(2)), fnum(m.group(3)), normalize_unit(m.group(4))
-                # Pattern order can be old-new or new-old. Resolve by magnitude only
-                # when one value is strictly larger; otherwise fail closed.
                 if a <= 0 or b <= 0 or au != bu or a == b:
                     continue
                 old, new = (a, b) if b > a else (b, a)
@@ -153,9 +151,6 @@ def capacity_relations(text: str) -> list[dict[str, Any]]:
                 a, au, b, bu = fnum(m.group(1)), normalize_unit(m.group(2)), fnum(m.group(3)), normalize_unit(m.group(4))
                 if a <= 0 or b <= 0 or au != bu:
                     continue
-                # We do not infer which captured value is incremental vs base from
-                # magnitude; regex alternative order determines semantics imperfectly,
-                # so expose both values for reviewer approval and do not derive here.
                 key=("CAPACITY_INCREMENTAL_BASE",a,au,b)
                 if key not in seen:
                     seen.add(key)
@@ -173,8 +168,6 @@ def orderbook_relations(text: str) -> list[dict[str, Any]]:
             for m in pat.finditer(chunk):
                 if has_negation_near(m.group(0)):
                     continue
-                # Currency capture location differs in pattern 2 because CUR is first;
-                # inspect groups from right-to-left for the numeric + scale pair.
                 groups=[g for g in m.groups() if g is not None]
                 value=None; scale="UNSPECIFIED"
                 for idx,g in enumerate(groups):
@@ -269,7 +262,7 @@ def main() -> None:
         "raw_pdf_files_published":False,
         "raw_page_text_published":False,
         "structured_relation_candidates_are_scores":False,
-        "next_gate":"REVIEW_STRUCTURED_RELATIONS; IF FEWER_THAN_30 COMPANIES CAN HAVE_AN_APPROVED_NUMERIC_CATALYST_THE_HOLDOUT_CANNOT_MEET_ITS_FROZEN_ELIGIBILITY_MINIMUM"
+        "next_gate":"REVIEW_STRUCTURED_RELATIONS; IF FEWER_THAN_30 COMPANIES CAN_HAVE_AN_APPROVED_NUMERIC_CATALYST_THE_HOLDOUT_CANNOT_MEET_ITS_FROZEN_ELIGIBILITY_MINIMUM"
     }
     args.output.mkdir(parents=True,exist_ok=True)
     (args.output/"report.json").write_text(json.dumps(report,indent=2),encoding="utf-8")
