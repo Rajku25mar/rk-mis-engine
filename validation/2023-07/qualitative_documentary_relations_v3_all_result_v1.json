@@ -1,0 +1,19 @@
+{
+  "version": "rk-mis-strict-qualitative-documentary-relations-v3-all-result-v1",
+  "status": "STOPPED_PRE_OUTCOME_MINIMUM_COHORT_NOT_MET",
+  "workflow_run_id": 31801869313,
+  "workflow_head_sha": "19366494d427b0eaab80c846fdd7ade3b0fc75fd",
+  "artifact_id": 9219657569,
+  "artifact_sha256": "945d69608d0b0a5577db566e25248b75596f92286360a052b11b1afe0d502eed",
+  "documents_with_candidate_pages": 168,
+  "parsed_documents": 168,
+  "symbols_with_any_strict_relation": 42,
+  "symbols_with_two_or_more_relation_families": 21,
+  "minimum_required_symbols": 30,
+  "future_outcome_prices_loaded": false,
+  "review_decisions_loaded": false,
+  "decision": "STOP_BEFORE_REVIEW_AND_OUTCOME_LOAD",
+  "reason": "The maximum possible eligible cohort is 21, below the preregistered minimum of 30. Eligibility and review rules remain unchanged.",
+  "official_score_changed": false,
+  "no_post_result_tuning": true
+}
