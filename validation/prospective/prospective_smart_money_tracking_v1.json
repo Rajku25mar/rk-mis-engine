@@ -1,0 +1,24 @@
+{
+  "version": "rk-mis-prospective-smart-money-tracking-v1",
+  "status": "LOCKED_BEFORE_PROSPECTIVE_OBSERVATION_ACCUMULATION",
+  "purpose": "Accumulate chronology-safe authorized Smart Money observations prospectively and emit only already-approved RK-MIS 4Q features after sufficient point-in-time evidence exists, avoiding sparse historical reconstruction and hindsight.",
+  "approved_observation_fields": {
+    "mf_holding_pct": {"derived_feature":"mf_holding_change_pp_4q","unit":"percentage_points"},
+    "fii_holding_pct": {"derived_feature":"fii_holding_change_pp_4q","unit":"percentage_points","source_normalization":"FII may be normalized to an authorized provider's institutional FPI category only when source semantics are explicit."},
+    "institutional_shareholder_count": {"derived_feature":"institutional_breadth_change_4q","unit":"shareholder_count_change"},
+    "promoter_holding_pct": {"derived_feature":"promoter_holding_change_pp_4q","unit":"percentage_points","empirical_role":"CONTEXTUAL_COMPONENT_ONLY_UNTIL_BROADER_SMART_MONEY_VALIDATION"}
+  },
+  "observation_identity": "ISIN preferred; symbol allowed only when ISIN is unavailable and must not silently merge across identity changes.",
+  "point_in_time_rule": "period_end <= known_at <= feature_as_of_date; observations known after the as-of date are excluded.",
+  "revision_rule": "For each distinct period, use the latest authorized observation known by the as-of date. Later revisions do not rewrite earlier point-in-time snapshots.",
+  "required_distinct_periods": 5,
+  "required_first_to_last_span_days_min": 330,
+  "required_first_to_last_span_days_max": 400,
+  "component_completeness_rule": "A derived 4Q feature requires its source field to be present in all five selected periods; missing intermediate periods are not imputed.",
+  "change_rule": "latest selected period value minus earliest selected period value",
+  "missing_data_rule": "NO_IMPUTATION_NO_ZERO_SUBSTITUTION",
+  "source_rule": "Record source URL/kind/grade and optional source SHA-256. Credentials and provider tokens must never be stored in the evidence database.",
+  "score_rule": "This tracker does not change RK-MIS score weights or bands. It only produces existing approved feature fields when evidence qualifies.",
+  "prospective_holdout_rule": "Outcome evaluation, if later performed, must use a separately preregistered predictor snapshot frozen before the outcome period.",
+  "official_score_mutated": false
+}
