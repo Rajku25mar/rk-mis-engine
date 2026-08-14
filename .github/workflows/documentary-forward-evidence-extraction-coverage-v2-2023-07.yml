@@ -1,5 +1,6 @@
 name: RK-MIS July 2023 Documentary Evidence Coverage Expansion
 
+# Rerun after extractor compatibility guard fix; frozen v2 evidence rules unchanged.
 on:
   workflow_dispatch:
   push:
