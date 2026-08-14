@@ -31,6 +31,16 @@
       "system_role": "QUALITY_AND_RISK_CONTEXT_NOT_STANDALONE_DISCOVERY"
     },
     {
+      "id": "2023_OBJECTIVE_CORE_COMBINED",
+      "anchor_date": "2023-01-31",
+      "outcome_target": "2026-01-31",
+      "status": "RUNNING_FROZEN_PROTOCOL",
+      "protocol_path": "validation/2023/objective_core_protocol_v1.json",
+      "workflow_run_id": 31800650918,
+      "finding_so_far": "No result yet. This is a newly preregistered interaction test combining approved recent-growth, industrial-quality and optional promoter-change components; rules were frozen before the combined outcome load.",
+      "system_role": "CONTROLLED_COMPONENT_INTERACTION_TEST_NO_WEIGHT_CHANGE_ALLOWED_FROM_SINGLE_HOLDOUT"
+    },
+    {
       "id": "2023_07_DOCUMENTARY_NUMERIC_PLUS_QUALITATIVE",
       "anchor_date": "2023-07-31",
       "outcome_target": "2026-07-31",
@@ -45,15 +55,29 @@
       "id": "2023_07_QUALITATIVE_DOCUMENTARY_FORWARD_EVIDENCE",
       "anchor_date": "2023-07-31",
       "outcome_target": "2026-07-31",
-      "status": "PRE_OUTCOME_EVIDENCE_COVERAGE_EXPANSION_IN_PROGRESS",
+      "status": "PRE_OUTCOME_ALL_PREQUALIFIED_EXTRACTION_COMPLETE_STRICT_REVIEW_PENDING",
       "protocol_path": "validation/2023-07/qualitative_documentary_forward_evidence_protocol_v1.json",
       "review_lock_path": "validation/2023-07/qualitative_documentary_review_lock_v1.json",
       "review_policy_path": "validation/2023-07/qualitative_documentary_model_review_policy_v1.json",
       "latest_frozen_relation_result_path": "validation/2023-07/qualitative_documentary_relations_result_v1.json",
       "current_coverage_lock_path": "validation/2023-07/documentary_download_triage_lock_v3_all_prequalified.json",
-      "finding_so_far": "Top-five-document pass yielded 16 mechanically eligible two-family strict-relation companies; final all-383 already-prequalified document pass is running without changing review or scoring rules.",
+      "extraction_workflow_run_id": 31796442073,
+      "extraction_artifact_id": 9217730262,
+      "extraction_artifact_sha256": "4dbe4ba40c3eb5954059959638cd7e5ac05b8540aa534521666ea5f180d25412",
+      "extraction_coverage": {
+        "selected_symbols": 65,
+        "selected_documents": 383,
+        "parsed_documents": 380,
+        "symbols_with_any_page_candidate": 60,
+        "symbols_with_moat_candidates": 48,
+        "symbols_with_runway_candidates": 53,
+        "symbols_with_optionality_candidates": 41,
+        "symbols_with_capacity_numeric_candidates": 39,
+        "symbols_with_orderbook_numeric_candidates": 8
+      },
+      "finding_so_far": "All 383 already-prequalified documents were processed under the frozen triage lock. Automated page candidates materially expanded coverage, but they are explicitly not scores. The next gate is the frozen strict qualitative relation/review pass; future outcomes remain unloaded.",
       "future_outcomes_loaded": false,
-      "system_role": "ACTIVE_FORWARD_EVIDENCE_HYPOTHESIS"
+      "system_role": "ACTIVE_FORWARD_EVIDENCE_HYPOTHESIS_HIGH_PRIORITY"
     }
   ],
   "global_guardrails": [
@@ -62,6 +86,7 @@
     "Do not relax eligibility or review rules to meet cohort-size targets.",
     "Stop infeasible designs before outcome load rather than tune after results.",
     "Keep raw exchange/XBRL/PDF evidence out of public workflow artifacts.",
+    "Automated documentary page candidates are not scores until the frozen relation/review gate approves them.",
     "One holdout cannot mutate official RK-MIS pillar weights."
   ]
 }
