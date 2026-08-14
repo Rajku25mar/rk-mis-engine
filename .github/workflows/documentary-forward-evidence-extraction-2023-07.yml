@@ -1,0 +1,75 @@
+name: RK-MIS July 2023 Documentary Evidence Extraction
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/documentary-forward-evidence-extraction-2023-07.yml"
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  documentary-evidence-extraction:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap July 2023 documentary evidence extraction')
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download frozen metadata probe artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: rk-mis-2023-07-documentary-probe
+          path: input/documentary-probe
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: 31793071494
+
+      - name: Install PDF parser
+        run: python -m pip install --disable-pip-version-check --no-cache-dir "pypdf>=5.9,<6"
+
+      - name: Compile extraction stage
+        run: python -m py_compile scripts/extract_documentary_forward_evidence_candidates.py scripts/run_technical_replay.py
+
+      - name: Extract page-level evidence candidates
+        run: |
+          python scripts/extract_documentary_forward_evidence_candidates.py \
+            --candidate-index input/documentary-probe/candidate_index.json \
+            --protocol validation/2023-07/documentary_forward_evidence_protocol_v1.json \
+            --rubric validation/2023-07/documentary_forward_evidence_rubric_v1.json \
+            --triage-lock validation/2023-07/documentary_download_triage_lock_v1.json \
+            --output artifacts/2023-07-documentary-extraction
+
+      - name: Enforce public artifact boundary
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          root = Path('artifacts/2023-07-documentary-extraction')
+          allowed = {'report.json', 'claim_candidates.json'}
+          files = {p.name for p in root.iterdir() if p.is_file()}
+          assert files == allowed, f'Unexpected public artifacts: {sorted(files)}'
+          for p in root.iterdir():
+              if p.is_file():
+                  assert p.suffix.lower() == '.json', p
+          text = (root/'claim_candidates.json').read_text(encoding='utf-8')
+          assert 'raw_document_text_included": false' in text.lower()
+          print('RK_MIS_PUBLIC_ARTIFACT_BOUNDARY=PASS')
+          PY
+
+      - name: Show extraction report
+        run: cat artifacts/2023-07-documentary-extraction/report.json
+
+      - name: Upload derived review-candidate artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rk-mis-2023-07-documentary-extraction
+          path: |
+            artifacts/2023-07-documentary-extraction/report.json
+            artifacts/2023-07-documentary-extraction/claim_candidates.json
+          retention-days: 14
+          if-no-files-found: error
