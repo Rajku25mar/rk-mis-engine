@@ -1,0 +1,66 @@
+name: RK-MIS July 2023 Strict Qualitative Relations V3 All Documents
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  qualitative-relations-v3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download frozen v3 all-prequalified extraction artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: rk-mis-2023-07-documentary-extraction-v3
+          path: input/documentary-v3
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: 31796442073
+
+      - name: Install PDF parser
+        run: python -m pip install --disable-pip-version-check --no-cache-dir "pypdf>=5.9,<6"
+
+      - name: Compile strict qualitative extractor
+        run: python -m py_compile scripts/extract_qualitative_documentary_relations.py scripts/run_technical_replay.py
+
+      - name: Extract strict qualitative relations from all prequalified documents
+        run: |
+          python scripts/extract_qualitative_documentary_relations.py \
+            --claim-candidates input/documentary-v3/claim_candidates.json \
+            --review-lock validation/2023-07/qualitative_documentary_review_lock_v1.json \
+            --output artifacts/2023-07-qualitative-relations-v3
+
+      - name: Enforce structured-only artifact boundary
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          root=Path('artifacts/2023-07-qualitative-relations-v3')
+          allowed={'report.json','qualitative_relations.json'}
+          files={p.name for p in root.iterdir() if p.is_file()}
+          assert files==allowed, files
+          text=(root/'qualitative_relations.json').read_text(encoding='utf-8').lower()
+          assert 'raw_page_text_included": false' in text
+          print('RK_MIS_PUBLIC_ARTIFACT_BOUNDARY=PASS')
+          PY
+
+      - name: Show strict qualitative report
+        run: cat artifacts/2023-07-qualitative-relations-v3/report.json
+
+      - name: Upload structured qualitative relation artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rk-mis-2023-07-qualitative-relations-v3
+          path: |
+            artifacts/2023-07-qualitative-relations-v3/report.json
+            artifacts/2023-07-qualitative-relations-v3/qualitative_relations.json
+          retention-days: 14
+          if-no-files-found: error
