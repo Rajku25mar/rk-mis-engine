@@ -1,0 +1,59 @@
+name: RK-MIS 2023 Fundamental Growth Quality Holdout
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/fundamental-growth-quality-2023.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  fundamental-growth-quality-2023:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap 2023 fundamental growth quality holdout')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile replay runner
+        run: python -m py_compile scripts/run_fundamental_growth_quality_replay.py scripts/run_technical_replay.py
+
+      - name: Run frozen 2023 fundamental growth quality holdout
+        run: |
+          python scripts/run_fundamental_growth_quality_replay.py \
+            --protocol validation/2023/fundamental_growth_quality_protocol_v1.json \
+            --implementation-lock validation/2023/fundamental_growth_quality_implementation_lock_v1.json \
+            --output artifacts/2023-fundamental-growth-quality
+
+      - name: Enforce public artifact boundary
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          root = Path('artifacts/2023-fundamental-growth-quality')
+          allowed = {'report.json', 'manifest.json'}
+          files = {p.name for p in root.iterdir() if p.is_file()}
+          assert files == allowed, f'Unexpected public artifacts: {sorted(files)}'
+          for p in root.iterdir():
+              if p.is_file():
+                  assert p.suffix.lower() not in {'.zip', '.pdf', '.xml', '.xbrl', '.csv'}, p
+          print('RK_MIS_PUBLIC_ARTIFACT_BOUNDARY=PASS')
+          PY
+
+      - name: Show derived holdout report
+        run: cat artifacts/2023-fundamental-growth-quality/report.json
+
+      - name: Upload safe derived holdout artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rk-mis-2023-fundamental-growth-quality
+          path: |
+            artifacts/2023-fundamental-growth-quality/report.json
+            artifacts/2023-fundamental-growth-quality/manifest.json
+          retention-days: 14
+          if-no-files-found: error
