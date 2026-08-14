@@ -2,16 +2,12 @@ name: RK-MIS 2023 Fundamental Growth Quality Holdout
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/fundamental-growth-quality-2023.yml"
 
 permissions:
   contents: read
 
 jobs:
   fundamental-growth-quality-2023:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap 2023 fundamental growth quality holdout')
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
