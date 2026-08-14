@@ -1,0 +1,87 @@
+name: RK-MIS July 2023 Blinded Qualitative Review V3
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  blinded-review-v3:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Download frozen all-document strict relation artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: rk-mis-2023-07-qualitative-relations-v3
+          path: input/relations-v3
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: 31801869313
+
+      - name: Compile blinded review and snapshot tools
+        run: |
+          python -m py_compile \
+            scripts/build_blinded_qualitative_review_ledger.py \
+            scripts/validate_qualitative_documentary_review_ledger.py \
+            scripts/build_qualitative_documentary_snapshot.py
+
+      - name: Build conservative blinded review ledger
+        run: |
+          mkdir -p artifacts/2023-07-blinded-review-v3
+          python scripts/build_blinded_qualitative_review_ledger.py \
+            --relations input/relations-v3/qualitative_relations.json \
+            --review-policy validation/2023-07/qualitative_documentary_model_review_policy_v1.json \
+            --anchor 2023-07-31 \
+            --output artifacts/2023-07-blinded-review-v3/model_review_ledger.json
+
+      - name: Validate ledger against frozen guards
+        run: |
+          python scripts/validate_qualitative_documentary_review_ledger.py \
+            --relations input/relations-v3/qualitative_relations.json \
+            --review-policy validation/2023-07/qualitative_documentary_model_review_policy_v1.json \
+            --ledger artifacts/2023-07-blinded-review-v3/model_review_ledger.json \
+            --output artifacts/2023-07-blinded-review-v3/validated_review_ledger.json
+
+      - name: Freeze blinded qualitative predictor snapshot
+        run: |
+          python scripts/build_qualitative_documentary_snapshot.py \
+            --protocol validation/2023-07/qualitative_documentary_forward_evidence_protocol_v1.json \
+            --rubric validation/2023-07/documentary_forward_evidence_rubric_v1.json \
+            --review-policy validation/2023-07/qualitative_documentary_model_review_policy_v1.json \
+            --reviews artifacts/2023-07-blinded-review-v3/validated_review_ledger.json \
+            --output artifacts/2023-07-blinded-review-v3/snapshot
+
+      - name: Enforce pre-outcome structured artifact boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('artifacts/2023-07-blinded-review-v3')
+          manifest=json.loads((root/'snapshot/manifest.json').read_text(encoding='utf-8'))
+          assert manifest['outcomes_seen_when_predictor_snapshot_frozen'] is False
+          assert manifest['missing_data_imputed'] is False
+          for path in root.rglob('*'):
+              if path.is_file():
+                  assert path.suffix.lower() not in {'.pdf','.xml','.xbrl','.csv','.zip'}, path
+          print('RK_MIS_BLINDED_PRE_OUTCOME_BOUNDARY=PASS')
+          PY
+
+      - name: Show feasibility state
+        run: |
+          cat artifacts/2023-07-blinded-review-v3/snapshot/manifest.json
+
+      - name: Upload blinded reviewed predictor artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rk-mis-2023-07-blinded-reviewed-snapshot-v3
+          path: artifacts/2023-07-blinded-review-v3
+          retention-days: 14
+          if-no-files-found: error
