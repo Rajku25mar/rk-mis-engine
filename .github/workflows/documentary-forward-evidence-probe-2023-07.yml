@@ -2,16 +2,12 @@ name: RK-MIS July 2023 Documentary Evidence Probe
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/documentary-forward-evidence-probe-2023-07.yml"
 
 permissions:
   contents: read
 
 jobs:
   documentary-evidence-probe:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap July 2023 documentary evidence probe')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
