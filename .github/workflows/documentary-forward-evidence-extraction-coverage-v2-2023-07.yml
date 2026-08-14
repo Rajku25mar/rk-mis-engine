@@ -1,11 +1,7 @@
 name: RK-MIS July 2023 Documentary Evidence Coverage Expansion
 
-# Rerun after extractor compatibility guard fix; frozen v2 evidence rules unchanged.
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/documentary-forward-evidence-extraction-coverage-v2-2023-07.yml"
 
 permissions:
   contents: read
@@ -13,7 +9,6 @@ permissions:
 
 jobs:
   documentary-evidence-coverage-v2:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap July 2023 documentary coverage expansion')
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
