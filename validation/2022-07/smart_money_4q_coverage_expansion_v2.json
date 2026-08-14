@@ -1,0 +1,37 @@
+{
+  "version": "rk-mis-smart-money-4q-coverage-expansion-2022-07-v2",
+  "status": "FROZEN_PRE_OUTCOME_4Q_COVERAGE_EXPANSION",
+  "purpose": "Perform one final pre-outcome source-coverage expansion for the locked MF, institutional-FPI and institutional-breadth Smart Money mappings without changing evidence semantics, scoring bands or the minimum holdout cohort.",
+  "reason_for_expansion": "The frozen 100-company diagnosis had 13 all-three five-period mapping-complete companies, below the minimum 30, and revealed irregular five-period spans. Expansion is based only on pre-outcome source coverage and chronology diagnostics; no future prices or returns have been loaded.",
+  "anchor_date": "2022-07-29",
+  "shareholding_window": {"from_date":"2021-04-01","to_date":"2022-07-29"},
+  "semantic_mapping_lock": "validation/2022-07/smart_money_semantic_mapping_lock_v1.json",
+  "base_sample": {
+    "size": 100,
+    "salt": "RK-MIS-SMART-MONEY-4Q|2022-07-29",
+    "expected_identity_sha256": "aa15c369e7b1233cceab1bdf5e0fd50e165265f9f7629a15991449468621e489",
+    "rule": "Recompute and preserve the exact original sample; abort if its identity hash changes."
+  },
+  "extension_sample": {
+    "size": 250,
+    "salt": "RK-MIS-SMART-MONEY-4Q-EXPANSION|2022-07-29",
+    "rule": "Select outcome-blind from the anchor universe after excluding every base-sample ISIN; no overlap permitted."
+  },
+  "total_sample_size": 350,
+  "required_distinct_safe_periods": 5,
+  "required_first_to_last_span_days_min": 330,
+  "required_first_to_last_span_days_max": 400,
+  "span_rule_source": "Reuse the frozen 4Q chronology guard from validation/2023/promoter_accumulation_protocol_v1.json rather than treating irregular five-filing sequences as four quarters.",
+  "component_completeness": {
+    "mf_holding_change_pp_4q": "Locked MF mapping must be unambiguous in all five selected periods and the first-to-last period span must be 330-400 days.",
+    "fii_holding_change_pp_4q": "Locked institutional-FPI mapping must be unambiguous in all five selected periods and the first-to-last period span must be 330-400 days.",
+    "institutional_breadth_change_4q": "Locked aggregate institutional shareholder-count mapping must be unambiguous in all five selected periods and the first-to-last period span must be 330-400 days."
+  },
+  "minimum_future_holdout_cohort": 30,
+  "missing_data_rule": "NO_IMPUTATION_NO_ZERO_SUBSTITUTION",
+  "allowed_output": ["aggregate coverage counts and percentages","span diagnostics","sample/source hashes","request/error counts"],
+  "prohibited_output": ["company-level holding values","company-level 4Q changes","raw XBRL","future prices","future returns"],
+  "decision_rule": "Proceed to a separately preregistered Smart Money outcome holdout only if at least 30 companies have all three locked components complete across five safe periods spanning 330-400 days. Otherwise stop the historical source path before outcome load.",
+  "future_outcomes_seen": false,
+  "official_score_mutated": false
+}
