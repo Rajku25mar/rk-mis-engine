@@ -1,0 +1,46 @@
+{
+  "version": "rk-mis-documentary-numeric-review-lock-v1",
+  "status": "LOCKED_BEFORE_NUMERIC_RELATION_EXTRACTION_AND_OUTCOME_LOAD",
+  "purpose": "Distinguish genuine order-book and planned-capacity numeric evidence from unrelated percentages/currency values appearing on the same page.",
+  "future_outcomes_seen": false,
+  "rules": {
+    "planned_capacity_increase_pct": {
+      "accepted_relation_patterns": [
+        "CAPACITY_INCREASE_BY_PERCENT: capacity language and increase/expand language explicitly linked to a percentage in the same sentence",
+        "CAPACITY_FROM_TO: explicit old/from/existing/current capacity A UNIT linked to new/to/proposed/post-expansion capacity B SAME_UNIT in the same sentence or adjacent sentence pair",
+        "CAPACITY_INCREMENTAL_BASE: explicit incremental/additional capacity and explicit pre-expansion/existing capacity with identical units"
+      ],
+      "rejected": [
+        "growth guidance percentages",
+        "utilisation percentages",
+        "market-share percentages",
+        "margin percentages",
+        "revenue mix percentages",
+        "capacity values with no old/new or incremental/base relationship"
+      ],
+      "derived_formula": "(new_capacity - old_capacity) / old_capacity * 100, or incremental_capacity / pre_expansion_capacity * 100",
+      "unit_rule": "old/new or incremental/base units must normalize to exactly the same capacity unit"
+    },
+    "orderbook_value": {
+      "accepted_relation_patterns": [
+        "ORDERBOOK_VALUE: explicit company order book/orderbook/contracted backlog language linked to a currency value in the same sentence"
+      ],
+      "rejected": [
+        "industry order book",
+        "customer order book",
+        "bid pipeline/tender opportunity",
+        "expected future order not yet awarded",
+        "individual order value presented as total order book"
+      ],
+      "orderbook_to_sales_rule": "an approved order-book value is only a numerator candidate; orderbook_to_sales remains missing until a separate pre-anchor revenue denominator is approved"
+    }
+  },
+  "context_guards": {
+    "max_sentence_pair_distance": 2,
+    "negation_terms": ["no", "not", "without", "cancelled", "canceled", "withdrawn", "proposed only", "indicative"],
+    "automated_relation_match_state": "CANDIDATE_ONLY_NOT_APPROVED",
+    "no_raw_page_text_publication": true
+  },
+  "review_policy": "Only structured relation matches and source-page provenance may enter the review ledger. A reviewer must still approve/reject each relation; no automatic score is created.",
+  "no_post_result_tuning": true
+}
