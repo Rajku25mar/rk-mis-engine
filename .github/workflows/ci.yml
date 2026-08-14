@@ -19,6 +19,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Public repository safety gate
+        run: python scripts/check_public_repo_safety.py
       - name: Compile public engine
         run: python -m compileall -q src scripts tests
       - name: Run deterministic tests
@@ -29,9 +31,12 @@ jobs:
           import json
           from pathlib import Path
           cfg = json.loads(Path('config/rk_mie_scoring.json').read_text())
+          protocol = json.loads(Path('config/validation_protocol.json').read_text())
           assert sum(cfg['pillar_weights'].values()) == 100
           assert cfg['minimum_global_coverage'] == 65
           assert cfg['diamond_minimum_coverage'] == 80
           assert set(cfg['pillar_weights']) == set(cfg['pillar_features'])
+          assert protocol['coverage_policy']['minimum_global_coverage'] == cfg['minimum_global_coverage']
+          assert protocol['coverage_policy']['diamond_minimum_coverage'] == cfg['diamond_minimum_coverage']
           print('RK_MIS_PUBLIC_CONFIG=PASS')
           PY
