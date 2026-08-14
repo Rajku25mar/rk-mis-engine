@@ -1,0 +1,46 @@
+{
+  "version": "rk-mis-documentary-download-triage-lock-v3-all-prequalified",
+  "status": "LOCKED_AFTER_STRICT_RELATION_COVERAGE_DIAGNOSIS_BEFORE_REVIEW_AND_OUTCOME_LOAD",
+  "purpose": "Use every document that already passed the frozen metadata inclusion rules because the top-five-document pass yielded only 16 two-family strict qualitative candidates versus the preregistered minimum cohort of 30.",
+  "future_outcomes_seen": false,
+  "approved_document_reviews_seen": false,
+  "strict_relation_result_used": "coverage counts only; no returns or approvals",
+  "metadata_source": "same frozen candidate index from workflow run 31793071494",
+  "inclusion_rules": [
+    "retain any candidate with runway, moat or orders keyword-family metadata",
+    "retain optionality candidate only if it has a specific optionality term other than generic approval or qualification, unless it also qualifies through a high-information subject",
+    "retain Investor Presentation",
+    "retain Press Release",
+    "retain Analysts/Institutional Investor Meet/Con. Call Updates",
+    "retain Annual Report when identifiable from subject or attachment filename"
+  ],
+  "ranking_points_for_download_priority": {
+    "each_runway_moat_orders_family": 10,
+    "each_specific_optionality_hit_excluding_approval_qualification": 5,
+    "investor_presentation_subject": 12,
+    "press_release_subject": 10,
+    "analyst_institutional_meet_or_concall_subject": 8,
+    "annual_report_subject_or_filename": 7
+  },
+  "tie_break": "latest known_at first, then subject lexicographically",
+  "maximum_documents_per_symbol": 999,
+  "estimated_from_same_frozen_metadata_only": {
+    "symbols_retained": 65,
+    "documents_retained": 383
+  },
+  "changes_vs_v2": "download cap only: 5 -> all already-prequalified documents",
+  "unchanged": [
+    "metadata inclusion rules",
+    "documentary evidence rubric",
+    "strict qualitative relation grammar",
+    "qualitative documentary review policy",
+    "minimum two covered qualitative features",
+    "require Runway or Moat",
+    "minimum interpretable cohort of 30",
+    "feature bands and effective weights",
+    "outcome blinding"
+  ],
+  "scoring_effect": "NONE",
+  "stop_rule": "If the all-prequalified pass still cannot produce a mechanical strict-relation upper bound of at least 30 companies, stop the qualitative combined holdout before review/outcome load rather than expanding to lower-quality metadata.",
+  "no_post_result_tuning": true
+}
