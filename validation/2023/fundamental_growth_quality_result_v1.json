@@ -1,0 +1,85 @@
+{
+  "version": "rk-mis-fundamental-growth-quality-2023-result-v1",
+  "status": "FROZEN_INDEPENDENT_HOLDOUT_RESULT",
+  "protocol_path": "validation/2023/fundamental_growth_quality_protocol_v1.json",
+  "protocol_sha256": "aad846b77d147dea3beefc4c0e963231f53677a5bc0933ac7ad6279c80caef13",
+  "implementation_lock_path": "validation/2023/fundamental_growth_quality_implementation_lock_v1.json",
+  "implementation_lock_sha256": "3999d51c96f7122f3797e932cdde5c48ceb97ad4c8c275138b5a3a00659e4cc0",
+  "workflow_run_id": 31792518977,
+  "workflow_head_sha": "d19dad247bae38668f406f02075510f9dbc05c3e",
+  "artifact": {
+    "id": 9216101017,
+    "name": "rk-mis-2023-fundamental-growth-quality",
+    "sha256": "04d9e436ada0407b1cc1c9e519ffde753ea11b952f696a86d2eae24f602a88db"
+  },
+  "anchor": {
+    "target": "2023-01-31",
+    "resolved_trading_date": "2023-01-31",
+    "entry_date": "2023-02-01",
+    "outcome_date": "2026-01-30"
+  },
+  "data_integrity": {
+    "eligible_company_universe_rows": 1703,
+    "deterministic_sample_rows": 150,
+    "guarded_financial_business_rows": 7,
+    "ranking_eligible_rows": 107,
+    "ranking_eligible_coverage_pct": 71.33,
+    "calibration_safe_outcome_rows": 91,
+    "calibration_safe_outcome_coverage_of_scored_pct": 85.05,
+    "feature_coverage_counts": {
+      "latest_sales_growth_yoy_pct": 110,
+      "latest_pat_growth_yoy_pct": 111,
+      "debt_equity": 36,
+      "interest_coverage": 116,
+      "ebitda_margin_pct": 121
+    },
+    "xbrl_fetch_errors": 0,
+    "predictor_snapshot_sha256": "d604d3d4d443c06790c9e6cdce3b5755b1c8fa1798b9208e82f9f123805cde1b",
+    "outcomes_seen_when_predictor_snapshot_frozen": false,
+    "raw_exchange_or_xbrl_files_published": false
+  },
+  "outcome_status_counts": {
+    "OBSERVED_CALIBRATION_SAFE": 91,
+    "MISSING_EXIT_PRICE_OR_DELISTED": 14,
+    "UNRESOLVED_CORPORATE_ACTION": 2
+  },
+  "metrics": {
+    "cohort": {
+      "n": 91,
+      "mean_multiple": 1.989,
+      "two_x_rate_pct": 29.67,
+      "five_x_rate_pct": 4.4,
+      "loss_rate_pct": 34.07
+    },
+    "top_quartile": {
+      "n": 23,
+      "mean_multiple": 1.5303,
+      "two_x_rate_pct": 21.74,
+      "five_x_rate_pct": 0.0,
+      "loss_rate_pct": 30.43
+    },
+    "top_quartile_mean_lift_x": 0.7694,
+    "spearman_slice_score_vs_forward_multiple": -0.0121,
+    "top_quartile_minus_cohort": {
+      "two_x_pp": -7.93,
+      "five_x_pp": -4.4,
+      "loss_pp": -3.64,
+      "mean_multiple": -0.4587
+    }
+  },
+  "interpretation": {
+    "multibagger_concentration": "ADVERSE",
+    "mean_return_selection": "ADVERSE",
+    "loss_filtering": "MODESTLY_POSITIVE_BUT_INSUFFICIENT",
+    "rank_signal": "NEUTRAL_TO_ADVERSE",
+    "standalone_alpha": "NOT_ESTABLISHED",
+    "role_in_rk_mis": "KEEP_AS_QUALITY_AND_RISK_CONTEXT; DO_NOT_TREAT_RECENT_GROWTH_MARGIN_OR_LEVERAGE_AS_MULTIBAGGER_DISCOVERY_BY_THEMSELVES",
+    "next_research_priority": "DOCUMENTARY_RUNWAY_MOAT_AND_CATALYST_EVIDENCE_WITH_EXECUTION_VERIFICATION"
+  },
+  "decision": "NO_OFFICIAL_SCORE_CHANGE",
+  "full_growth_runway_claim": false,
+  "full_financial_quality_claim": false,
+  "official_100_point_score_mutated": false,
+  "alpha_claim": false,
+  "no_post_result_tuning": true
+}
