@@ -34,10 +34,10 @@
       "id": "2023_OBJECTIVE_CORE_COMBINED",
       "anchor_date": "2023-01-31",
       "outcome_target": "2026-01-31",
-      "status": "RUNNING_FROZEN_PROTOCOL",
+      "status": "ACQUISITION_RUN_CANCELLED_OPTIMIZATION_IN_PROGRESS",
       "protocol_path": "validation/2023/objective_core_protocol_v1.json",
       "workflow_run_id": 31800650918,
-      "finding_so_far": "No result yet. This is a newly preregistered interaction test combining approved recent-growth, industrial-quality and optional promoter-change components; rules were frozen before the combined outcome load.",
+      "finding_so_far": "The first frozen-protocol run was cancelled by the 55-minute workflow timeout during serial historical evidence acquisition. No result artifact was produced. Scoring bands, sample definition and admission rules remain frozen while acquisition is optimized.",
       "system_role": "CONTROLLED_COMPONENT_INTERACTION_TEST_NO_WEIGHT_CHANGE_ALLOWED_FROM_SINGLE_HOLDOUT"
     },
     {
@@ -55,29 +55,18 @@
       "id": "2023_07_QUALITATIVE_DOCUMENTARY_FORWARD_EVIDENCE",
       "anchor_date": "2023-07-31",
       "outcome_target": "2026-07-31",
-      "status": "PRE_OUTCOME_ALL_PREQUALIFIED_EXTRACTION_COMPLETE_STRICT_REVIEW_PENDING",
+      "status": "STOPPED_PRE_OUTCOME_INFEASIBLE_MINIMUM_COHORT_NOT_MET",
       "protocol_path": "validation/2023-07/qualitative_documentary_forward_evidence_protocol_v1.json",
       "review_lock_path": "validation/2023-07/qualitative_documentary_review_lock_v1.json",
       "review_policy_path": "validation/2023-07/qualitative_documentary_model_review_policy_v1.json",
-      "latest_frozen_relation_result_path": "validation/2023-07/qualitative_documentary_relations_result_v1.json",
+      "result_path": "validation/2023-07/qualitative_documentary_relations_v3_all_result_v1.json",
       "current_coverage_lock_path": "validation/2023-07/documentary_download_triage_lock_v3_all_prequalified.json",
       "extraction_workflow_run_id": 31796442073,
-      "extraction_artifact_id": 9217730262,
-      "extraction_artifact_sha256": "4dbe4ba40c3eb5954059959638cd7e5ac05b8540aa534521666ea5f180d25412",
-      "extraction_coverage": {
-        "selected_symbols": 65,
-        "selected_documents": 383,
-        "parsed_documents": 380,
-        "symbols_with_any_page_candidate": 60,
-        "symbols_with_moat_candidates": 48,
-        "symbols_with_runway_candidates": 53,
-        "symbols_with_optionality_candidates": 41,
-        "symbols_with_capacity_numeric_candidates": 39,
-        "symbols_with_orderbook_numeric_candidates": 8
-      },
-      "finding_so_far": "All 383 already-prequalified documents were processed under the frozen triage lock. Automated page candidates materially expanded coverage, but they are explicitly not scores. The next gate is the frozen strict qualitative relation/review pass; future outcomes remain unloaded.",
+      "relation_workflow_run_id": 31801869313,
+      "relation_artifact_id": 9219657569,
+      "finding": "After processing the complete already-prequalified document pool, 42 symbols had at least one strict relation but only 21 could possibly satisfy the frozen two-family eligibility rule. Because 21 is below the preregistered minimum of 30, the holdout stopped before review and before any 2026 outcome prices were loaded.",
       "future_outcomes_loaded": false,
-      "system_role": "ACTIVE_FORWARD_EVIDENCE_HYPOTHESIS_HIGH_PRIORITY"
+      "system_role": "LIVE_EVIDENCE_ENRICHMENT_REMAINS_USEFUL_BUT_THIS_HISTORICAL_HOLDOUT_DESIGN_IS_INFEASIBLE_WITH_AVAILABLE_STRICT_DOCUMENT_COVERAGE"
     }
   ],
   "global_guardrails": [
