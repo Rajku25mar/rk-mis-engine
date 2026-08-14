@@ -1,0 +1,58 @@
+name: RK-MIS 2023 Promoter Accumulation Holdout
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/promoter-accumulation-2023.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  promoter-accumulation-2023:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap 2023 promoter accumulation holdout')
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile replay runner
+        run: python -m py_compile scripts/run_promoter_accumulation_replay.py scripts/run_technical_replay.py
+
+      - name: Run frozen 2023 promoter accumulation holdout
+        run: |
+          python scripts/run_promoter_accumulation_replay.py \
+            --protocol validation/2023/promoter_accumulation_protocol_v1.json \
+            --output artifacts/2023-promoter-accumulation
+
+      - name: Enforce public artifact boundary
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          root = Path('artifacts/2023-promoter-accumulation')
+          allowed = {'report.json', 'manifest.json'}
+          files = {p.name for p in root.iterdir() if p.is_file()}
+          assert files == allowed, f'Unexpected public artifacts: {sorted(files)}'
+          for p in root.iterdir():
+              if p.is_file():
+                  assert p.suffix.lower() not in {'.zip', '.pdf', '.xml', '.xbrl', '.csv'}, p
+          print('RK_MIS_PUBLIC_ARTIFACT_BOUNDARY=PASS')
+          PY
+
+      - name: Show derived holdout report
+        run: cat artifacts/2023-promoter-accumulation/report.json
+
+      - name: Upload safe derived holdout artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: rk-mis-2023-promoter-accumulation
+          path: |
+            artifacts/2023-promoter-accumulation/report.json
+            artifacts/2023-promoter-accumulation/manifest.json
+          retention-days: 14
+          if-no-files-found: error
