@@ -1,0 +1,76 @@
+{
+  "version": "rk-mis-objective-core-replication-2020-result-v1",
+  "status": "FROZEN_INDEPENDENT_REPLICATION_RESULT",
+  "protocol_path": "validation/2020/objective_core_replication_protocol_v1.json",
+  "protocol_sha256": "cc30cf0b588e9d15926fc7d255516e8721791cac62db6dd32e349ade9aca2f2f",
+  "workflow_run_id": 31815896910,
+  "workflow_head_sha": "abcd881ba9414487543ad7e4b280572f755c21aa",
+  "artifact": {
+    "id": 9225046101,
+    "name": "rk-mis-2020-objective-core-replication",
+    "sha256": "2b224d0936d9ade2ec0b99b4aa732686620dd5d899cf8b23edb70ef161de4460"
+  },
+  "anchor": {
+    "target": "2020-01-31",
+    "resolved_trading_date": "2020-01-31",
+    "entry_date": "2020-02-01",
+    "outcome_date": "2023-01-31"
+  },
+  "data_integrity": {
+    "eligible_company_universe_rows": 1398,
+    "deterministic_sample_rows": 250,
+    "objective_core_replay_grade_rows": 164,
+    "objective_core_score_coverage_pct": 65.6,
+    "calibration_safe_outcome_rows": 150,
+    "calibration_safe_outcome_coverage_of_scored_pct": 91.46,
+    "financial_businesses_guarded": 12,
+    "symbols_with_both_growth_metrics": 170,
+    "symbols_with_promoter_4q_change": 0,
+    "predictor_snapshot_sha256": "48682ae9c0fadbbcbdcde2afae002e3ce49d5911c63917ad994f65bfb5e4b03a",
+    "outcomes_seen_when_predictor_snapshot_frozen": false,
+    "parallel_workers": 4,
+    "official_requests_made": 1201,
+    "raw_exchange_files_published": false
+  },
+  "base_objective_core": {
+    "ranked_n": 150,
+    "cohort": {
+      "mean_multiple": 2.3229,
+      "two_x_rate_pct": 46.67,
+      "five_x_rate_pct": 6.67,
+      "loss_rate_pct": 10.67
+    },
+    "top_quartile": {
+      "n": 38,
+      "mean_multiple": 1.9252,
+      "two_x_rate_pct": 31.58,
+      "five_x_rate_pct": 2.63,
+      "loss_rate_pct": 15.79
+    },
+    "top_quartile_mean_lift_x": 0.8288,
+    "spearman": -0.3891,
+    "top_quartile_minus_cohort": {
+      "two_x_pp": -15.09,
+      "five_x_pp": -4.04,
+      "loss_pp": 5.12,
+      "mean_multiple": -0.3977
+    },
+    "replication_rule_passed": false,
+    "interpretation": "NEGATIVE_REPLICATION_BASE_OBJECTIVE_CORE_DOES_NOT_GENERALIZE_AS_DISCOVERY_SIGNAL_ACROSS_THIS_INDEPENDENT_REGIME"
+  },
+  "promoter_extension": {
+    "ranking_eligible_rows": 0,
+    "status": "INSUFFICIENT_HISTORICAL_SHAREHOLDING_EVIDENCE",
+    "interpretation": "NO_POSITIVE_OR_NEGATIVE_PROMOTER_EXTENSION_INFERENCE_ALLOWED"
+  },
+  "decision": {
+    "base_objective_core": "KEEP_AS_QUALITY_RISK_AND_SUPPORTING_RANKING_CONTEXT_ONLY_NOT_PRIMARY_MULTIBAGGER_DISCOVERY",
+    "promoter_change": "CONTEXTUAL_ONLY_AND_UNTESTABLE_AT_THIS_ANCHOR_DUE_TO_ZERO_REPLAY_GRADE_4Q_COVERAGE",
+    "admission_review": "NOT_OPENED_BECAUSE_REPLICATION_FAILED",
+    "official_score_change": false,
+    "next_research_priority": "TEST_BROADER_SMART_MONEY_COMPONENTS_AND_BUILD_PROSPECTIVE_RUNWAY_MOAT_CATALYST_EVIDENCE_WITH_STRICT_CHRONOLOGY"
+  },
+  "official_100_point_score_mutated": false,
+  "alpha_claim": false,
+  "no_post_result_tuning": true
+}
