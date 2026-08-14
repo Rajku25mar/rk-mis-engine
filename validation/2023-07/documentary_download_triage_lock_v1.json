@@ -1,0 +1,33 @@
+{
+  "version": "rk-mis-documentary-download-triage-lock-v1",
+  "status": "LOCKED_AFTER_METADATA_PROBE_BEFORE_DOCUMENT_DOWNLOAD_AND_OUTCOME_LOAD",
+  "purpose": "Reduce administrative/low-information announcement downloads without using document contents or future returns.",
+  "inputs": "candidate metadata from the frozen July-2023 documentary metadata probe only",
+  "future_outcomes_seen": false,
+  "document_contents_seen": false,
+  "inclusion_rules": [
+    "retain any candidate with runway, moat or orders keyword-family metadata",
+    "retain optionality candidate only if it has a specific optionality term other than generic approval or qualification, unless it also qualifies through a high-information subject",
+    "retain Investor Presentation",
+    "retain Press Release",
+    "retain Analysts/Institutional Investor Meet/Con. Call Updates",
+    "retain Annual Report when identifiable from subject or attachment filename"
+  ],
+  "ranking_points_for_download_priority": {
+    "each_runway_moat_orders_family": 10,
+    "each_specific_optionality_hit_excluding_approval_qualification": 5,
+    "investor_presentation_subject": 12,
+    "press_release_subject": 10,
+    "analyst_institutional_meet_or_concall_subject": 8,
+    "annual_report_subject_or_filename": 7
+  },
+  "tie_break": "latest known_at first, then subject lexicographically",
+  "maximum_documents_per_symbol": 3,
+  "estimated_from_frozen_metadata_only": {
+    "symbols_retained": 65,
+    "documents_retained": 178
+  },
+  "scoring_effect": "NONE; triage only controls which source documents are downloaded first. A non-downloaded document cannot create a score, and no feature/rubric threshold is changed.",
+  "review_effect": "All extracted claims remain candidate-only until approved under documentary_forward_evidence_rubric_v1.json.",
+  "no_post_result_tuning": true
+}
