@@ -1,0 +1,79 @@
+{
+  "version": "rk-mis-documentary-forward-evidence-rubric-v1",
+  "status": "LOCKED_BEFORE_DOCUMENT_REVIEW_AND_OUTCOME_LOAD",
+  "protocol_path": "validation/2023-07/documentary_forward_evidence_protocol_v1.json",
+  "general_rules": {
+    "approved_source_grade": "A_EXCHANGE_DISSEMINATED_OR_EXCHANGE_HOSTED_ATTACHMENT",
+    "claim_must_be_company_specific": true,
+    "claim_must_be_known_by_anchor": true,
+    "marketing_language_without_specific_evidence": "NO_CREDIT",
+    "duplicate_claims_across_documents": "COUNT_ONCE_PER_CATEGORY",
+    "same_fact_supporting_multiple_categories": "ALLOWED_ONLY_IF_EACH_CATEGORY_HAS_DISTINCT_FACTUAL_BASIS",
+    "automated_extraction": "CANDIDATE_ONLY",
+    "final_scoring": "APPROVED_CLAIMS_ONLY",
+    "ambiguous_or_conflicting_claim": "PENDING_REVIEW_NO_SCORE"
+  },
+  "reinvestment_runway_score": {
+    "method": "20 points per independently approved category, cap 100",
+    "categories": {
+      "committed_capacity_expansion": "measurable new or expanded production/service capacity with board/management commitment",
+      "multi_phase_growth_roadmap": "two or more identifiable future expansion phases, facilities or rollout stages",
+      "funding_visibility": "internal accruals, sanctioned finance, cash balance, completed fund raise or other specific funding source for announced expansion",
+      "physical_or_operational_headroom": "land, installed capacity, modular infrastructure, licensed capacity or facility headroom that can support additional growth",
+      "ramp_or_utilisation_headroom": "recently commissioned or underutilised capacity with explicit ramp-up path or demand visibility"
+    },
+    "score_values": {"0":0,"1":20,"2":40,"3":60,"4":80,"5":100}
+  },
+  "moat_evidence_score": {
+    "method": "20 points per independently approved category, cap 100",
+    "categories": {
+      "proprietary_or_ip": "patent, proprietary process, owned technology, specialised know-how or demonstrably differentiated product capability",
+      "qualification_or_regulatory_barrier": "customer qualification, regulatory approval, certification or technical validation that materially raises entry barriers",
+      "customer_stickiness": "repeat orders, long customer tenure, long-term supply agreement, embedded design relationship or switching-friction evidence",
+      "cost_process_or_scale_advantage": "specific manufacturing/process/yield/sourcing/scale advantage supported by evidence rather than assertion",
+      "market_position_or_limited_competition": "credible market leadership, sole/limited approved vendor position, scarce capability or limited qualified competition"
+    },
+    "score_values": {"0":0,"1":20,"2":40,"3":60,"4":80,"5":100}
+  },
+  "new_product_export_optionalities_score": {
+    "method": "20 points per independently approved category, cap 100",
+    "categories": {
+      "new_product_or_platform": "commercially relevant new product/platform/service introduced or under specific launch/approval path",
+      "new_customer_or_vendor_approval": "named or clearly evidenced new customer qualification, vendor approval or customer addition",
+      "new_geography": "specific new geographic market entry or distribution expansion",
+      "export_expansion": "specific export market/customer/capacity/approval initiative beyond generic export ambition",
+      "adjacent_vertical_or_use_case": "credible expansion into an adjacent end market or use case using existing capabilities"
+    },
+    "score_values": {"0":0,"1":20,"2":40,"3":60,"4":80,"5":100}
+  },
+  "orderbook_to_sales": {
+    "numerator": "latest explicit executable company order book known by anchor",
+    "denominator": "latest trailing-twelve-month revenue or latest full-year revenue known by anchor, chosen without post-anchor information",
+    "include": ["signed orders", "purchase orders", "letters of award where award is final and executable", "contracted backlog"],
+    "exclude": ["bid pipeline", "tender opportunity", "addressable market", "non-binding MOU", "management aspiration", "framework ceiling without committed quantity/value"],
+    "currency_rule": "convert only when document provides reliable currency/value basis; otherwise missing",
+    "multiple_order_documents": "use latest disclosed total order book; do not sum individual orders on top of a disclosed total unless the company explicitly states they are incremental and the timing supports it"
+  },
+  "planned_capacity_increase_pct": {
+    "formula": "incremental announced nameplate capacity / pre-expansion nameplate capacity * 100",
+    "include": ["production capacity", "beds/seats/ports/lines/units where they are the company's core scalable operating capacity and are directly comparable"],
+    "exclude": ["capex amount without capacity", "revenue aspiration", "TAM", "utilisation improvement without new nameplate capacity"],
+    "multiple_phases": "include only phases explicitly committed or under implementation by anchor; aspirational later phases are excluded"
+  },
+  "review_record_required_fields": [
+    "isin",
+    "symbol",
+    "document_date",
+    "broadcast_known_at",
+    "document_type",
+    "source_url",
+    "source_sha256",
+    "claim_category",
+    "claim_text_paraphrase",
+    "extracted_numeric_value",
+    "review_state",
+    "review_note"
+  ],
+  "review_states": ["APPROVED", "REJECTED", "PENDING"],
+  "minimum_management_execution_history_rule": "Management execution scoring remains unavailable unless at least 3 pre-anchor commitments have independently closed by the anchor; this documentary holdout does not relax that rule."
+}
