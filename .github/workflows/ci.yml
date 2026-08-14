@@ -1,0 +1,37 @@
+name: RK-MIS Core CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  core-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile public engine
+        run: python -m compileall -q src scripts tests
+      - name: Run deterministic tests
+        run: python -m unittest discover -s tests -v
+      - name: Validate frozen config
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          cfg = json.loads(Path('config/rk_mie_scoring.json').read_text())
+          assert sum(cfg['pillar_weights'].values()) == 100
+          assert cfg['minimum_global_coverage'] == 65
+          assert cfg['diamond_minimum_coverage'] == 80
+          assert set(cfg['pillar_weights']) == set(cfg['pillar_features'])
+          print('RK_MIS_PUBLIC_CONFIG=PASS')
+          PY
