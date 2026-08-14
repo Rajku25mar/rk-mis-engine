@@ -1,0 +1,30 @@
+{
+  "version": "rk-mis-documentary-numeric-relation-result-v1",
+  "status": "FROZEN_PRE_OUTCOME_NUMERIC_REVIEW_RESULT",
+  "numeric_lock_path": "validation/2023-07/documentary_numeric_review_lock_v1.json",
+  "numeric_lock_sha256": "a7ab7caeba2022c5a6c53bf11f40166469ab2bd251dc8ded1cd7dcf4d9d0296a",
+  "workflow_run_id": 31795264362,
+  "workflow_head_sha": "7919ad3ace034b2a3fb462ccb9d90c5166a7385c",
+  "artifact": {
+    "id": 9217120671,
+    "name": "rk-mis-2023-07-documentary-numeric-relations",
+    "sha256": "5dfaabef94850facdb0874fd53b38b74d7ed15962d7e04523c176e9a0b7f838d"
+  },
+  "documents_with_numeric_candidate_pages": 68,
+  "document_status_counts": {"PARSED": 68},
+  "symbols_with_strict_capacity_relation_candidates": 3,
+  "strict_capacity_symbols": ["ADANIGREEN", "PARACABLES", "WSTCSTPAPR"],
+  "symbols_with_strict_orderbook_value_candidates": 2,
+  "strict_orderbook_symbols": ["ANUP", "GOODLUCK"],
+  "maximum_unique_symbols_with_any_strict_numeric_relation_candidate": 5,
+  "original_documentary_protocol_minimum_ranking_eligible_rows": 30,
+  "future_outcome_prices_loaded": false,
+  "raw_pdf_files_published": false,
+  "raw_page_text_published": false,
+  "structured_relation_candidates_are_scores": false,
+  "decision": "ORIGINAL_NUMERIC_PLUS_QUALITATIVE_DOCUMENTARY_HOLDOUT_IS_PRE_OUTCOME_INFEASIBLE; DO_NOT_LOAD_OUTCOMES; DO_NOT_LOWER_NUMERIC_OR_SAMPLE_ELIGIBILITY_RULES",
+  "interpretation": "Historical exchange-disseminated documents provide broad qualitative runway/moat/optionality coverage but insufficient consistently reconstructible numeric capacity/order-book relationships for the preregistered 30-company cohort. This is a data-availability limitation, not evidence that qualitative documentary forward signals lack value.",
+  "official_100_point_score_mutated": false,
+  "alpha_claim": false,
+  "no_post_result_tuning": true
+}
