@@ -1,0 +1,115 @@
+{
+  "version": "0.1.0",
+  "minimum_global_coverage": 65,
+  "diamond_minimum_coverage": 80,
+  "years_to_test": 10,
+  "pillar_weights": {
+    "growth_runway": 12,
+    "business_moat": 12,
+    "financial_quality": 14,
+    "growth_execution": 12,
+    "management_governance": 12,
+    "smart_money": 10,
+    "future_catalysts": 10,
+    "valuation_feasibility": 10,
+    "technical_accumulation": 8
+  },
+  "classification_bands": [[90,"DIAMOND"],[85,"A+"],[80,"A"],[72,"B+"],[65,"WATCH"],[0,"REJECT"]],
+  "funnel": {
+    "discovery_limit": 100,
+    "high_conviction_limit": 30,
+    "diamond_limit": 10,
+    "discovery_min_score": 72,
+    "high_conviction_min_score": 80,
+    "diamond_min_score": 85
+  },
+  "feasibility": {
+    "default_terminal_pe": 25,
+    "default_sustainable_net_margin_pct": 10,
+    "default_total_dilution_pct": 0,
+    "credible_eps_cagr_pct": 26,
+    "plausible_eps_cagr_pct": 35,
+    "stretch_eps_cagr_pct": 47,
+    "max_credible_tam_share_pct": 20,
+    "max_plausible_tam_share_pct": 35
+  },
+  "hard_red_flags": [
+    {"field":"auditor_resignation_recent","op":"eq","value":1,"code":"AUDITOR_RESIGNATION"},
+    {"field":"qualified_audit_opinion","op":"eq","value":1,"code":"QUALIFIED_AUDIT_OPINION"},
+    {"field":"related_party_red_flag","op":"eq","value":1,"code":"RELATED_PARTY_RED_FLAG"},
+    {"field":"regulatory_fraud_red_flag","op":"eq","value":1,"code":"REGULATORY_OR_FRAUD_FLAG"},
+    {"field":"promoter_pledge_pct","op":"gte","value":50,"code":"EXTREME_PROMOTER_PLEDGE"}
+  ],
+  "warning_flags": [
+    {"field":"promoter_pledge_pct","op":"gte","value":10,"code":"PROMOTER_PLEDGE"},
+    {"field":"cfo_pat_3y","op":"lt","value":0.7,"code":"WEAK_CASH_CONVERSION"},
+    {"field":"receivable_days_change_yoy","op":"gt","value":25,"code":"RECEIVABLE_STRESS"},
+    {"field":"equity_dilution_events_3y","op":"gte","value":2,"code":"REPEATED_DILUTION"},
+    {"field":"customer_concentration_top1_pct","op":"gt","value":50,"code":"CUSTOMER_CONCENTRATION"}
+  ],
+  "pillar_features": {
+    "growth_runway": [
+      {"field":"tam_cagr_pct","weight":25,"direction":"higher","bands":[[20,1.0],[15,0.75],[10,0.5],[5,0.25]]},
+      {"field":"runway_years","weight":20,"direction":"higher","bands":[[10,1.0],[7,0.75],[5,0.5],[3,0.25]]},
+      {"field":"market_share_headroom_score","weight":20,"direction":"higher","bands":[[80,1.0],[65,0.75],[50,0.5],[35,0.25]]},
+      {"field":"reinvestment_runway_score","weight":20,"direction":"higher","bands":[[80,1.0],[65,0.75],[50,0.5],[35,0.25]]},
+      {"field":"sector_tailwind_evidence_score","weight":15,"direction":"higher","bands":[[80,1.0],[65,0.75],[50,0.5],[35,0.25]]}
+    ],
+    "business_moat": [
+      {"field":"moat_evidence_score","weight":35,"direction":"higher","bands":[[85,1.0],[70,0.75],[55,0.5],[40,0.25]]},
+      {"field":"entry_barrier_score","weight":25,"direction":"higher","bands":[[85,1.0],[70,0.75],[55,0.5],[40,0.25]]},
+      {"field":"customer_stickiness_score","weight":20,"direction":"higher","bands":[[80,1.0],[65,0.75],[50,0.5],[35,0.25]]},
+      {"field":"pricing_power_score","weight":20,"direction":"higher","bands":[[80,1.0],[65,0.75],[50,0.5],[35,0.25]]}
+    ],
+    "financial_quality": [
+      {"field":"roce_pct","weight":20,"direction":"higher","bands":[[25,1.0],[20,0.8],[15,0.55],[10,0.25]]},
+      {"field":"roe_pct","weight":10,"direction":"higher","bands":[[22,1.0],[18,0.8],[14,0.55],[10,0.25]]},
+      {"field":"cfo_pat_3y","weight":20,"direction":"higher","bands":[[1.0,1.0],[0.85,0.75],[0.7,0.5],[0.5,0.2]]},
+      {"field":"debt_equity","weight":15,"direction":"lower","bands":[[0.2,1.0],[0.5,0.8],[1.0,0.5],[1.5,0.2]]},
+      {"field":"interest_coverage","weight":15,"direction":"higher","bands":[[10,1.0],[6,0.8],[3,0.5],[1.5,0.2]]},
+      {"field":"ebitda_margin_pct","weight":10,"direction":"higher","bands":[[20,1.0],[15,0.8],[10,0.5],[6,0.2]]},
+      {"field":"working_capital_quality_score","weight":10,"direction":"higher","bands":[[80,1.0],[65,0.75],[50,0.5],[35,0.25]]}
+    ],
+    "growth_execution": [
+      {"field":"sales_cagr_3y_pct","weight":25,"direction":"higher","bands":[[30,1.0],[22,0.8],[15,0.55],[10,0.25]]},
+      {"field":"pat_cagr_3y_pct","weight":25,"direction":"higher","bands":[[35,1.0],[25,0.8],[18,0.55],[10,0.25]]},
+      {"field":"latest_sales_growth_yoy_pct","weight":15,"direction":"higher","bands":[[30,1.0],[20,0.8],[12,0.5],[5,0.2]]},
+      {"field":"latest_pat_growth_yoy_pct","weight":15,"direction":"higher","bands":[[35,1.0],[25,0.8],[15,0.5],[5,0.2]]},
+      {"field":"execution_evidence_score","weight":20,"direction":"higher","bands":[[85,1.0],[70,0.75],[55,0.5],[40,0.25]]}
+    ],
+    "management_governance": [
+      {"field":"promise_delivery_pct","weight":30,"direction":"higher","bands":[[90,1.0],[80,0.8],[70,0.55],[55,0.25]]},
+      {"field":"capital_allocation_score","weight":25,"direction":"higher","bands":[[85,1.0],[70,0.75],[55,0.5],[40,0.25]]},
+      {"field":"governance_evidence_score","weight":25,"direction":"higher","bands":[[90,1.0],[75,0.75],[60,0.5],[45,0.25]]},
+      {"field":"promoter_pledge_pct","weight":10,"direction":"lower","bands":[[0,1.0],[5,0.75],[10,0.5],[25,0.2]]},
+      {"field":"management_skin_in_game_score","weight":10,"direction":"higher","bands":[[80,1.0],[65,0.75],[50,0.5],[35,0.25]]}
+    ],
+    "smart_money": [
+      {"field":"mf_holding_change_pp_4q","weight":20,"direction":"higher","bands":[[2,1.0],[1,0.75],[0.25,0.5],[0,0.2]]},
+      {"field":"fii_holding_change_pp_4q","weight":20,"direction":"higher","bands":[[2,1.0],[1,0.75],[0.25,0.5],[0,0.2]]},
+      {"field":"institutional_breadth_change_4q","weight":20,"direction":"higher","bands":[[5,1.0],[3,0.75],[1,0.5],[0,0.2]]},
+      {"field":"promoter_holding_change_pp_4q","weight":15,"direction":"higher","bands":[[1,1.0],[0.25,0.7],[0,0.3],[-1,0.1]]},
+      {"field":"bulk_block_buyer_quality_score","weight":10,"direction":"higher","bands":[[80,1.0],[65,0.75],[50,0.5],[35,0.25]]},
+      {"field":"delivery_accumulation_score","weight":15,"direction":"higher","bands":[[80,1.0],[65,0.75],[50,0.5],[35,0.25]]}
+    ],
+    "future_catalysts": [
+      {"field":"orderbook_to_sales","weight":20,"direction":"higher","bands":[[3,1.0],[2,0.8],[1,0.5],[0.5,0.2]]},
+      {"field":"order_quality_score","weight":20,"direction":"higher","bands":[[85,1.0],[70,0.75],[55,0.5],[40,0.25]]},
+      {"field":"planned_capacity_increase_pct","weight":20,"direction":"higher","bands":[[100,1.0],[60,0.8],[30,0.5],[15,0.25]]},
+      {"field":"capex_execution_score","weight":20,"direction":"higher","bands":[[85,1.0],[70,0.75],[55,0.5],[40,0.25]]},
+      {"field":"new_product_export_optionalities_score","weight":20,"direction":"higher","bands":[[80,1.0],[65,0.75],[50,0.5],[35,0.25]]}
+    ],
+    "valuation_feasibility": [
+      {"field":"valuation_reasonableness_score","weight":45,"direction":"higher","bands":[[85,1.0],[70,0.75],[55,0.5],[40,0.25]]},
+      {"field":"earnings_growth_visibility_score","weight":35,"direction":"higher","bands":[[85,1.0],[70,0.75],[55,0.5],[40,0.25]]},
+      {"field":"downside_protection_score","weight":20,"direction":"higher","bands":[[80,1.0],[65,0.75],[50,0.5],[35,0.25]]}
+    ],
+    "technical_accumulation": [
+      {"field":"relative_strength_percentile","weight":25,"direction":"higher","bands":[[90,1.0],[80,0.8],[65,0.5],[50,0.25]]},
+      {"field":"volume_accumulation_score","weight":25,"direction":"higher","bands":[[85,1.0],[70,0.75],[55,0.5],[40,0.25]]},
+      {"field":"base_quality_score","weight":20,"direction":"higher","bands":[[85,1.0],[70,0.75],[55,0.5],[40,0.25]]},
+      {"field":"price_above_200dma_pct","weight":15,"direction":"higher","bands":[[10,1.0],[0,0.75],[-10,0.4],[-20,0.15]]},
+      {"field":"distance_from_52w_high_pct","weight":15,"direction":"lower","bands":[[5,1.0],[10,0.8],[20,0.5],[35,0.2]]}
+    ]
+  }
+}
