@@ -9,6 +9,10 @@ permissions:
 
 jobs:
   blinded-review-v3:
+    # Permanently fail-closed for this frozen holdout. The all-document strict
+    # relation pass produced a mechanical maximum of 21 eligible symbols versus
+    # the preregistered minimum 30. Do not proceed to review or outcome loading.
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
@@ -75,8 +79,7 @@ jobs:
           PY
 
       - name: Show feasibility state
-        run: |
-          cat artifacts/2023-07-blinded-review-v3/snapshot/manifest.json
+        run: cat artifacts/2023-07-blinded-review-v3/snapshot/manifest.json
 
       - name: Upload blinded reviewed predictor artifact
         uses: actions/upload-artifact@v4
