@@ -2,16 +2,12 @@ name: RK-MIS July 2022 Smart Money Final 4Q Coverage Expansion
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/smart-money-4q-coverage-expansion-2022-07.yml"
 
 permissions:
   contents: read
 
 jobs:
   smart-money-4q-coverage-expansion:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap final July 2022 Smart Money coverage expansion')
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
