@@ -1,0 +1,41 @@
+{
+  "version": "rk-mis-prospective-documentary-tracking-v1",
+  "status": "LOCKED_BEFORE_PROSPECTIVE_DOCUMENT_EVIDENCE_ACCUMULATION",
+  "purpose": "Persist chronology-safe current documentary evidence so RK-MIS can build runway, moat and catalyst histories prospectively under the already-frozen review rubric instead of relying on sparse retrospective reconstruction.",
+  "source_and_review_rules": {
+    "document_date_and_known_at_required": true,
+    "document_date_must_not_exceed_known_at": true,
+    "score_eligible_source_grades": ["A","B"],
+    "minimum_extraction_confidence": 0.78,
+    "review_state_required": "APPROVED",
+    "unresolved_conflict": "NO_SCORE",
+    "https_source_required": true,
+    "automated_extraction": "CANDIDATE_ONLY"
+  },
+  "qualitative_features": {
+    "reinvestment_runway_score": {
+      "family": "RUNWAY",
+      "categories": ["committed_capacity_expansion","multi_phase_growth_roadmap","funding_visibility","physical_or_operational_headroom","ramp_or_utilisation_headroom"],
+      "method": "20 points per independently approved category, cap 100"
+    },
+    "moat_evidence_score": {
+      "family": "MOAT",
+      "categories": ["proprietary_or_ip","qualification_or_regulatory_barrier","customer_stickiness","cost_process_or_scale_advantage","market_position_or_limited_competition"],
+      "method": "20 points per independently approved category, cap 100"
+    },
+    "new_product_export_optionalities_score": {
+      "family": "OPTIONALITY",
+      "categories": ["new_product_or_platform","new_customer_or_vendor_approval","new_geography","export_expansion","adjacent_vertical_or_use_case"],
+      "method": "20 points per independently approved category, cap 100"
+    }
+  },
+  "independent_basis_rule": "The same factual basis cannot create credit in multiple categories. Cross-category claims sharing the same basis key fail closed until independently supported.",
+  "numeric_evidence": "Order book, capacity and capex records may be persisted but are not automatically converted into orderbook_to_sales, planned_capacity_increase_pct or capex_execution_score without the required denominator/comparability evidence.",
+  "management_execution": "Management promise and delivery evidence may be persisted, but promise_delivery_pct remains unavailable unless a separate execution engine establishes at least 3 independently closed commitments and their outcomes. This tracker does not relax that rule.",
+  "governance": "Governance evidence may be persisted but hard/warning flags remain subject to the existing RK-MIS governance mapping and review process.",
+  "point_in_time_rule": "A feature snapshot may use only claims whose document_date, known_at and latest review decision are on or before the requested as-of date.",
+  "missing_data_rule": "NO_IMPUTATION_NO_ZERO_SUBSTITUTION",
+  "score_rule": "Only existing RK-MIS feature names are emitted. Pillar weights and bands are unchanged.",
+  "future_holdout_rule": "Any return validation must freeze the evidence snapshot before the outcome period under a separate preregistered protocol.",
+  "official_score_mutated": false
+}
