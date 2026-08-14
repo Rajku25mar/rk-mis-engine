@@ -2,6 +2,9 @@ name: RK-MIS July 2023 Strict Qualitative Relations V3 All Documents
 
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/qualitative-documentary-relations-v3-all-2023-07.yml"
 
 permissions:
   contents: read
@@ -9,6 +12,7 @@ permissions:
 
 jobs:
   qualitative-relations-v3:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap July 2023 strict qualitative relations v3')
     runs-on: ubuntu-latest
     timeout-minutes: 50
     steps:
