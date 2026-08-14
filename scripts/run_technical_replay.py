@@ -34,8 +34,10 @@ ARCHIVE_HOSTS = (
     "https://www.nseindia.com",
 )
 NSE_HOME = "https://www.nseindia.com/"
+NSE_ALL_REPORTS = "https://www.nseindia.com/all-reports"
 NSE_ACTIONS_PAGE = "https://www.nseindia.com/companies-listing/corporate-filings-actions"
-USER_AGENT = "Mozilla/5.0 (compatible; RK-MIS-Public-Historical-Replay/1.0; bounded-manual-research)"
+UDIFF_START = date(2024, 7, 8)
+USER_AGENT = "Mozilla/5.0 (compatible; RK-MIS-Public-Historical-Replay/1.1; bounded-manual-research)"
 
 
 class ReplayError(RuntimeError):
@@ -69,7 +71,7 @@ def iso_date(value: Any) -> str | None:
 
 
 class OfficialSession:
-    def __init__(self, *, timeout: int = 30, request_budget: int = 1000, sleep_seconds: float = 0.03):
+    def __init__(self, *, timeout: int = 30, request_budget: int = 1100, sleep_seconds: float = 0.03):
         self.timeout = timeout
         self.request_budget = request_budget
         self.sleep_seconds = sleep_seconds
@@ -103,16 +105,16 @@ class OfficialSession:
 
     def warm(self) -> None:
         if not self.warmed:
-            self.request(NSE_ACTIONS_PAGE, referer=NSE_HOME, accept="text/html,*/*")
+            self.request(NSE_ALL_REPORTS, referer=NSE_HOME, accept="text/html,*/*")
             self.warmed = True
 
-    def json(self, url: str) -> Any:
+    def json(self, url: str, *, referer: str = NSE_ACTIONS_PAGE) -> Any:
         self.warm()
-        raw = self.request(url, referer=NSE_ACTIONS_PAGE, accept="application/json,text/plain,*/*")
+        raw = self.request(url, referer=referer, accept="application/json,text/plain,*/*")
         return json.loads(raw.decode("utf-8-sig"))
 
 
-def bhavcopy_location(day: str) -> tuple[str, str]:
+def legacy_bhavcopy_location(day: str) -> tuple[str, str]:
     d = date.fromisoformat(day)
     mon = d.strftime("%b").upper()
     name = f"cm{d.strftime('%d')}{mon}{d.year}bhav.csv.zip"
@@ -120,22 +122,140 @@ def bhavcopy_location(day: str) -> tuple[str, str]:
     return name, rel
 
 
-def fetch_bhavcopy(day: str, session: OfficialSession, *, quiet_missing: bool = False) -> tuple[bytes, dict[str, Any]] | None:
-    _, rel = bhavcopy_location(day)
-    errors: list[str] = []
+def udiff_filename(day: str) -> str:
+    return f"BhavCopy_NSE_CM_0_0_0_{date.fromisoformat(day).strftime('%Y%m%d')}_F_0000.csv.zip"
+
+
+def _walk_strings(value: Any) -> Iterable[str]:
+    if isinstance(value, str):
+        yield value
+    elif isinstance(value, dict):
+        for k, v in value.items():
+            yield from _walk_strings(k)
+            yield from _walk_strings(v)
+    elif isinstance(value, (list, tuple)):
+        for item in value:
+            yield from _walk_strings(item)
+
+
+def _normalise_official_download_candidate(value: str, expected: str) -> str | None:
+    text = str(value or "").strip()
+    if expected.lower() not in text.lower():
+        return None
+    if text.startswith("https://"):
+        host = (urllib.parse.urlparse(text).hostname or "").lower()
+        if host == "nseindia.com" or host.endswith(".nseindia.com"):
+            return text
+        return None
+    if text.startswith("/"):
+        return "https://nsearchives.nseindia.com" + text
+    return None
+
+
+def _udiff_candidates_from_daily_reports(day: str, session: OfficialSession) -> tuple[list[str], list[dict[str, Any]]]:
+    expected = udiff_filename(day)
+    d = date.fromisoformat(day)
+    found: list[str] = []
+    api_meta: list[dict[str, Any]] = []
+    # NSE has exposed historical/current report metadata through /api/daily-reports.
+    # Date syntax has changed across site generations, so bounded variants are tried.
+    for date_text in (d.strftime("%d-%m-%Y"), d.strftime("%d-%b-%Y"), d.isoformat()):
+        query = urllib.parse.urlencode({"key": "CM", "date": date_text})
+        url = "https://www.nseindia.com/api/daily-reports?" + query
+        try:
+            payload = session.json(url, referer=NSE_ALL_REPORTS)
+        except Exception as exc:
+            api_meta.append({"url": url, "status": "ERROR", "error": type(exc).__name__})
+            continue
+        payload_bytes = json.dumps(payload, sort_keys=True, ensure_ascii=False).encode("utf-8")
+        strings = list(_walk_strings(payload))
+        matched = False
+        for value in strings:
+            candidate = _normalise_official_download_candidate(value, expected)
+            if candidate:
+                found.append(candidate); matched = True
+        # Some API shapes expose fileName separately from a path/URL. If the exact
+        # filename is present, deterministic official archive candidates are added.
+        if any(expected.lower() in s.lower() for s in strings):
+            matched = True
+        api_meta.append({
+            "url": url,
+            "status": "OK",
+            "sha256": sha256(payload_bytes),
+            "exact_filename_seen": matched,
+        })
+        if matched:
+            break
+    return list(dict.fromkeys(found)), api_meta
+
+
+def fetch_udiff_bhavcopy(day: str, session: OfficialSession) -> tuple[bytes, dict[str, Any]] | None:
+    expected = udiff_filename(day)
+    d = date.fromisoformat(day)
+    mon = d.strftime("%b").upper()
+    api_candidates, api_meta = _udiff_candidates_from_daily_reports(day, session)
+    # Direct candidates are retained because NSE's daily-report JSON has used both
+    # full URLs and filename-only metadata over time. Every candidate remains on an
+    # official NSE archive host and is validated as a ZIP before acceptance.
+    direct_candidates = [
+        f"https://nsearchives.nseindia.com/content/cm/{expected}",
+        f"https://nsearchives.nseindia.com/content/equities/{expected}",
+        f"https://nsearchives.nseindia.com/content/historical/EQUITIES/{d.year}/{mon}/{expected}",
+        f"https://nsearchives.nseindia.com/products/content/{expected}",
+        f"https://www1.nseindia.com/content/cm/{expected}",
+    ]
+    candidates = list(dict.fromkeys(api_candidates + direct_candidates))
+    for url in candidates:
+        try:
+            raw = session.request(url, referer=NSE_ALL_REPORTS, accept="application/zip,*/*")
+            if len(raw) < 100 or not raw.startswith(b"PK"):
+                continue
+            return raw, {
+                "date": day,
+                "source_url": url,
+                "sha256": sha256(raw),
+                "byte_size": len(raw),
+                "format": "NSE_CM_UDIFF_BHAVCOPY",
+                "daily_reports_api_probe": api_meta,
+            }
+        except ReplayError:
+            time.sleep(session.sleep_seconds)
+    return None
+
+
+def fetch_legacy_bhavcopy(day: str, session: OfficialSession) -> tuple[bytes, dict[str, Any]] | None:
+    _, rel = legacy_bhavcopy_location(day)
     for host in ARCHIVE_HOSTS[:2]:
         url = host + rel
         try:
-            raw = session.request(url, referer="https://www.nseindia.com/all-reports", accept="application/zip,*/*")
+            raw = session.request(url, referer=NSE_ALL_REPORTS, accept="application/zip,*/*")
             if len(raw) < 100 or not raw.startswith(b"PK"):
-                raise ReplayError("response is not a ZIP bhavcopy")
-            return raw, {"date": day, "source_url": url, "sha256": sha256(raw), "byte_size": len(raw)}
-        except ReplayError as exc:
-            errors.append(str(exc))
+                continue
+            return raw, {
+                "date": day,
+                "source_url": url,
+                "sha256": sha256(raw),
+                "byte_size": len(raw),
+                "format": "NSE_CM_LEGACY_BHAVCOPY",
+            }
+        except ReplayError:
             time.sleep(session.sleep_seconds)
+    return None
+
+
+def fetch_bhavcopy(day: str, session: OfficialSession, *, quiet_missing: bool = False) -> tuple[bytes, dict[str, Any]] | None:
+    d = date.fromisoformat(day)
+    hit = fetch_udiff_bhavcopy(day, session) if d >= UDIFF_START else fetch_legacy_bhavcopy(day, session)
+    if hit:
+        return hit
+    # Around the formal transition boundary, try the alternate official format as
+    # a source-compatibility fallback. This changes acquisition only, never score rules.
+    alternate = fetch_legacy_bhavcopy(day, session) if d >= UDIFF_START else fetch_udiff_bhavcopy(day, session)
+    if alternate:
+        return alternate
     if quiet_missing:
         return None
-    raise ReplayError("bhavcopy unavailable for " + day + ": " + " | ".join(errors))
+    raise ReplayError(f"no supported official NSE CM bhavcopy found for {day}")
 
 
 def resolve_on_or_before(target: str, session: OfficialSession, days: int = 5) -> tuple[str, bytes, dict[str, Any]]:
@@ -169,19 +289,23 @@ def parse_bhavcopy(raw: bytes) -> list[dict[str, Any]]:
     rows: list[dict[str, Any]] = []
     for raw_row in csv.DictReader(io.StringIO(text)):
         r = {str(k).strip().upper(): v for k, v in raw_row.items() if k is not None}
-        symbol = str(r.get("SYMBOL") or "").strip().upper()
+        # Legacy CM aliases and UDiFF ISO-tag aliases are both accepted. UDiFF CM
+        # Bhavcopy uses TckrSymb/SctySrs/OpnPric/HghPric/LwPric/ClsPric,
+        # TtlTradgVol/TtlTrfVal and ISIN.
+        symbol = str(r.get("SYMBOL") or r.get("TCKRSYMB") or "").strip().upper()
         if not symbol:
             continue
         rows.append({
             "symbol": symbol,
-            "series": str(r.get("SERIES") or "").strip().upper(),
-            "open": num(r.get("OPEN")),
-            "high": num(r.get("HIGH")),
-            "low": num(r.get("LOW")),
-            "close": num(r.get("CLOSE")),
-            "volume": num(r.get("TOTTRDQTY")),
-            "turnover": num(r.get("TOTTRDVAL")),
+            "series": str(r.get("SERIES") or r.get("SCTYSRS") or "").strip().upper(),
+            "open": num(r.get("OPEN") if r.get("OPEN") not in (None, "") else r.get("OPNPRIC")),
+            "high": num(r.get("HIGH") if r.get("HIGH") not in (None, "") else r.get("HGHPRIC")),
+            "low": num(r.get("LOW") if r.get("LOW") not in (None, "") else r.get("LWPRIC")),
+            "close": num(r.get("CLOSE") if r.get("CLOSE") not in (None, "") else r.get("CLSPRIC")),
+            "volume": num(r.get("TOTTRDQTY") if r.get("TOTTRDQTY") not in (None, "") else r.get("TTLTRADGVOL")),
+            "turnover": num(r.get("TOTTRDVAL") if r.get("TOTTRDVAL") not in (None, "") else r.get("TTLTRFVAL")),
             "isin": str(r.get("ISIN") or "").strip().upper() or None,
+            "instrument_type": str(r.get("FININSTRMTP") or "").strip().upper() or None,
         })
     return rows
 
@@ -210,7 +334,6 @@ def company_universe(rows: Iterable[dict[str, Any]], as_of: str) -> list[dict[st
 
 
 def fetch_actions(session: OfficialSession, start: str, end: str) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    # Split long horizons into calendar-year requests to keep each official response bounded.
     d0, d1 = date.fromisoformat(start), date.fromisoformat(end)
     cursor = d0
     all_rows: list[dict[str, Any]] = []
@@ -249,7 +372,6 @@ def normalize_actions(rows: Iterable[dict[str, Any]]) -> dict[str, list[dict[str
             action["symbol"] = symbol
             by_symbol[symbol].append(action)
         except Exception:
-            # Unknown/unparseable rows do not silently create a price factor.
             continue
     return by_symbol
 
@@ -561,12 +683,11 @@ def main() -> None:
         raise ReplayError(f"sample underflow: expected {args.sample_size}, got {len(sample)}")
 
     snapshot, predictor_manifest = technical_snapshot(sample, args.lookback_start, resolved_anchor, session, config)
-    # Predictor snapshot is complete here. Only now are future entry/outcome archives requested.
     joined, outcome_manifest = acquire_outcomes(snapshot, args.anchor, args.outcome, session)
     metrics = evaluate(joined)
 
     report = {
-        "version": "rk-mis-technical-replay-v1",
+        "version": "rk-mis-technical-replay-v1.1",
         "protocol": str(args.protocol),
         "protocol_sha256": sha256(args.protocol.read_bytes()),
         "anchor_target": args.anchor,
@@ -582,6 +703,7 @@ def main() -> None:
         "official_100_point_score_mutated": False,
         "alpha_claim": False,
         "no_post_result_tuning": True,
+        "acquisition_compatibility_change_only": "NSE legacy CM bhavcopy before UDiFF transition; UDiFF CM bhavcopy after transition",
     }
     manifest = {
         "anchor_source": anchor_meta,
