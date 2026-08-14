@@ -1,0 +1,36 @@
+{
+  "version": "rk-mis-smart-money-schema-probe-2021-v1",
+  "status": "FROZEN_PRE_OUTCOME_SCHEMA_AND_COVERAGE_DIAGNOSIS",
+  "purpose": "Determine whether the official historical NSE shareholding source exposes chronology-safe fields capable of supporting the already-approved MF holding change, FII holding change and institutional breadth components before any 2024 outcome prices are loaded.",
+  "anchor_date": "2021-01-29",
+  "shareholding_window": {
+    "from_date": "2019-10-01",
+    "to_date": "2021-01-29"
+  },
+  "sample_size": 12,
+  "sample_rule": "SHA256 outcome-blind deterministic NSE EQ sample at the anchor",
+  "sample_salt": "RK-MIS-SMART-MONEY-SCHEMA|2021-01-29",
+  "source": "NSE_CORPORATE_SHARE_HOLDINGS_MASTER",
+  "approved_fields_being_investigated": [
+    "mf_holding_change_pp_4q",
+    "fii_holding_change_pp_4q",
+    "institutional_breadth_change_4q"
+  ],
+  "allowed_output": [
+    "response field names",
+    "field non-null counts",
+    "field data-type counts",
+    "candidate institutional field-name matches",
+    "source hashes and request metadata"
+  ],
+  "prohibited_output": [
+    "raw shareholding rows",
+    "company-level holding values",
+    "future prices",
+    "future returns",
+    "outcome-aware feature selection"
+  ],
+  "decision_rule": "Only fields with clear source semantics and sufficient historical coverage may proceed to a separately preregistered smart-money replay. Do not derive institutional categories from ambiguous field names.",
+  "future_outcomes_seen": false,
+  "official_score_mutated": false
+}
