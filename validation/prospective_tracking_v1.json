@@ -1,0 +1,49 @@
+{
+  "version": "rk-mis-prospective-tracking-v1",
+  "status": "IMPLEMENTED_POINT_IN_TIME_TRACKING_POLICY",
+  "effective_date": "2026-08-15",
+  "official_100_point_score_mutated": false,
+  "purpose": "Accumulate current evidence prospectively so future RK-MIS validation does not depend on sparse retrospective reconstruction.",
+  "smart_money": {
+    "state": "IMPLEMENTED",
+    "authorized_structured_source": "Upstox Company Fundamentals Share Holdings API",
+    "endpoint_template": "https://api.upstox.com/v2/fundamentals/{isin}/share-holdings",
+    "source_grade": "A",
+    "provider_field_mapping": {
+      "mutual_funds": "mf_holding_pct",
+      "fii": "fii_holding_pct",
+      "promoters": "promoter_holding_pct"
+    },
+    "explicit_non_mapping": {
+      "other_dii": "NOT_INSTITUTIONAL_BREADTH",
+      "retail_and_other": "NOT_A_SMART_MONEY_SCORE_FIELD"
+    },
+    "institutional_breadth": "MISSING_UNTIL_AN_AUTHORIZED_SOURCE_PROVIDES_THE_LOCKED_SHAREHOLDER_COUNT_OR_EQUIVALENT_DEFINITION",
+    "capture_rule": "Journal only the latest currently observable reporting quarter from each current provider response. Do not backfill older history returned in the same response as if RK-MIS had observed it at the historical date.",
+    "known_at_rule": "Use the RK-MIS capture date; later revisions replace a period only for as-of dates at or after the later observation.",
+    "feature_release_rule": "A 4Q change requires five point-in-time observed periods spanning 330-400 days. Missing component values are not imputed.",
+    "scoring_eligible_source_grades": ["A", "B"],
+    "historical_provider_quarters_backfilled": false,
+    "other_dii_mapped_to_institutional_breadth": false,
+    "supporting_historical_feasibility_result": "validation/2022-07/smart_money_4q_coverage_expansion_result_v2.json"
+  },
+  "documentary_discovery": {
+    "state": "FRAMEWORK_AVAILABLE_PROSPECTIVE_REVIEW_REQUIRED",
+    "components": [
+      "DOCUMENTARY_RUNWAY",
+      "DOCUMENTARY_MOAT",
+      "DOCUMENTARY_FORWARD_CATALYSTS",
+      "MANAGEMENT_EXECUTION_HISTORY"
+    ],
+    "rule": "Only chronology-safe reviewed evidence may fill approved feature fields. Automated candidates are not scores until the review gate approves them.",
+    "historical_reconstruction_status": "NSE_ONLY_2023_HOLDOUT_INFEASIBLE_AT_FROZEN_MINIMUM_COHORT"
+  },
+  "global_rules": [
+    "ISIN-first identity where available.",
+    "No missing-data imputation.",
+    "No provider category relabelling merely to improve coverage.",
+    "No score-band or pillar-weight change from prospective tracking itself.",
+    "Future return testing must be preregistered before outcome load.",
+    "Management promise delivery remains unavailable until at least three closed reviewed promises."
+  ]
+}
