@@ -10,6 +10,8 @@ sys.path.insert(0, str(ROOT / "src"))
 
 from multibagger_pipeline.prospective_documentary import ProspectiveDocumentClaim, ProspectiveDocumentEvidenceStore
 
+PIN = "a" * 64
+
 
 class ProspectiveDocumentaryTests(unittest.TestCase):
     def setUp(self) -> None:
@@ -19,7 +21,19 @@ class ProspectiveDocumentaryTests(unittest.TestCase):
     def tearDown(self) -> None:
         self.tmp.cleanup()
 
-    def claim(self, family: str, category: str, statement: str, *, known_at: str = "2026-07-01", confidence: float = 0.9, grade: str = "A", basis_key: str | None = None, promise_id: str | None = None) -> ProspectiveDocumentClaim:
+    def claim(
+        self,
+        family: str,
+        category: str,
+        statement: str,
+        *,
+        known_at: str = "2026-07-01",
+        confidence: float = 0.9,
+        grade: str = "A",
+        basis_key: str | None = None,
+        promise_id: str | None = None,
+        source_sha256: str | None = PIN,
+    ) -> ProspectiveDocumentClaim:
         return ProspectiveDocumentClaim(
             isin="INE000A01001",
             symbol="AAA",
@@ -32,6 +46,7 @@ class ProspectiveDocumentaryTests(unittest.TestCase):
             known_at=known_at,
             source_grade=grade,
             extraction_confidence=confidence,
+            source_sha256=source_sha256,
             basis_key=basis_key,
             promise_id=promise_id,
         )
@@ -70,6 +85,26 @@ class ProspectiveDocumentaryTests(unittest.TestCase):
         self.assertIsNone(result["features"]["moat_evidence_score"])
         self.assertTrue(any(x.startswith("CROSS_CATEGORY_SHARED_FACTUAL_BASIS:MOAT") for x in result["warnings"]))
 
+    def test_same_factual_basis_cannot_score_multiple_families(self) -> None:
+        basis = "BASIS-CROSS-FAMILY"
+        a = self.store.add_claim(self.claim("RUNWAY", "committed_capacity_expansion", "One expansion fact", basis_key=basis))
+        b = self.store.add_claim(self.claim("OPTIONALITY", "new_product_or_platform", "Same expansion fact relabelled", basis_key=basis))
+        self.approve(a); self.approve(b)
+        result = self.store.derive_snapshot(isin="INE000A01001", as_of_date="2026-07-31")
+        self.assertIsNone(result["features"]["reinvestment_runway_score"])
+        self.assertIsNone(result["features"]["new_product_export_optionalities_score"])
+        self.assertIn("CROSS_FAMILY_SHARED_FACTUAL_BASIS:1", result["warnings"])
+
+    def test_unpinned_binary_cannot_score_even_if_approved(self) -> None:
+        claim_id = self.store.add_claim(self.claim(
+            "MOAT", "proprietary_or_ip", "Unpinned primary document", source_sha256=None
+        ))
+        self.approve(claim_id)
+        result = self.store.derive_snapshot(isin="INE000A01001", as_of_date="2026-07-31")
+        self.assertIsNone(result["features"]["moat_evidence_score"])
+        self.assertEqual(result["eligible_claim_count"], 0)
+        self.assertEqual(result["ineligible_claim_count"], 1)
+
     def test_low_confidence_and_grade_c_claims_are_ineligible(self) -> None:
         a = self.store.add_claim(self.claim("OPTIONALITY", "new_product_or_platform", "New platform launched", confidence=0.6))
         b = self.store.add_claim(self.claim("OPTIONALITY", "export_expansion", "New export customer added", grade="C"))
@@ -105,6 +140,7 @@ class ProspectiveDocumentaryTests(unittest.TestCase):
                 known_at="2026-07-01",
                 source_grade="A",
                 extraction_confidence=0.9,
+                source_sha256=PIN,
             ))
 
 
