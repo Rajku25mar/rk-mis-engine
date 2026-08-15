@@ -16,19 +16,23 @@ def sha256(data: bytes) -> str:
 
 
 def main() -> None:
-    p = argparse.ArgumentParser(description="Compile a reviewed RK-MIS documentary ledger into point-in-time features")
-    p.add_argument("--ledger", type=Path, required=True)
+    p = argparse.ArgumentParser(description="Compile one or more reviewed RK-MIS documentary ledgers into point-in-time features")
+    p.add_argument("--ledger", type=Path, required=True, nargs="+")
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--db", type=Path)
     args = p.parse_args()
 
-    ledger = json.loads(args.ledger.read_text(encoding="utf-8"))
-    if ledger.get("status") != "REVIEWED_PRIMARY_SOURCE_EVIDENCE":
-        raise ValueError("ledger is not in reviewed-primary-evidence state")
-    as_of = str(ledger["as_of_date"])
-    decisions = ledger.get("decisions") or []
-    if not isinstance(decisions, list) or not decisions:
-        raise ValueError("review ledger contains no decisions")
+    ledgers: list[tuple[Path, dict[str, Any]]] = []
+    as_of_dates = set()
+    for path in args.ledger:
+        ledger = json.loads(path.read_text(encoding="utf-8"))
+        if ledger.get("status") != "REVIEWED_PRIMARY_SOURCE_EVIDENCE":
+            raise ValueError(f"ledger is not in reviewed-primary-evidence state: {path}")
+        as_of_dates.add(str(ledger["as_of_date"]))
+        ledgers.append((path, ledger))
+    if len(as_of_dates) != 1:
+        raise ValueError(f"all layered ledgers must use one as_of_date, got {sorted(as_of_dates)}")
+    as_of = next(iter(as_of_dates))
 
     if args.db:
         db_path = args.db
@@ -41,28 +45,33 @@ def main() -> None:
     store = ProspectiveDocumentEvidenceStore(db_path)
     review_counts: Counter[str] = Counter()
     claim_counts: Counter[str] = Counter()
+    total_decisions = 0
 
-    reviewed_at_default = str(ledger.get("review_policy", {}).get("reviewed_at") or as_of)
-    reviewer_default = str(ledger.get("review_policy", {}).get("reviewer") or "RK_MIS_REVIEW")
-
-    for item in decisions:
-        claim = item.get("claim")
-        review = item.get("review") or {}
-        if not isinstance(claim, dict):
-            raise ValueError("each decision requires a claim object")
-        state = str(review.get("state") or "").upper()
-        if state not in {"APPROVED", "REJECTED", "PENDING"}:
-            raise ValueError(f"invalid decision review state {state!r}")
-        claim_id = store.add_claim(claim)
-        claim_counts[f"{claim['evidence_family']}.{claim['evidence_category']}"] += 1
-        store.review(
-            claim_id,
-            state,
-            reviewed_at=str(review.get("reviewed_at") or reviewed_at_default),
-            reviewer=str(review.get("reviewer") or reviewer_default),
-            note=str(review.get("note") or ""),
-        )
-        review_counts[state] += 1
+    for path, ledger in ledgers:
+        decisions = ledger.get("decisions") or []
+        if not isinstance(decisions, list) or not decisions:
+            raise ValueError(f"review ledger contains no decisions: {path}")
+        total_decisions += len(decisions)
+        reviewed_at_default = str(ledger.get("review_policy", {}).get("reviewed_at") or as_of)
+        reviewer_default = str(ledger.get("review_policy", {}).get("reviewer") or "RK_MIS_REVIEW")
+        for item in decisions:
+            claim = item.get("claim")
+            review = item.get("review") or {}
+            if not isinstance(claim, dict):
+                raise ValueError(f"decision in {path} requires a claim object")
+            state = str(review.get("state") or "").upper()
+            if state not in {"APPROVED", "REJECTED", "PENDING"}:
+                raise ValueError(f"invalid decision review state {state!r}")
+            claim_id = store.add_claim(claim)
+            claim_counts[f"{claim['evidence_family']}.{claim['evidence_category']}"] += 1
+            store.review(
+                claim_id,
+                state,
+                reviewed_at=str(review.get("reviewed_at") or reviewed_at_default),
+                reviewer=str(review.get("reviewer") or reviewer_default),
+                note=str(review.get("note") or ""),
+            )
+            review_counts[state] += 1
 
     rows = store.derive_all(as_of_date=as_of)
     rows.sort(key=lambda row: (str(row.get("symbol") or ""), str(row.get("isin") or "")))
@@ -84,12 +93,16 @@ def main() -> None:
             "point_in_time_safe": row["point_in_time_safe"],
         })
 
+    ledger_meta = [
+        {"path": str(path), "sha256": sha256(path.read_bytes()), "decision_rows": len(ledger.get("decisions") or [])}
+        for path, ledger in ledgers
+    ]
     report = {
-        "version": "rk-mis-reviewed-prospective-documentary-compile-v1",
-        "ledger_path": str(args.ledger),
-        "ledger_sha256": sha256(args.ledger.read_bytes()),
+        "version": "rk-mis-reviewed-prospective-documentary-compile-v1.1",
+        "ledgers": ledger_meta,
+        "ledger_chain_sha256": sha256("\n".join(f"{x['path']}|{x['sha256']}" for x in ledger_meta).encode("utf-8")),
         "as_of_date": as_of,
-        "decision_rows": len(decisions),
+        "decision_rows": total_decisions,
         "review_state_counts": dict(sorted(review_counts.items())),
         "claim_category_counts": dict(sorted(claim_counts.items())),
         "identities": len(feature_rows),
@@ -105,7 +118,7 @@ def main() -> None:
 
     args.output.mkdir(parents=True, exist_ok=True)
     (args.output / "features.json").write_text(json.dumps({
-        "version": "rk-mis-prospective-documentary-features-v1",
+        "version": "rk-mis-prospective-documentary-features-v1.1",
         "as_of_date": as_of,
         "rows": feature_rows,
         "missing_data_imputed": False,
