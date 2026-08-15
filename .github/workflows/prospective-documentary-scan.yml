@@ -1,5 +1,6 @@
 name: RK-MIS Prospective Documentary Discovery
 
+# Segment-aware acquisition v2: SME watchlist uses NSE index=sme.
 on:
   workflow_dispatch:
   push:
@@ -62,7 +63,7 @@ jobs:
       - name: Upload review queue only
         uses: actions/upload-artifact@v4
         with:
-          name: rk-mis-prospective-documentary-2026-08-15
+          name: rk-mis-prospective-documentary-2026-08-15-v2
           path: |
             artifacts/prospective-documentary/report.json
             artifacts/prospective-documentary/review_queue.json
