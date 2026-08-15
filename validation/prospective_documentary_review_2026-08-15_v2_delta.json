@@ -1,0 +1,130 @@
+{
+  "version": "rk-mis-prospective-documentary-review-2026-08-15-v2-delta",
+  "status": "REVIEWED_PRIMARY_SOURCE_EVIDENCE",
+  "as_of_date": "2026-08-15",
+  "extends": "validation/prospective_documentary_review_2026-08-15_v1.json",
+  "review_policy": {
+    "reviewer": "RK_MIS_MODEL_REVIEW",
+    "reviewed_at": "2026-08-15",
+    "source_grades_allowed_for_scoring": ["A", "B"],
+    "minimum_extraction_confidence": 0.78,
+    "binary_sha256_required": true,
+    "automatic_keyword_hit_is_score": false,
+    "same_factual_basis_cross_category_or_cross_family_double_counting": "FAIL_CLOSED"
+  },
+  "decisions": [
+    {
+      "source_locator": {"pdf_page": 3, "note": "Strategic investments and execution capacity"},
+      "claim": {
+        "isin": "INE0QD201012",
+        "symbol": "TECHLABS",
+        "evidence_family": "RUNWAY",
+        "evidence_category": "physical_or_operational_headroom",
+        "statement": "Trident Techlabs reports deliberate investment in its semiconductor design subsidiary and international operations together with recruitment of engineering and technical talent to build execution capacity for an expanding pipeline.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/TRIDENTTECHLABS_25052026130159_PRESS_REALEASE-TRIDENT.pdf",
+        "document_type": "PRESS_RELEASE",
+        "document_date": "2026-05-25",
+        "known_at": "2026-05-25",
+        "source_grade": "A",
+        "extraction_confidence": 0.98,
+        "source_sha256": "9d13c05cd7a3729790cfc2bef4894ef08228d47b69a06aa2b363a4fa619ae573",
+        "basis_key": "TECHLABS-20260525-P3-OPERATIONAL-HEADROOM"
+      },
+      "review": {"state": "APPROVED", "note": "Operational capability investment and hiring support execution headroom; this is not labelled manufacturing capacity."}
+    },
+    {
+      "source_locator": {"pdf_page": 3, "note": "International operations capability build"},
+      "claim": {
+        "isin": "INE0QD201012",
+        "symbol": "TECHLABS",
+        "evidence_family": "OPTIONALITY",
+        "evidence_category": "new_geography",
+        "statement": "Trident Techlabs has a wholly owned UAE subsidiary and is investing in international operations to broaden its addressable market.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/TRIDENTTECHLABS_25052026130159_PRESS_REALEASE-TRIDENT.pdf",
+        "document_type": "PRESS_RELEASE",
+        "document_date": "2026-05-25",
+        "known_at": "2026-05-25",
+        "source_grade": "A",
+        "extraction_confidence": 0.98,
+        "source_sha256": "9d13c05cd7a3729790cfc2bef4894ef08228d47b69a06aa2b363a4fa619ae573",
+        "basis_key": "TECHLABS-20260525-P3-UAE-GEOGRAPHY"
+      },
+      "review": {"state": "APPROVED", "note": "Existing UAE subsidiary and current international investment make this concrete geography optionality."}
+    },
+    {
+      "source_locator": {"pdf_page": 3, "note": "Power solutions product roadmap in earnings call"},
+      "claim": {
+        "isin": "INE0QD201012",
+        "symbol": "TECHLABS",
+        "evidence_family": "OPTIONALITY",
+        "evidence_category": "new_product_or_platform",
+        "statement": "Management says its indigenous phase-identification product design is complete, the product is under testing with about 90% results proven, and it intends to take the product to market in the upcoming months.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/TRIDENTTECHLABS_12062026214558_Trident_Techlabs_Concall.pdf",
+        "document_type": "CONCALL_OR_INVESTOR_MEET",
+        "document_date": "2026-06-12",
+        "known_at": "2026-06-12",
+        "source_grade": "A",
+        "extraction_confidence": 0.98,
+        "source_sha256": "a9b5ba7d06ce1983feb5f8012a15dcadab8a5877e11f83e9c645a5460755a8e8",
+        "basis_key": "TECHLABS-20260612-P3-PHASE-DETECTION-PRODUCT"
+      },
+      "review": {"state": "APPROVED", "note": "Specific product has completed design and is under testing; launch is prospective, not assumed completed."}
+    },
+    {
+      "source_locator": {"pdf_page": 19, "note": "Order-in-hand discussion"},
+      "claim": {
+        "isin": "INE0QD201012",
+        "symbol": "TECHLABS",
+        "evidence_family": "ORDER",
+        "evidence_category": "order_book",
+        "statement": "Management states that order-in-hand is approximately INR 35 crore, including items that will be billed over future periods such as AMC, services and facility-management components.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/TRIDENTTECHLABS_12062026214558_Trident_Techlabs_Concall.pdf",
+        "document_type": "CONCALL_OR_INVESTOR_MEET",
+        "document_date": "2026-06-12",
+        "known_at": "2026-06-12",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "a9b5ba7d06ce1983feb5f8012a15dcadab8a5877e11f83e9c645a5460755a8e8",
+        "basis_key": "TECHLABS-20260612-P19-ORDER-IN-HAND"
+      },
+      "review": {"state": "APPROVED", "note": "Explicit current order-in-hand disclosure; not extrapolated to future order wins."}
+    },
+    {
+      "source_locator": {"pdf_page": 2, "note": "Opening management guidance plus later Q&A qualification"},
+      "claim": {
+        "isin": "INE0QD201012",
+        "symbol": "TECHLABS",
+        "evidence_family": "MANAGEMENT",
+        "evidence_category": "management_promise",
+        "statement": "Management guides to approximately 30% CAGR in consolidated revenue, EBITDA and PAT over the next three years; later in the same call the CEO explicitly characterises the 30% figure as guidance rather than a firm commitment.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/TRIDENTTECHLABS_12062026214558_Trident_Techlabs_Concall.pdf",
+        "document_type": "CONCALL_OR_INVESTOR_MEET",
+        "document_date": "2026-06-12",
+        "known_at": "2026-06-12",
+        "source_grade": "A",
+        "extraction_confidence": 0.94,
+        "source_sha256": "a9b5ba7d06ce1983feb5f8012a15dcadab8a5877e11f83e9c645a5460755a8e8",
+        "due_date": "2029-03-31",
+        "basis_key": "TECHLABS-20260612-THREE-YEAR-GUIDANCE",
+        "promise_id": "TECHLABS-2026-30PCT-CAGR-GUIDANCE"
+      },
+      "review": {"state": "APPROVED", "note": "Stored as measurable management guidance for prospective delivery tracking. The same-call qualification is preserved and no Management Execution score is created now."}
+    }
+  ],
+  "explicit_rejections": [
+    {
+      "symbol": "TECHLABS",
+      "source_sha256": "9d13c05cd7a3729790cfc2bef4894ef08228d47b69a06aa2b363a4fa619ae573",
+      "candidate_family": "CAPACITY",
+      "reason": "The press release uses 'execution capacity' for human/operational capability, not disclosed manufacturing capacity. No CAPACITY claim is created."
+    },
+    {
+      "symbol": "TECHLABS",
+      "candidate_family": "MOAT",
+      "reason": "Long OEM relationships and management's own use of the word 'moat' are useful context but do not yet independently satisfy the frozen moat evidence categories strongly enough for a score."
+    }
+  ],
+  "automatic_score_changes": false,
+  "management_execution_score_created": false,
+  "missing_data_imputed": false
+}
