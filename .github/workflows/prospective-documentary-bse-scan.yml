@@ -1,0 +1,65 @@
+name: RK-MIS Prospective BSE Documentary Discovery
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/prospective-documentary-bse-scan.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  discover-bse:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap prospective BSE documentary discovery scan')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install PDF parser
+        run: python -m pip install --disable-pip-version-check pypdf
+      - name: Compile bounded BSE discovery runner
+        run: python -m py_compile scripts/discover_prospective_bse_documentary.py
+      - name: Run four-scrip BSE discovery
+        run: |
+          python scripts/discover_prospective_bse_documentary.py \
+            --watchlist config/prospective_documentary_watchlist_v1.json \
+            --policy validation/prospective_documentary_discovery_bse_v1.json \
+            --from-date 2026-04-17 \
+            --to-date 2026-08-15 \
+            --output artifacts/prospective-bse-documentary
+      - name: Enforce candidate-only BSE boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('artifacts/prospective-bse-documentary')
+          files={p.name for p in root.iterdir() if p.is_file()}
+          assert files=={'report.json','review_queue.json','document_manifest.json'}, files
+          report=json.loads((root/'report.json').read_text())
+          queue=json.loads((root/'review_queue.json').read_text())
+          assert report['watchlist_scrips']==4
+          assert report['automated_candidates_are_scores'] is False
+          assert report['review_required_before_scoring'] is True
+          assert report['raw_api_payload_published'] is False
+          assert report['raw_pdf_published'] is False
+          assert report['raw_pdf_text_published'] is False
+          assert queue['raw_document_text_included'] is False
+          assert queue['automatic_score_included'] is False
+          assert all(r['review_state']=='PENDING' and r['score_eligible'] is False for r in queue['candidates'])
+          print('RK_MIS_BSE_DOCUMENTARY_BOUNDARY=PASS')
+          PY
+      - name: Show aggregate BSE discovery report
+        run: cat artifacts/prospective-bse-documentary/report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rk-mis-prospective-bse-documentary-2026-08-15
+          path: |
+            artifacts/prospective-bse-documentary/report.json
+            artifacts/prospective-bse-documentary/review_queue.json
+            artifacts/prospective-bse-documentary/document_manifest.json
+          retention-days: 14
+          if-no-files-found: error
