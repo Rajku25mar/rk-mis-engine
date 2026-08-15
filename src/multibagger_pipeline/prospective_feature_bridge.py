@@ -14,6 +14,10 @@ PROSPECTIVE_FEATURE_FIELDS = (
     "fii_holding_change_pp_4q",
     "institutional_breadth_change_4q",
     "promoter_holding_change_pp_4q",
+    "order_quality_score",
+    "orderbook_to_sales",
+    "capex_execution_score",
+    "planned_capacity_increase_pct",
 )
 
 
@@ -60,7 +64,6 @@ def _match(base: dict[str, Any], by_isin: dict[str, dict[str, Any]], by_symbol: 
         row = by_isin.get(isin)
         if row is not None:
             return row, "ISIN"
-        # Do not fall back to symbol if both sides carry conflicting ISIN identities.
         symbol_row = by_symbol.get(symbol) if symbol else None
         if symbol_row is not None and _text(symbol_row.get("isin")):
             return None, "ISIN_NO_MATCH_SYMBOL_FALLBACK_BLOCKED"
@@ -131,10 +134,15 @@ def merge_prospective_features(
 def combine_prospective_sources(
     documentary_rows: Iterable[dict[str, Any]],
     smart_money_rows: Iterable[dict[str, Any]],
+    catalyst_rows: Iterable[dict[str, Any]] = (),
 ) -> list[dict[str, Any]]:
     combined: dict[str, dict[str, Any]] = {}
     symbol_only: dict[str, str] = {}
-    for source_name, rows in (("DOCUMENTARY", documentary_rows), ("SMART_MONEY", smart_money_rows)):
+    for source_name, rows in (
+        ("DOCUMENTARY", documentary_rows),
+        ("SMART_MONEY", smart_money_rows),
+        ("CATALYST", catalyst_rows),
+    ):
         for src in rows:
             isin = _text(src.get("isin")).upper()
             symbol = _text(src.get("symbol")).upper()
