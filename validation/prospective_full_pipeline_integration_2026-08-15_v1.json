@@ -1,0 +1,28 @@
+{
+  "version": "rk-mis-prospective-full-pipeline-integration-2026-08-15-v1",
+  "status": "PASS_SYNTHETIC_DENOMINATOR_INTEGRATION_ONLY",
+  "workflow_run_id": 31864588798,
+  "head_sha": "cc787f9d96a42dcbd2c4b5a870c68cbf7917258a",
+  "purpose": "Verify that reviewed documentary ledgers and reviewed catalyst ledgers merge through the official RK-MIS runner with point-in-time guards and no feature conflicts.",
+  "assertions_passed": [
+    "Reviewed documentary Runway/Moat/Optionality features merge into matching companies.",
+    "Reviewed catalyst order-quality and capex-execution features merge into matching companies.",
+    "Symbol-only catalyst evidence safely unifies with a unique ISIN-resolved documentary identity.",
+    "Aggregate orderbook_to_sales is released only when the base input explicitly supplies a TTM-revenue field.",
+    "Individual CFF purchase orders do not become aggregate orderbook_to_sales.",
+    "AIMTRON receives no INR order feature from the excluded USD order-book disclosure.",
+    "Prospective feature conflicts equal zero.",
+    "The official RK-MIS engine produces seven result rows after the prospective merge."
+  ],
+  "synthetic_fixture": {
+    "used": true,
+    "ttm_revenue_cr": 100.0,
+    "purpose": "Exercise denominator release only.",
+    "research_or_investment_data": false,
+    "published_as_research_score": false,
+    "output_deleted_after_test": true
+  },
+  "official_100_point_weights_changed": false,
+  "missing_data_imputed": false,
+  "investment_inference_allowed": false
+}
