@@ -1,0 +1,19 @@
+{
+  "version": "rk-mis-prospective-documentary-watchlist-v1",
+  "as_of": "2026-08-15",
+  "purpose": "Initial bounded primary-document watchlist for the current SME multibagger research set. NSE adapter only; unresolved/other-venue names are intentionally excluded rather than guessed.",
+  "symbols": [
+    {"symbol": "SYSTANGO", "isin": "INE0O7R01011", "company_name": "Systango Technologies Limited"},
+    {"symbol": "KPGEL", "isin": null, "company_name": "KP Green Engineering Limited"},
+    {"symbol": "ORIANA", "isin": null, "company_name": "Oriana Power Limited"},
+    {"symbol": "TECHD", "isin": "INE0Y5H01014", "company_name": "TechD Cybersecurity Limited"},
+    {"symbol": "AIMTRON", "isin": "INE0RUV01018", "company_name": "Aimtron Electronics Limited"}
+  ],
+  "excluded_until_bse_or_identity_adapter": [
+    "Bondada Engineering Limited",
+    "CFF Fluid Control Limited",
+    "GenXAI Analytics Limited",
+    "Millworks Technologies Limited",
+    "Trident Techlabs Limited"
+  ]
+}
