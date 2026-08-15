@@ -1,0 +1,381 @@
+{
+  "version": "rk-mis-prospective-documentary-review-2026-08-15-v1",
+  "status": "REVIEWED_PRIMARY_SOURCE_EVIDENCE",
+  "as_of_date": "2026-08-15",
+  "discovery_run": {
+    "workflow_run_id": 31863077499,
+    "artifact_id": 9241178416,
+    "artifact_sha256": "da3d1192bf57f0f1abc29d571df92a829fab16ceac423a63c857c4654030ec5a",
+    "source_hash_chain_sha256": "da64d942fc220a1371b23964beb76a13e3b99aad546c8dbea1eae2e2e9129cc3"
+  },
+  "review_policy": {
+    "reviewer": "RK_MIS_MODEL_REVIEW",
+    "reviewed_at": "2026-08-15",
+    "source_grades_allowed_for_scoring": ["A", "B"],
+    "minimum_extraction_confidence": 0.78,
+    "binary_sha256_required": true,
+    "automated_keyword_hit_is_score": false,
+    "same_factual_basis_cross_category_or_cross_family_double_counting": "FAIL_CLOSED"
+  },
+  "decisions": [
+    {
+      "source_locator": {"pdf_page": 14, "note": "Strategic Acquisition"},
+      "claim": {
+        "isin": "INE0RUV01018",
+        "symbol": "AIMTRON",
+        "evidence_family": "RUNWAY",
+        "evidence_category": "physical_or_operational_headroom",
+        "statement": "The acquired Decatur facility is 58,000 sq. ft. on 3.9 acres and has physical expansion headroom for future box-build scale-up.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/AIMTRON_28042026152912_Intimation_Investor_Presentation_for_Concall_28-04-2026.pdf",
+        "document_type": "INVESTOR_PRESENTATION",
+        "document_date": "2026-04-28",
+        "known_at": "2026-04-28",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "c46ac22ec369f21ef4c6549dd464d0567c4b1df3374e15c535bd6e6c0e278547",
+        "basis_key": "AIMTRON-20260428-P14-PHYSICAL-HEADROOM"
+      },
+      "review": {"state": "APPROVED", "note": "Explicit facility size, land and expansion-headroom disclosure."}
+    },
+    {
+      "source_locator": {"pdf_page": 14, "note": "Strategic Acquisition"},
+      "claim": {
+        "isin": "INE0RUV01018",
+        "symbol": "AIMTRON",
+        "evidence_family": "RUNWAY",
+        "evidence_category": "ramp_or_utilisation_headroom",
+        "statement": "Management identifies an acquired-facility utilization ramp from about 54% to about 90% over approximately three years.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/AIMTRON_28042026152912_Intimation_Investor_Presentation_for_Concall_28-04-2026.pdf",
+        "document_type": "INVESTOR_PRESENTATION",
+        "document_date": "2026-04-28",
+        "known_at": "2026-04-28",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "c46ac22ec369f21ef4c6549dd464d0567c4b1df3374e15c535bd6e6c0e278547",
+        "basis_key": "AIMTRON-20260428-P14-UTILIZATION-RAMP"
+      },
+      "review": {"state": "APPROVED", "note": "Explicit current utilization and time-bound ramp target."}
+    },
+    {
+      "source_locator": {"pdf_page": 18, "note": "Quality Excellence Through Global Standards"},
+      "claim": {
+        "isin": "INE0RUV01018",
+        "symbol": "AIMTRON",
+        "evidence_family": "MOAT",
+        "evidence_category": "qualification_or_regulatory_barrier",
+        "statement": "Aimtron discloses sector-specific quality and regulatory qualifications including ISO 13485, IATF 16949, AS9100D and CSA facility approval; RDSO approval is separately shown as in progress.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/AIMTRON_28042026152912_Intimation_Investor_Presentation_for_Concall_28-04-2026.pdf",
+        "document_type": "INVESTOR_PRESENTATION",
+        "document_date": "2026-04-28",
+        "known_at": "2026-04-28",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "c46ac22ec369f21ef4c6549dd464d0567c4b1df3374e15c535bd6e6c0e278547",
+        "basis_key": "AIMTRON-20260428-P18-QUALIFICATIONS"
+      },
+      "review": {"state": "APPROVED", "note": "Current certifications/approval support qualification barriers; RDSO in-progress status is not treated as completed approval."}
+    },
+    {
+      "source_locator": {"pdf_page": 14, "note": "Strategic Acquisition"},
+      "claim": {
+        "isin": "INE0RUV01018",
+        "symbol": "AIMTRON",
+        "evidence_family": "OPTIONALITY",
+        "evidence_category": "new_geography",
+        "statement": "The US acquisition gives Aimtron immediate access to customers and the Midwest industrial ecosystem, expanding its operating footprint in the United States.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/AIMTRON_28042026152912_Intimation_Investor_Presentation_for_Concall_28-04-2026.pdf",
+        "document_type": "INVESTOR_PRESENTATION",
+        "document_date": "2026-04-28",
+        "known_at": "2026-04-28",
+        "source_grade": "A",
+        "extraction_confidence": 0.97,
+        "source_sha256": "c46ac22ec369f21ef4c6549dd464d0567c4b1df3374e15c535bd6e6c0e278547",
+        "basis_key": "AIMTRON-20260428-P14-US-GEOGRAPHY"
+      },
+      "review": {"state": "APPROVED", "note": "Acquisition-backed geographic expansion, not a generic aspiration."}
+    },
+    {
+      "source_locator": {"pdf_page": 15, "note": "Financial Overview"},
+      "claim": {
+        "isin": "INE0RUV01018",
+        "symbol": "AIMTRON",
+        "evidence_family": "ORDER",
+        "evidence_category": "order_book",
+        "statement": "The presentation reports a USD 7.2 million order book as of 31 March 2026 and a USD 49.3 million RFQ pipeline.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/AIMTRON_28042026152912_Intimation_Investor_Presentation_for_Concall_28-04-2026.pdf",
+        "document_type": "INVESTOR_PRESENTATION",
+        "document_date": "2026-04-28",
+        "known_at": "2026-04-28",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "c46ac22ec369f21ef4c6549dd464d0567c4b1df3374e15c535bd6e6c0e278547",
+        "basis_key": "AIMTRON-20260428-P15-ORDERBOOK"
+      },
+      "review": {"state": "APPROVED", "note": "Explicit dated order-book disclosure; RFQ pipeline is retained as pipeline, not converted to orders."}
+    },
+    {
+      "source_locator": {"pdf_page": 14, "note": "Utilization ramp"},
+      "claim": {
+        "isin": "INE0RUV01018",
+        "symbol": "AIMTRON",
+        "evidence_family": "MANAGEMENT",
+        "evidence_category": "management_promise",
+        "statement": "Management targets increasing acquired-facility utilization from about 54% to about 90% over approximately three years.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/AIMTRON_28042026152912_Intimation_Investor_Presentation_for_Concall_28-04-2026.pdf",
+        "document_type": "INVESTOR_PRESENTATION",
+        "document_date": "2026-04-28",
+        "known_at": "2026-04-28",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "c46ac22ec369f21ef4c6549dd464d0567c4b1df3374e15c535bd6e6c0e278547",
+        "due_date": "2029-04-28",
+        "basis_key": "AIMTRON-20260428-P14-UTILIZATION-PROMISE",
+        "promise_id": "AIMTRON-2026-UTILIZATION-RAMP"
+      },
+      "review": {"state": "APPROVED", "note": "Tracked prospectively as a time-bound management promise; it does not create a Management Execution score now."}
+    },
+
+    {
+      "source_locator": {"pdf_page": 3, "note": "Oriana Power at a Glance"},
+      "claim": {
+        "symbol": "ORIANA",
+        "evidence_family": "RUNWAY",
+        "evidence_category": "committed_capacity_expansion",
+        "statement": "Oriana reports 700+ MW solar and 1,000+ MWh BESS under execution, alongside larger solar and BESS pipelines.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/ORIANA_10062026120938_InvestorPresentationFY26.pdf",
+        "document_type": "INVESTOR_PRESENTATION",
+        "document_date": "2026-06-10",
+        "known_at": "2026-06-10",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "4c8a43be33337f99bdfbda010fa32694000bb711a4bd4c20a29f589de3973bbb",
+        "basis_key": "ORIANA-20260610-P3-CAPACITY-UNDER-EXECUTION"
+      },
+      "review": {"state": "APPROVED", "note": "Under-execution capacity is concrete committed runway; pipeline is supporting context only."}
+    },
+    {
+      "source_locator": {"pdf_page": 10, "note": "Notable Achievements FY26"},
+      "claim": {
+        "symbol": "ORIANA",
+        "evidence_family": "RUNWAY",
+        "evidence_category": "physical_or_operational_headroom",
+        "statement": "Oriana reports approximately 4,780 acres of land secured/acquired or under process, providing physical development headroom for renewable projects.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/ORIANA_10062026120938_InvestorPresentationFY26.pdf",
+        "document_type": "INVESTOR_PRESENTATION",
+        "document_date": "2026-06-10",
+        "known_at": "2026-06-10",
+        "source_grade": "A",
+        "extraction_confidence": 0.98,
+        "source_sha256": "4c8a43be33337f99bdfbda010fa32694000bb711a4bd4c20a29f589de3973bbb",
+        "basis_key": "ORIANA-20260610-P10-LAND-HEADROOM"
+      },
+      "review": {"state": "APPROVED", "note": "Large disclosed land base supports physical project-development headroom."}
+    },
+    {
+      "source_locator": {"pdf_page": 18, "note": "Looking Ahead Vision 2030"},
+      "claim": {
+        "symbol": "ORIANA",
+        "evidence_family": "RUNWAY",
+        "evidence_category": "multi_phase_growth_roadmap",
+        "statement": "The company sets a time-bound growth roadmap including more than 6 GW EPC, more than 2.5 GW IPP and a 20 GWh BESS ambition by 2030.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/ORIANA_10062026120938_InvestorPresentationFY26.pdf",
+        "document_type": "INVESTOR_PRESENTATION",
+        "document_date": "2026-06-10",
+        "known_at": "2026-06-10",
+        "source_grade": "A",
+        "extraction_confidence": 0.94,
+        "source_sha256": "4c8a43be33337f99bdfbda010fa32694000bb711a4bd4c20a29f589de3973bbb",
+        "basis_key": "ORIANA-20260610-P18-2030-ROADMAP"
+      },
+      "review": {"state": "APPROVED", "note": "Explicit dated roadmap; treated as roadmap evidence, not as achieved capacity."}
+    },
+    {
+      "source_locator": {"pdf_page": 10, "note": "FY26 achievements"},
+      "claim": {
+        "symbol": "ORIANA",
+        "evidence_family": "OPTIONALITY",
+        "evidence_category": "new_geography",
+        "statement": "Oriana reports entry into Latin America through a solar project at an international airport in Guyana.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/ORIANA_10062026120938_InvestorPresentationFY26.pdf",
+        "document_type": "INVESTOR_PRESENTATION",
+        "document_date": "2026-06-10",
+        "known_at": "2026-06-10",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "4c8a43be33337f99bdfbda010fa32694000bb711a4bd4c20a29f589de3973bbb",
+        "basis_key": "ORIANA-20260610-P10-LATAM-GUYANA"
+      },
+      "review": {"state": "APPROVED", "note": "Executed geographic expansion rather than a generic intention."}
+    },
+    {
+      "source_locator": {"pdf_page": 19, "note": "Management message"},
+      "claim": {
+        "symbol": "ORIANA",
+        "evidence_family": "OPTIONALITY",
+        "evidence_category": "adjacent_vertical_or_use_case",
+        "statement": "Oriana is broadening from conventional solar into BESS, floating solar, green hydrogen/green fuels and related clean-energy solutions, with BESS already contributing revenue.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/ORIANA_10062026120938_InvestorPresentationFY26.pdf",
+        "document_type": "INVESTOR_PRESENTATION",
+        "document_date": "2026-06-10",
+        "known_at": "2026-06-10",
+        "source_grade": "A",
+        "extraction_confidence": 0.97,
+        "source_sha256": "4c8a43be33337f99bdfbda010fa32694000bb711a4bd4c20a29f589de3973bbb",
+        "basis_key": "ORIANA-20260610-P19-ADJACENT-CLEAN-ENERGY"
+      },
+      "review": {"state": "APPROVED", "note": "Specific adjacent verticals with current BESS revenue contribution."}
+    },
+    {
+      "source_locator": {"pdf_page": 12, "note": "Analyst-meet transcript"},
+      "claim": {
+        "symbol": "ORIANA",
+        "evidence_family": "ORDER",
+        "evidence_category": "order_book",
+        "statement": "Management states that the unexecuted order book is approximately INR 6,800 crore and describes it as providing substantial FY27/FY28 visibility.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/ORIANA_17062026214848_OPL_Transcript_Analystmeet.pdf",
+        "document_type": "CONCALL_OR_INVESTOR_MEET",
+        "document_date": "2026-06-17",
+        "known_at": "2026-06-17",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "be88f274755c4460d9d11ffadbd40834ec8ca7c1d4ca42ee05eb522c97437ec1",
+        "basis_key": "ORIANA-20260617-P12-ORDERBOOK"
+      },
+      "review": {"state": "APPROVED", "note": "Explicit management disclosure of unexecuted order book; future pipeline comments are not counted as booked orders."}
+    },
+    {
+      "source_locator": {"pdf_page": 19, "note": "Management message"},
+      "claim": {
+        "symbol": "ORIANA",
+        "evidence_family": "MANAGEMENT",
+        "evidence_category": "management_promise",
+        "statement": "Management expects BESS to contribute roughly 30–40% of revenue by FY27.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/ORIANA_10062026120938_InvestorPresentationFY26.pdf",
+        "document_type": "INVESTOR_PRESENTATION",
+        "document_date": "2026-06-10",
+        "known_at": "2026-06-10",
+        "source_grade": "A",
+        "extraction_confidence": 0.98,
+        "source_sha256": "4c8a43be33337f99bdfbda010fa32694000bb711a4bd4c20a29f589de3973bbb",
+        "due_date": "2027-03-31",
+        "basis_key": "ORIANA-20260610-P19-BESS-REVENUE-PROMISE",
+        "promise_id": "ORIANA-2026-BESS-REVENUE-FY27"
+      },
+      "review": {"state": "APPROVED", "note": "Time-bound quantitative management expectation; tracked for future closure, not scored today."}
+    },
+
+    {
+      "source_locator": {"pdf_page": 1, "note": "TECHD ONE platform launch"},
+      "claim": {
+        "isin": "INE0Y5H01014",
+        "symbol": "TECHD",
+        "evidence_family": "OPTIONALITY",
+        "evidence_category": "new_product_or_platform",
+        "statement": "TechD launched TECHD ONE, an AI-native cybersecurity platform with four production-ready Phase 1 modules.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/TECHDEFENCE_21052026160802_TECHD_ONE_Press_Release_FInal.pdf",
+        "document_type": "PRESS_RELEASE",
+        "document_date": "2026-05-21",
+        "known_at": "2026-05-21",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "7d72f15344df8e34db5ad2dd81c4f66385182b1a044b48db56a5999a93f03618",
+        "basis_key": "TECHD-20260521-P1-TECHD-ONE-LAUNCH"
+      },
+      "review": {"state": "APPROVED", "note": "Product/platform is stated as launched and live, not merely planned."}
+    },
+    {
+      "source_locator": {"pdf_page": 1, "note": "TECHD ONE roadmap"},
+      "claim": {
+        "isin": "INE0Y5H01014",
+        "symbol": "TECHD",
+        "evidence_family": "RUNWAY",
+        "evidence_category": "multi_phase_growth_roadmap",
+        "statement": "TECHD ONE has a defined Phase 2 roadmap for 2027 covering SecOps AI, PrivacyOps AI and Identity Guard, alongside a Cybersecurity-for-AI track.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/TECHDEFENCE_21052026160802_TECHD_ONE_Press_Release_FInal.pdf",
+        "document_type": "PRESS_RELEASE",
+        "document_date": "2026-05-21",
+        "known_at": "2026-05-21",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "7d72f15344df8e34db5ad2dd81c4f66385182b1a044b48db56a5999a93f03618",
+        "basis_key": "TECHD-20260521-P1-PHASE2-ROADMAP"
+      },
+      "review": {"state": "APPROVED", "note": "Specific next-phase modules and development horizon support a multi-phase roadmap."}
+    },
+    {
+      "source_locator": {"pdf_page": 2, "note": "Recent business updates"},
+      "claim": {
+        "isin": "INE0Y5H01014",
+        "symbol": "TECHD",
+        "evidence_family": "OPTIONALITY",
+        "evidence_category": "new_geography",
+        "statement": "TechD incorporated Canada and GIFT City IFSC subsidiaries to support North American delivery and broader international cybersecurity expansion.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/TECHDEFENCE_22052026191610_Press_Release_220526.pdf",
+        "document_type": "PRESS_RELEASE",
+        "document_date": "2026-05-22",
+        "known_at": "2026-05-22",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "ac052893baba3eec258ae613b76aeadc53758116242ad418943452035fc4e390",
+        "basis_key": "TECHD-20260522-P2-GLOBAL-SUBSIDIARIES"
+      },
+      "review": {"state": "APPROVED", "note": "Legal entities have been incorporated; this is concrete geographic expansion."}
+    },
+    {
+      "source_locator": {"pdf_page": 1, "note": "Company credentials"},
+      "claim": {
+        "isin": "INE0Y5H01014",
+        "symbol": "TECHD",
+        "evidence_family": "MOAT",
+        "evidence_category": "qualification_or_regulatory_barrier",
+        "statement": "TechD identifies itself as a CERT-In empaneled managed security services provider and ISO/IEC 27001:2022 certified.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/TECHDEFENCE_21052026160802_TECHD_ONE_Press_Release_FInal.pdf",
+        "document_type": "PRESS_RELEASE",
+        "document_date": "2026-05-21",
+        "known_at": "2026-05-21",
+        "source_grade": "A",
+        "extraction_confidence": 0.98,
+        "source_sha256": "7d72f15344df8e34db5ad2dd81c4f66385182b1a044b48db56a5999a93f03618",
+        "basis_key": "TECHD-20260521-P1-CERTIN-ISO"
+      },
+      "review": {"state": "APPROVED", "note": "Formal cybersecurity empanelment/certification supports a qualification barrier; no market-share inference is made."}
+    },
+    {
+      "source_locator": {"pdf_page": 1, "note": "TECHD ONE roadmap"},
+      "claim": {
+        "isin": "INE0Y5H01014",
+        "symbol": "TECHD",
+        "evidence_family": "MANAGEMENT",
+        "evidence_category": "management_promise",
+        "statement": "Management says Phase 2 TECHD ONE modules are under development for 2027.",
+        "source_url": "https://nsearchives.nseindia.com/corporate/TECHDEFENCE_21052026160802_TECHD_ONE_Press_Release_FInal.pdf",
+        "document_type": "PRESS_RELEASE",
+        "document_date": "2026-05-21",
+        "known_at": "2026-05-21",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "7d72f15344df8e34db5ad2dd81c4f66385182b1a044b48db56a5999a93f03618",
+        "due_date": "2027-12-31",
+        "basis_key": "TECHD-20260521-P1-PHASE2-PROMISE",
+        "promise_id": "TECHD-2026-PHASE2-2027"
+      },
+      "review": {"state": "APPROVED", "note": "Time-bounded product-development commitment stored for later delivery closure; no Management Execution score today."}
+    }
+  ],
+  "explicit_rejections": [
+    {
+      "symbol": "TECHD",
+      "source_sha256": "ac052893baba3eec258ae613b76aeadc53758116242ad418943452035fc4e390",
+      "candidate_family": "ORDER",
+      "reason": "Keyword extraction produced an orderbook candidate but the reviewed earnings release does not disclose a company order book; do not create an ORDER claim."
+    },
+    {
+      "symbol": "ORIANA",
+      "candidate_family": "MOAT",
+      "reason": "Transcript keyword hits such as 'know how' were conversational language and do not independently establish proprietary IP; no moat claim created from those hits."
+    }
+  ],
+  "automatic_score_changes": false,
+  "management_execution_score_created": false,
+  "missing_data_imputed": false
+}
