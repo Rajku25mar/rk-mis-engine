@@ -14,6 +14,6 @@
     {"symbol": "KPGEL", "scrip_code": "544150", "company_name": "KP Green Engineering Limited"},
     {"symbol": "BONDADA", "scrip_code": "543971", "company_name": "Bondada Engineering Limited"},
     {"symbol": "CFF", "scrip_code": "543920", "company_name": "CFF Fluid Control Limited"},
-    {"symbol": null, "scrip_code": null, "company_name": "Millworks Technologies Limited"}
+    {"symbol": "MILLWORKS", "scrip_code": "544826", "company_name": "Millworks Technologies Limited"}
   ]
 }
