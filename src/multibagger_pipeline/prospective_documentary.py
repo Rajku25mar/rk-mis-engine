@@ -3,13 +3,14 @@ from __future__ import annotations
 import hashlib
 import json
 import sqlite3
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any, Iterable
 
 REVIEW_STATES = {"PENDING", "APPROVED", "REJECTED"}
 SOURCE_GRADES = {"A", "B", "C", "D"}
+SCORING_SOURCE_GRADES = {"A", "B"}
 MIN_CONFIDENCE = 0.78
 
 QUALITATIVE_FAMILIES = {
@@ -276,7 +277,7 @@ class ProspectiveDocumentEvidenceStore:
                 """
                 SELECT * FROM prospective_document_reviews
                 WHERE claim_id=? AND reviewed_at<=?
-                ORDER BY reviewed_at DESC, review_id DESC LIMIT 1
+                ORDER BY reviewed_at DESC, created_at DESC, review_id DESC LIMIT 1
                 """,
                 (claim_id, as_of),
             ).fetchone()
@@ -302,10 +303,12 @@ class ProspectiveDocumentEvidenceStore:
             review = self._latest_review(claim["claim_id"], as_of)
             if review is None or review["review_state"] != "APPROVED":
                 reasons.append("REVIEW_NOT_APPROVED_AS_OF_DATE")
-            if claim["source_grade"] not in {"A", "B"}:
+            if claim["source_grade"] not in SCORING_SOURCE_GRADES:
                 reasons.append("SOURCE_GRADE_NOT_SCORE_ELIGIBLE")
             if float(claim["extraction_confidence"]) < MIN_CONFIDENCE:
                 reasons.append("LOW_EXTRACTION_CONFIDENCE")
+            if not claim.get("source_sha256"):
+                reasons.append("SOURCE_BINARY_NOT_SHA256_PINNED")
             if claim.get("conflict_group"):
                 reasons.append("UNRESOLVED_SOURCE_CONFLICT")
             if not str(claim["source_url"]).startswith("https://"):
@@ -324,8 +327,25 @@ class ProspectiveDocumentEvidenceStore:
         category_evidence: dict[str, list[str]] = {family: [] for family in QUALITATIVE_FAMILIES}
         warnings: list[str] = []
 
+        # A single factual basis is not allowed to manufacture evidence in multiple
+        # qualitative families. If the same underlying fact was labelled as Runway and
+        # Moat/Optionality, all qualitative uses of that basis fail closed.
+        basis_families: dict[str, set[str]] = {}
+        for claim in eligible:
+            family = claim["evidence_family"]
+            if family in QUALITATIVE_FAMILIES:
+                basis_families.setdefault(claim["basis_key"], set()).add(family)
+        cross_family_conflicted = {basis for basis, families in basis_families.items() if len(families) > 1}
+        if cross_family_conflicted:
+            warnings.append(f"CROSS_FAMILY_SHARED_FACTUAL_BASIS:{len(cross_family_conflicted)}")
+
         for family, categories in QUALITATIVE_FAMILIES.items():
-            family_claims = [c for c in eligible if c["evidence_family"] == family and c["evidence_category"] in categories]
+            family_claims = [
+                c for c in eligible
+                if c["evidence_family"] == family
+                and c["evidence_category"] in categories
+                and c["basis_key"] not in cross_family_conflicted
+            ]
             basis_to_categories: dict[str, set[str]] = {}
             for claim in family_claims:
                 basis_to_categories.setdefault(claim["basis_key"], set()).add(claim["evidence_category"])
@@ -380,6 +400,7 @@ class ProspectiveDocumentEvidenceStore:
             "warnings": warnings,
             "missing_data_imputed": False,
             "point_in_time_safe": True,
+            "source_binary_sha256_required": True,
         }
 
     def derive_all(self, *, as_of_date: str) -> list[dict[str, Any]]:
