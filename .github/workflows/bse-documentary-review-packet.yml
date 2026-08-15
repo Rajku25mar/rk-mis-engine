@@ -1,0 +1,63 @@
+name: RK-MIS BSE Documentary Review Packet
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/bse-documentary-review-packet.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  review-packet:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap bounded BSE documentary review packet')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install PDF parser
+        run: python -m pip install --disable-pip-version-check pypdf
+      - name: Compile bounded review packet builder
+        run: python -m py_compile scripts/build_bse_documentary_review_packet.py
+      - name: Build four-scrip BSE review packet
+        run: |
+          python scripts/build_bse_documentary_review_packet.py \
+            --watchlist config/prospective_documentary_watchlist_v1.json \
+            --policy validation/prospective_documentary_discovery_bse_v1.json \
+            --from-date 2026-04-17 \
+            --to-date 2026-08-15 \
+            --output artifacts/bse-review-packet
+      - name: Enforce bounded excerpt boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('artifacts/bse-review-packet')
+          report=json.loads((root/'report.json').read_text())
+          packet=json.loads((root/'review_packet.json').read_text())
+          assert report['watchlist_scrips']==4
+          assert report['maximum_excerpt_chars']<=480
+          assert report['full_page_text_published'] is False
+          assert report['raw_pdf_published'] is False
+          assert report['automatic_score_created'] is False
+          assert packet['full_page_text_included'] is False
+          assert packet['raw_pdf_included'] is False
+          assert packet['automatic_score_included'] is False
+          assert all(len(row['context_excerpt'])<=481 for row in packet['rows'])
+          assert all(row['review_state']=='PENDING' and row['score_eligible'] is False for row in packet['rows'])
+          print('RK_MIS_BSE_REVIEW_PACKET_BOUNDARY=PASS')
+          PY
+      - name: Show aggregate review packet report
+        run: cat artifacts/bse-review-packet/report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rk-mis-bse-documentary-review-packet-2026-08-15
+          path: |
+            artifacts/bse-review-packet/report.json
+            artifacts/bse-review-packet/review_packet.json
+          retention-days: 14
+          if-no-files-found: error
