@@ -1,0 +1,262 @@
+{
+  "version": "rk-mis-prospective-documentary-review-2026-08-15-v3-bse-delta",
+  "status": "REVIEWED_PRIMARY_SOURCE_EVIDENCE",
+  "as_of_date": "2026-08-15",
+  "extends": [
+    "validation/prospective_documentary_review_2026-08-15_v1.json",
+    "validation/prospective_documentary_review_2026-08-15_v2_delta.json"
+  ],
+  "bse_discovery": {
+    "workflow_run_id": 31863786624,
+    "artifact_id": 9241375910,
+    "artifact_sha256": "f087e89202d9077b2e693e0ff51b660f2740d0360434114df7c4c8376d08a5df"
+  },
+  "review_packet": {
+    "workflow_run_id": 31863967723,
+    "artifact_id": 9241434015,
+    "artifact_sha256": "c25cd28541a57d0be7d221b0d84e22fed636a8b65438b97e26535029ccb3c0b2",
+    "maximum_excerpt_chars": 480,
+    "full_page_text_included": false,
+    "raw_pdf_included": false
+  },
+  "review_policy": {
+    "reviewer": "RK_MIS_MODEL_REVIEW",
+    "reviewed_at": "2026-08-15",
+    "source_grades_allowed_for_scoring": ["A", "B"],
+    "minimum_extraction_confidence": 0.78,
+    "binary_sha256_required": true,
+    "automatic_keyword_hit_is_score": false,
+    "same_factual_basis_cross_category_or_cross_family_double_counting": "FAIL_CLOSED"
+  },
+  "decisions": [
+    {
+      "source_locator": {"pdf_page": 6, "note": "FY26 earnings-call discussion of next capex phase"},
+      "claim": {
+        "symbol": "KPGEL",
+        "evidence_family": "RUNWAY",
+        "evidence_category": "committed_capacity_expansion",
+        "statement": "Management states that capex will continue during FY27, with the next phase expected to become operational during FY27; major backward-integration capex such as rolling mills is part of that plan.",
+        "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/71d4c567-cb18-4c9a-8bbe-8d14febc5ac4.pdf",
+        "document_type": "CONCALL_OR_INVESTOR_MEET",
+        "document_date": "2026-05-18",
+        "known_at": "2026-05-18",
+        "source_grade": "A",
+        "extraction_confidence": 0.98,
+        "source_sha256": "aeb032df2f90655cfc524c840d861a84e27caa40593452170983fb1c49298683",
+        "basis_key": "KPGEL-20260518-P6-NEXT-CAPEX-PHASE"
+      },
+      "review": {"state": "APPROVED", "note": "Concrete current-year capex and time-bounded next operational phase; analyst's 50-60% growth assumption is not used."}
+    },
+    {
+      "source_locator": {"pdf_page": 4, "note": "Backward integration and galvanizing capability"},
+      "claim": {
+        "symbol": "KPGEL",
+        "evidence_family": "MOAT",
+        "evidence_category": "cost_process_or_scale_advantage",
+        "statement": "KPGEL describes its commissioned hot-dip galvanizing capability as improving execution speed, quality and production efficiency, and is pursuing backward integration to improve margins and material availability.",
+        "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/71d4c567-cb18-4c9a-8bbe-8d14febc5ac4.pdf",
+        "document_type": "CONCALL_OR_INVESTOR_MEET",
+        "document_date": "2026-05-18",
+        "known_at": "2026-05-18",
+        "source_grade": "A",
+        "extraction_confidence": 0.96,
+        "source_sha256": "aeb032df2f90655cfc524c840d861a84e27caa40593452170983fb1c49298683",
+        "basis_key": "KPGEL-20260518-P4-PROCESS-BACKWARD-INTEGRATION"
+      },
+      "review": {"state": "APPROVED", "note": "Tangible process/vertical-integration evidence; no unsupported market-share claim is made."}
+    },
+    {
+      "source_locator": {"pdf_pages": [4,5], "note": "Approvals, empanelments and NATRAX qualification"},
+      "claim": {
+        "symbol": "KPGEL",
+        "evidence_family": "MOAT",
+        "evidence_category": "qualification_or_regulatory_barrier",
+        "statement": "KPGEL discloses NATRAX crash-barrier certification, PSU/state-authority empanelments, approvals from global tracker leaders including Nextracker and GameChange Solar, and RDSO approval in heavy engineering/railways.",
+        "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/71d4c567-cb18-4c9a-8bbe-8d14febc5ac4.pdf",
+        "document_type": "CONCALL_OR_INVESTOR_MEET",
+        "document_date": "2026-05-18",
+        "known_at": "2026-05-18",
+        "source_grade": "A",
+        "extraction_confidence": 0.97,
+        "source_sha256": "aeb032df2f90655cfc524c840d861a84e27caa40593452170983fb1c49298683",
+        "basis_key": "KPGEL-20260518-QUALIFICATION-EMPANELMENTS"
+      },
+      "review": {"state": "APPROVED", "note": "Specific approvals/certification support customer/qualification barriers."}
+    },
+    {
+      "source_locator": {"pdf_page": 4, "note": "New verticals under development"},
+      "claim": {
+        "symbol": "KPGEL",
+        "evidence_family": "OPTIONALITY",
+        "evidence_category": "adjacent_vertical_or_use_case",
+        "statement": "KPGEL's in-house R&D and engineering team is working on expansion into adjacent verticals including onshore tubular towers, container manufacturing, fasteners, rolling mills, and cable/conductor manufacturing.",
+        "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/71d4c567-cb18-4c9a-8bbe-8d14febc5ac4.pdf",
+        "document_type": "CONCALL_OR_INVESTOR_MEET",
+        "document_date": "2026-05-18",
+        "known_at": "2026-05-18",
+        "source_grade": "A",
+        "extraction_confidence": 0.97,
+        "source_sha256": "aeb032df2f90655cfc524c840d861a84e27caa40593452170983fb1c49298683",
+        "basis_key": "KPGEL-20260518-P4-ADJACENT-VERTICALS"
+      },
+      "review": {"state": "APPROVED", "note": "Specific adjacent verticals under development; they are not treated as already material revenue streams."}
+    },
+    {
+      "source_locator": {"pdf_page": 4, "note": "FY26 investor presentation snapshot"},
+      "claim": {
+        "symbol": "KPGEL",
+        "evidence_family": "ORDER",
+        "evidence_category": "order_book",
+        "statement": "KPGEL reports an order book in hand of approximately INR 1,831 crore as of 31 March 2026.",
+        "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/c3654403-86f9-41dd-ba71-4b10e3bb33a6.pdf",
+        "document_type": "INVESTOR_PRESENTATION",
+        "document_date": "2026-05-08",
+        "known_at": "2026-05-08",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "0e3d37c8aee436b72f2e90901cff3130bc6abddef02fd972d5296b4aa4103051",
+        "basis_key": "KPGEL-20260508-P4-ORDERBOOK"
+      },
+      "review": {"state": "APPROVED", "note": "Explicit dated order-book disclosure."}
+    },
+    {
+      "source_locator": {"pdf_page": 6, "note": "Next-phase capex timing"},
+      "claim": {
+        "symbol": "KPGEL",
+        "evidence_family": "MANAGEMENT",
+        "evidence_category": "management_promise",
+        "statement": "Management says the next phase of capex operational activity is expected during FY27, with capex continuing during the year and benefits becoming visible thereafter.",
+        "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachHis/71d4c567-cb18-4c9a-8bbe-8d14febc5ac4.pdf",
+        "document_type": "CONCALL_OR_INVESTOR_MEET",
+        "document_date": "2026-05-18",
+        "known_at": "2026-05-18",
+        "source_grade": "A",
+        "extraction_confidence": 0.96,
+        "source_sha256": "aeb032df2f90655cfc524c840d861a84e27caa40593452170983fb1c49298683",
+        "due_date": "2027-03-31",
+        "basis_key": "KPGEL-20260518-P6-FY27-CAPEX-PROMISE",
+        "promise_id": "KPGEL-2026-NEXT-CAPEX-FY27"
+      },
+      "review": {"state": "APPROVED", "note": "Time-bounded execution statement tracked prospectively; no Management Execution score now."}
+    },
+
+    {
+      "source_locator": {"pdf_pages": [1,2], "note": "NTPC Renewable Energy BESS award"},
+      "claim": {
+        "symbol": "BONDADA",
+        "evidence_family": "ORDER",
+        "evidence_category": "order_book",
+        "statement": "Bondada received an NTPC Renewable Energy award for EPC development of a 100 MWh Vanadium Redox Flow BESS at Khavda Solar Park, including 10 years of O&M.",
+        "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/38f0df71-3b90-435b-a817-c82cc786859a.pdf",
+        "document_type": "ORDER_OR_CONTRACT_UPDATE",
+        "document_date": "2026-07-20",
+        "known_at": "2026-07-20",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "b64e10379cdf9786efdebbea6c947020aa66cc12be62c27b7f1cd38f67f183df",
+        "basis_key": "BONDADA-20260720-NTPC-BESS-AWARD"
+      },
+      "review": {"state": "APPROVED", "note": "Explicit awarded EPC package; industry-wide BESS target text is not used as company runway."}
+    },
+    {
+      "source_locator": {"pdf_pages": [1,2], "note": "August BESS/tower orders and consolidated order book"},
+      "claim": {
+        "symbol": "BONDADA",
+        "evidence_family": "ORDER",
+        "evidence_category": "order_book",
+        "statement": "Bondada reports orders for BESS projects aggregating 200 MW / 400 MWh plus supply of 100 BSNL towers, and states that the Group's consolidated order book has strengthened to approximately INR 10,023 crore.",
+        "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/70e4387f-f2b4-4092-b662-b1d0f564ea3c.pdf",
+        "document_type": "ORDER_OR_CONTRACT_UPDATE",
+        "document_date": "2026-08-11",
+        "known_at": "2026-08-11",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "030ff0990bb22bd728883b3539c68fe47fa1675362884d1a3726d6a31c79837e",
+        "basis_key": "BONDADA-20260811-BESS-TOWERS-ORDERBOOK"
+      },
+      "review": {"state": "APPROVED", "note": "Current awarded orders and explicit consolidated order-book disclosure; no qualitative moat/runway score inferred."}
+    },
+    {
+      "source_locator": {"pdf_page": 1, "note": "BSNL tower purchase order"},
+      "claim": {
+        "symbol": "BONDADA",
+        "evidence_family": "ORDER",
+        "evidence_category": "order_book",
+        "statement": "Bondada received a purchase order from Veremax Technologie Services for supply of BSNL 40-metre telecom towers, foundation bolts and templates for locations across South India.",
+        "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/c6dda8c9-2e88-4e7e-b796-19fbbf550a8f.pdf",
+        "document_type": "ORDER_OR_CONTRACT_UPDATE",
+        "document_date": "2026-07-17",
+        "known_at": "2026-07-17",
+        "source_grade": "A",
+        "extraction_confidence": 0.98,
+        "source_sha256": "0e64cc08c2556065f74133ab92f66815dc82c85102306f76551ef6656e41e99f",
+        "basis_key": "BONDADA-20260717-BSNL-TOWERS-ORDER"
+      },
+      "review": {"state": "APPROVED", "note": "Specific purchase order; no order value inferred where the bounded review excerpt did not show one."}
+    },
+
+    {
+      "source_locator": {"pdf_page": 1, "note": "July purchase order"},
+      "claim": {
+        "symbol": "CFF",
+        "evidence_family": "ORDER",
+        "evidence_category": "order_book",
+        "statement": "CFF Fluid Control disclosed receipt of a purchase order valued at approximately INR 2.45 crore on 3 July 2026.",
+        "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/3daf0824-86c6-4d27-8875-3c64186ac38f.pdf",
+        "document_type": "ORDER_OR_CONTRACT_UPDATE",
+        "document_date": "2026-07-03",
+        "known_at": "2026-07-03",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "3ac7030df1845d877234638fcd47e9afd1d01054f0b72a1d2044d53f8dd51e96",
+        "basis_key": "CFF-20260703-PURCHASE-ORDER"
+      },
+      "review": {"state": "APPROVED", "note": "Explicit purchase-order filing and value; product description is not embellished beyond the reviewed excerpt."}
+    },
+    {
+      "source_locator": {"pdf_page": 1, "note": "August purchase order"},
+      "claim": {
+        "symbol": "CFF",
+        "evidence_family": "ORDER",
+        "evidence_category": "order_book",
+        "statement": "CFF Fluid Control disclosed receipt of a purchase order valued at approximately INR 27.85 crore on 13 August 2026.",
+        "source_url": "https://www.bseindia.com/xml-data/corpfiling/AttachLive/0ee4cf8c-6308-4452-9907-9bff108a7d77.pdf",
+        "document_type": "ORDER_OR_CONTRACT_UPDATE",
+        "document_date": "2026-08-13",
+        "known_at": "2026-08-13",
+        "source_grade": "A",
+        "extraction_confidence": 0.99,
+        "source_sha256": "54f47e714c6442b6fbcf6a688ee84ec5c29ba31ca11420dcbe2a264e5e109ca3",
+        "basis_key": "CFF-20260813-PURCHASE-ORDER"
+      },
+      "review": {"state": "APPROVED", "note": "Explicit purchase-order filing and value; no broader order-book amount is inferred."}
+    }
+  ],
+  "explicit_rejections": [
+    {
+      "symbol": "BONDADA",
+      "source_sha256": "b64e10379cdf9786efdebbea6c947020aa66cc12be62c27b7f1cd38f67f183df",
+      "candidate_family": "RUNWAY",
+      "reason": "The extracted text about India's 236 GWh BESS target and current national installed capacity describes industry opportunity, not Bondada's own committed capacity. It cannot score company runway."
+    },
+    {
+      "symbol": "KPGEL",
+      "source_sha256": "0e3d37c8aee436b72f2e90901cff3130bc6abddef02fd972d5296b4aa4103051",
+      "candidate_family": "RUNWAY",
+      "reason": "Generic 'new plant' keyword hits on company/group overview pages do not independently establish another runway category and are rejected to prevent keyword-driven double counting."
+    },
+    {
+      "symbol": "KPGEL",
+      "candidate_family": "FUNDING_VISIBILITY",
+      "reason": "The balance-sheet line showing long-term loans is not by itself evidence that the future expansion programme is fully funded; no funding-visibility score is created."
+    },
+    {
+      "symbol": "MILLWORKS",
+      "candidate_family": "ALL",
+      "reason": "The bounded BSE window produced no thesis-grade documentary candidates. Missing evidence remains missing."
+    }
+  ],
+  "automatic_score_changes": false,
+  "management_execution_score_created": false,
+  "missing_data_imputed": false
+}
