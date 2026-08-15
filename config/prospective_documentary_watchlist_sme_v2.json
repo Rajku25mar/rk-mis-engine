@@ -1,0 +1,14 @@
+{
+  "version": "rk-mis-prospective-documentary-watchlist-sme-v2",
+  "as_of": "2026-08-15",
+  "segment": "sme",
+  "symbols": [
+    {"symbol": "SYSTANGO", "isin": "INE0O7R01011", "company_name": "Systango Technologies Limited"},
+    {"symbol": "ORIANA", "isin": "INE0OUT01019", "company_name": "Oriana Power Limited"},
+    {"symbol": "TECHD", "isin": "INE0Y5H01014", "company_name": "TechD Cybersecurity Limited"},
+    {"symbol": "AIMTRON", "isin": "INE0RUV01018", "company_name": "Aimtron Electronics Limited"}
+  ],
+  "excluded_from_this_nse_sme_pass": [
+    {"company_name": "KP Green Engineering Limited", "reason": "BSE SME listed; requires BSE adapter"}
+  ]
+}
