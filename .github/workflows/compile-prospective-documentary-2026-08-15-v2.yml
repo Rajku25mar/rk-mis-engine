@@ -1,0 +1,75 @@
+name: RK-MIS Reviewed Prospective Documentary Compile v2
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/compile-prospective-documentary-2026-08-15-v2.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  compile-reviewed-evidence:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap layered prospective documentary snapshot v2')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Compile layered reviewed evidence compiler
+        run: python -m py_compile scripts/compile_reviewed_prospective_documentary.py
+
+      - name: Compile reviewed primary-source ledgers
+        env:
+          PYTHONPATH: src
+        run: |
+          python scripts/compile_reviewed_prospective_documentary.py \
+            --ledger \
+              validation/prospective_documentary_review_2026-08-15_v1.json \
+              validation/prospective_documentary_review_2026-08-15_v2_delta.json \
+            --output artifacts/reviewed-prospective-documentary-v2
+
+      - name: Enforce reviewed v2 snapshot
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('artifacts/reviewed-prospective-documentary-v2')
+          report=json.loads((root/'report.json').read_text())
+          data=json.loads((root/'features.json').read_text())
+          rows={row['symbol']:row for row in data['rows']}
+          assert set(rows)=={'AIMTRON','ORIANA','TECHD','TECHLABS'}, rows.keys()
+          assert rows['AIMTRON']['reinvestment_runway_score']==40.0
+          assert rows['AIMTRON']['moat_evidence_score']==20.0
+          assert rows['AIMTRON']['new_product_export_optionalities_score']==20.0
+          assert rows['ORIANA']['reinvestment_runway_score']==60.0
+          assert rows['ORIANA']['moat_evidence_score'] is None
+          assert rows['ORIANA']['new_product_export_optionalities_score']==40.0
+          assert rows['TECHD']['reinvestment_runway_score']==20.0
+          assert rows['TECHD']['moat_evidence_score']==20.0
+          assert rows['TECHD']['new_product_export_optionalities_score']==40.0
+          assert rows['TECHLABS']['reinvestment_runway_score']==20.0
+          assert rows['TECHLABS']['moat_evidence_score'] is None
+          assert rows['TECHLABS']['new_product_export_optionalities_score']==40.0
+          assert rows['TECHLABS']['approved_order_claims']==1
+          assert report['rows_with_management_execution_score']==0
+          assert all(not row['management_execution']['score_available'] for row in rows.values())
+          assert report['automatic_keyword_candidates_scored'] is False
+          assert report['official_100_point_weights_changed'] is False
+          assert report['missing_data_imputed'] is False
+          print('RK_MIS_REVIEWED_PROSPECTIVE_DOCUMENTARY_V2=PASS')
+          PY
+
+      - name: Upload layered reviewed snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: rk-mis-reviewed-prospective-documentary-2026-08-15-v2
+          path: |
+            artifacts/reviewed-prospective-documentary-v2/report.json
+            artifacts/reviewed-prospective-documentary-v2/features.json
+          retention-days: 30
+          if-no-files-found: error
