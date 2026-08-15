@@ -1,0 +1,54 @@
+name: RK-MIS Prospective Documentary SME v2
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/prospective-documentary-sme-v2.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  discover:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap corrected NSE SME documentary scan')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --disable-pip-version-check pypdf
+      - name: Run corrected NSE SME documentary scan
+        run: |
+          python scripts/discover_prospective_nse_sme_documentary.py \
+            --watchlist config/prospective_documentary_watchlist_sme_v2.json \
+            --policy validation/prospective_documentary_discovery_v1.json \
+            --from-date 2026-04-17 \
+            --to-date 2026-08-15 \
+            --output artifacts/prospective-documentary-sme-v2
+      - name: Enforce pending-only boundary
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('artifacts/prospective-documentary-sme-v2')
+          q=json.loads((root/'review_queue.json').read_text())
+          r=json.loads((root/'report.json').read_text())
+          assert r['automated_candidates_are_scores'] is False
+          assert r['review_required_before_scoring'] is True
+          assert q['automatic_score_included'] is False
+          assert all(x['review_state']=='PENDING' and x['score_eligible'] is False for x in q['candidates'])
+          print('RK_MIS_SME_DOCUMENTARY_BOUNDARY=PASS')
+          PY
+      - run: cat artifacts/prospective-documentary-sme-v2/report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rk-mis-prospective-documentary-sme-v2-2026-08-15
+          path: |
+            artifacts/prospective-documentary-sme-v2/report.json
+            artifacts/prospective-documentary-sme-v2/review_queue.json
+            artifacts/prospective-documentary-sme-v2/document_manifest.json
+          retention-days: 14
+          if-no-files-found: error
