@@ -2,16 +2,12 @@ name: RK-MIS Prospective Full Pipeline Integration
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/prospective-full-pipeline-integration.yml"
 
 permissions:
   contents: read
 
 jobs:
   integration:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap prospective full pipeline integration test')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
@@ -76,8 +72,6 @@ jobs:
           assert report['catalyst_ledger_load']['capex_rows']==1
           assert report['orderbook_to_sales_denominator_rule']=='EXPLICIT_TTM_REVENUE_FIELD_ONLY'
           assert len(result['results'])==7
-          # This fixture uses synthetic TTM revenue solely to exercise denominator release.
-          # Its generated scores are never uploaded or interpreted as research output.
           print('RK_MIS_PROSPECTIVE_FULL_PIPELINE=PASS')
           PY
 
