@@ -137,37 +137,66 @@ def combine_prospective_sources(
     catalyst_rows: Iterable[dict[str, Any]] = (),
 ) -> list[dict[str, Any]]:
     combined: dict[str, dict[str, Any]] = {}
-    symbol_only: dict[str, str] = {}
+    symbol_to_key: dict[str, str | None] = {}
+
+    def merge_row(source_name: str, src: dict[str, Any]) -> None:
+        isin = _text(src.get("isin")).upper()
+        symbol = _text(src.get("symbol")).upper()
+        if not symbol:
+            return
+        existing_key = symbol_to_key.get(symbol)
+        desired_key = "ISIN:" + isin if isin else "SYMBOL:" + symbol
+
+        if existing_key is None and symbol in symbol_to_key:
+            raise ValueError(f"ambiguous prospective symbol identity {symbol}")
+
+        if existing_key:
+            existing = combined[existing_key]
+            existing_isin = _text(existing.get("isin")).upper()
+            if isin and existing_isin and isin != existing_isin:
+                symbol_to_key[symbol] = None
+                raise ValueError(f"prospective ISIN conflict for symbol {symbol}: {existing_isin} vs {isin}")
+            if isin and not existing_isin:
+                # Upgrade a previously symbol-only identity to the now-resolved ISIN.
+                upgraded_key = "ISIN:" + isin
+                if upgraded_key in combined and combined[upgraded_key] is not existing:
+                    symbol_to_key[symbol] = None
+                    raise ValueError(f"prospective duplicate ISIN while upgrading {symbol}: {isin}")
+                combined.pop(existing_key)
+                existing["isin"] = isin
+                combined[upgraded_key] = existing
+                existing_key = upgraded_key
+                symbol_to_key[symbol] = upgraded_key
+            key = existing_key
+        else:
+            key = desired_key
+            if key in combined:
+                other = combined[key]
+                if _text(other.get("symbol")).upper() != symbol:
+                    raise ValueError(f"prospective ISIN {isin} maps to multiple symbols")
+            else:
+                combined[key] = {"isin": isin or None, "symbol": symbol, "prospective_sources": []}
+            symbol_to_key[symbol] = key
+
+        row = combined[key]
+        row["prospective_sources"].append(source_name)
+        features = src.get("features") if isinstance(src.get("features"), dict) else src
+        for field in PROSPECTIVE_FEATURE_FIELDS:
+            value = features.get(field) if isinstance(features, dict) else None
+            if value is None:
+                continue
+            if field in row and row[field] is not None and not _same_value(row[field], value):
+                raise ValueError(f"prospective source conflict for {key} field {field}")
+            row[field] = value
+
     for source_name, rows in (
         ("DOCUMENTARY", documentary_rows),
         ("SMART_MONEY", smart_money_rows),
         ("CATALYST", catalyst_rows),
     ):
         for src in rows:
-            isin = _text(src.get("isin")).upper()
-            symbol = _text(src.get("symbol")).upper()
-            key = "ISIN:" + isin if isin else "SYMBOL:" + symbol
-            if not symbol:
-                continue
-            if not isin:
-                prior = symbol_only.get(symbol)
-                if prior and prior != key:
-                    raise ValueError(f"ambiguous symbol-only prospective identity {symbol}")
-                symbol_only[symbol] = key
-            row = combined.setdefault(key, {"isin": isin or None, "symbol": symbol, "prospective_sources": []})
-            if row.get("isin") and isin and row["isin"] != isin:
-                raise ValueError(f"prospective identity conflict for {symbol}")
-            if row.get("symbol") and symbol and row["symbol"] != symbol:
-                raise ValueError(f"prospective symbol conflict for {key}")
-            row["prospective_sources"].append(source_name)
-            features = src.get("features") if isinstance(src.get("features"), dict) else src
-            for field in PROSPECTIVE_FEATURE_FIELDS:
-                value = features.get(field) if isinstance(features, dict) else None
-                if value is None:
-                    continue
-                if field in row and row[field] is not None and not _same_value(row[field], value):
-                    raise ValueError(f"prospective source conflict for {key} field {field}")
-                row[field] = value
+            merge_row(source_name, src)
+
     for row in combined.values():
         row["prospective_sources"] = sorted(set(row["prospective_sources"]))
     return [combined[key] for key in sorted(combined)]
