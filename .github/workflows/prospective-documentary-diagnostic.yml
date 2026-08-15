@@ -1,0 +1,37 @@
+name: RK-MIS Prospective Documentary Diagnostic
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/prospective-documentary-diagnostic.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  diagnose:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap documentary acquisition diagnostic')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run metadata-only diagnostic
+        run: |
+          python scripts/diagnose_prospective_nse_announcements.py \
+            --watchlist config/prospective_documentary_watchlist_v1.json \
+            --policy validation/prospective_documentary_discovery_v1.json \
+            --from-date 2026-04-17 \
+            --to-date 2026-08-15 \
+            --output artifacts/prospective-documentary-diagnostic/report.json
+      - name: Show diagnostic
+        run: cat artifacts/prospective-documentary-diagnostic/report.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rk-mis-prospective-documentary-diagnostic-2026-08-15
+          path: artifacts/prospective-documentary-diagnostic/report.json
+          retention-days: 7
+          if-no-files-found: error
