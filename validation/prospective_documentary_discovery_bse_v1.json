@@ -1,0 +1,60 @@
+{
+  "version": "rk-mis-prospective-documentary-discovery-bse-v1",
+  "status": "IMPLEMENTED_BOUNDED_PRIMARY_DOCUMENT_DISCOVERY_POLICY",
+  "effective_date": "2026-08-15",
+  "purpose": "Discover current BSE primary-document evidence for the explicit RK-MIS shortlist without systematic full-market acquisition and without turning automated hits into scores.",
+  "source": {
+    "venue": "BSE",
+    "announcement_endpoint": "https://api.bseindia.com/BseIndiaAPI/api/AnnSubCategoryGetData/w",
+    "announcement_page": "https://www.bseindia.com/corporates/ann.html",
+    "allowed_hosts": ["bseindia.com", "api.bseindia.com", "www.bseindia.com"],
+    "source_grade_for_binary_pinned_primary_documents": "A"
+  },
+  "bounds": {
+    "maximum_scrips_per_run": 20,
+    "maximum_lookback_days": 120,
+    "maximum_documents_per_scrip": 4,
+    "maximum_document_bytes": 15000000,
+    "maximum_pdf_pages": 220,
+    "maximum_api_pages_per_scrip": 3
+  },
+  "discovery": {
+    "keyword_families": {
+      "runway": ["capacity", "capex", "expansion", "plant", "facility", "utilisation", "utilization", "ramp up", "land bank"],
+      "moat": ["patent", "proprietary", "vendor approval", "qualification", "certification", "repeat order", "long-term agreement", "single source", "sole supplier", "market leader", "backward integration"],
+      "optionality": ["new product", "new customer", "export", "new geography", "new market", "new segment", "new vertical", "acquisition"],
+      "orders": ["order book", "orderbook", "award of order", "award_of_order", "receipt of order", "order received", "contract award"]
+    },
+    "priority_subject_fragments": [
+      "Investor Presentation",
+      "Press Release",
+      "Earnings Call Transcript",
+      "Analyst / Investor Meet - Outcome",
+      "Award_of_Order_Receipt_of_Order",
+      "Award of Order",
+      "Receipt of Order",
+      "Acquisition",
+      "Expansion",
+      "New Product",
+      "Annual Report"
+    ]
+  },
+  "review_gate": {
+    "candidate_state": "PENDING",
+    "automated_candidates_are_scores": false,
+    "approved_review_required": true,
+    "minimum_extraction_confidence_for_scoring": 0.78,
+    "source_sha256_required_for_scoring": true,
+    "cross_category_shared_basis_double_counting": "FAIL_CLOSED",
+    "cross_family_shared_basis_double_counting": "FAIL_CLOSED",
+    "management_execution": "SEPARATE_ENGINE_AND_MINIMUM_3_CLOSED_REVIEWED_PROMISES"
+  },
+  "publication": {
+    "raw_api_payload_published": false,
+    "raw_pdf_published": false,
+    "raw_pdf_text_published": false,
+    "automatic_score_published": false
+  },
+  "official_100_point_score_mutated": false,
+  "missing_data_imputed": false
+}
