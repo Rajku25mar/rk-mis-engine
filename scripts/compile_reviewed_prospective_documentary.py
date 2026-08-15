@@ -41,7 +41,6 @@ def main() -> None:
     store = ProspectiveDocumentEvidenceStore(db_path)
     review_counts: Counter[str] = Counter()
     claim_counts: Counter[str] = Counter()
-    claim_ids: list[str] = []
 
     reviewed_at_default = str(ledger.get("review_policy", {}).get("reviewed_at") or as_of)
     reviewer_default = str(ledger.get("review_policy", {}).get("reviewer") or "RK_MIS_REVIEW")
@@ -55,7 +54,6 @@ def main() -> None:
         if state not in {"APPROVED", "REJECTED", "PENDING"}:
             raise ValueError(f"invalid decision review state {state!r}")
         claim_id = store.add_claim(claim)
-        claim_ids.append(claim_id)
         claim_counts[f"{claim['evidence_family']}.{claim['evidence_category']}"] += 1
         store.review(
             claim_id,
@@ -100,7 +98,7 @@ def main() -> None:
         "rows_with_optionality": sum(row.get("new_product_export_optionalities_score") is not None for row in feature_rows),
         "rows_with_management_execution_score": sum(bool(row["management_execution"].get("score_available")) for row in feature_rows),
         "management_minimum_closed_promises": 3,
-        "automatic_keyword_candidates_scored": false if False else False,
+        "automatic_keyword_candidates_scored": False,
         "official_100_point_weights_changed": False,
         "missing_data_imputed": False,
     }
