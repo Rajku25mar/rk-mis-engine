@@ -6,6 +6,7 @@ import importlib.util
 import json
 import sys
 import time
+import urllib.parse
 from collections import Counter
 from datetime import date
 from pathlib import Path
@@ -53,16 +54,58 @@ def load_watchlist(path: Path, maximum: int) -> list[dict[str, Any]]:
             continue
         seen.add(symbol)
         isin = str(raw.get("isin") or "").strip().upper() or None
+        nse_index = str(raw.get("nse_index") or "equities").strip().lower()
+        if nse_index not in {"equities", "sme"}:
+            raise DiscoveryError(f"unsupported NSE announcement index {nse_index!r} for {symbol}")
         out.append({
             "symbol": symbol,
             "isin": isin,
             "company_name": str(raw.get("company_name") or "").strip() or None,
+            "nse_index": nse_index,
         })
     if not out:
         raise DiscoveryError("watchlist is empty")
     if len(out) > maximum:
         raise DiscoveryError(f"watchlist exceeds maximum symbols per run: {len(out)}>{maximum}")
     return out
+
+
+def fetch_announcements(
+    session: Any,
+    member: dict[str, Any],
+    start: str,
+    end: str,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+    index = str(member.get("nse_index") or "equities").lower()
+    query = urllib.parse.urlencode({
+        "index": index,
+        "symbol": member["symbol"],
+        "from_date": date.fromisoformat(start).strftime("%d-%m-%Y"),
+        "to_date": date.fromisoformat(end).strftime("%d-%m-%Y"),
+    })
+    url = PROBE.ENDPOINT + "?" + query
+    referer = PROBE.REFERER + ("?tabIndex=sme" if index == "sme" else "?tabIndex=equity")
+    try:
+        payload = session.json(url, referer=referer)
+        raw = json.dumps(payload, sort_keys=True, ensure_ascii=False, default=str).encode("utf-8")
+        rows = PROBE.payload_rows(payload)
+        normalized = [PROBE.normalize_announcement(row) for row in rows]
+        normalized = [row for row in normalized if row.get("symbol") == member["symbol"]]
+        return normalized, {
+            "url": url,
+            "status": "OK",
+            "rows": len(normalized),
+            "sha256": sha256(raw),
+            "nse_index": index,
+        }
+    except Exception as exc:
+        return [], {
+            "url": url,
+            "status": "ERROR",
+            "rows": 0,
+            "error": type(exc).__name__,
+            "nse_index": index,
+        }
 
 
 def infer_document_type(subject: str | None) -> str:
@@ -165,7 +208,6 @@ def flatten_page_candidates(document: dict[str, Any]) -> list[dict[str, Any]]:
                 "score_eligible": False,
                 "requires_source_review": True,
             })
-    # One deterministic row per category/page/document.
     dedup = {row["candidate_id"]: row for row in out}
     return [dedup[key] for key in sorted(dedup)]
 
@@ -206,17 +248,26 @@ def main() -> None:
     document_status = Counter()
     symbols_with_candidates = set()
     source_hashes: list[str] = []
+    symbol_diagnostics: list[dict[str, Any]] = []
 
     for idx, member in enumerate(watchlist):
-        rows, meta = PROBE.fetch_symbol_announcements(session, member["symbol"], args.from_date, args.to_date)
+        rows, meta = fetch_announcements(session, member, args.from_date, args.to_date)
         announcement_status[meta["status"]] += 1
-        selected = PROBE.select_candidates(rows, policy, args.to_date, max_per_symbol=12)
-        selected = [row for row in selected if EXTRACT.triage_included(row)]
+        selected_before_triage = PROBE.select_candidates(rows, policy, args.to_date, max_per_symbol=12)
+        selected = [row for row in selected_before_triage if EXTRACT.triage_included(row)]
         selected.sort(
             key=lambda row: (EXTRACT.download_priority(row), row.get("known_at") or "", row.get("subject") or ""),
             reverse=True,
         )
         selected = selected[:max_docs]
+        symbol_diagnostics.append({
+            "symbol": member["symbol"],
+            "nse_index": member["nse_index"],
+            "announcement_rows": len(rows),
+            "official_attachment_rows": sum(PROBE.official_attachment(row.get("attachment_url")) for row in rows),
+            "selected_before_pdf_triage": len(selected_before_triage),
+            "selected_documents": len(selected),
+        })
 
         for candidate in selected:
             url = candidate.get("attachment_url")
@@ -236,7 +287,7 @@ def main() -> None:
             try:
                 raw = session.request(
                     url,
-                    referer=PROBE.REFERER,
+                    referer=PROBE.REFERER + ("?tabIndex=sme" if member["nse_index"] == "sme" else "?tabIndex=equity"),
                     accept="application/pdf,*/*",
                 )
                 if len(raw) > int(bounds["maximum_document_bytes"]):
@@ -260,21 +311,18 @@ def main() -> None:
                 record["status"] = "DOWNLOAD_ERROR"
                 record["error"] = type(exc).__name__
             document_status[str(record["status"])] += 1
-            # Persist only metadata in output; never raw PDF bytes or page text.
-            documents.append({
-                key: value for key, value in record.items()
-                if key != "page_candidates"
-            })
+            documents.append({key: value for key, value in record.items() if key != "page_candidates"})
         if idx + 1 < len(watchlist):
             time.sleep(0.08)
 
     queue.sort(key=lambda row: (row["symbol"], row.get("known_at") or "", row["page"], row["evidence_family"], row["evidence_category"]))
     report = {
-        "version": "rk-mis-prospective-nse-documentary-discovery-v1",
+        "version": "rk-mis-prospective-nse-documentary-discovery-v1.1",
         "policy_sha256": sha256(args.policy.read_bytes()),
         "watchlist_sha256": sha256(args.watchlist.read_bytes()),
         "window": {"from": args.from_date, "to": args.to_date},
         "watchlist_symbols": len(watchlist),
+        "symbol_diagnostics": symbol_diagnostics,
         "announcement_request_status": dict(sorted(announcement_status.items())),
         "documents_considered": len(documents),
         "document_status_counts": dict(sorted(document_status.items())),
