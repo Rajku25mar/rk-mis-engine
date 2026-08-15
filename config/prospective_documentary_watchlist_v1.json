@@ -1,19 +1,19 @@
 {
   "version": "rk-mis-prospective-documentary-watchlist-v1",
   "as_of": "2026-08-15",
-  "purpose": "Initial bounded primary-document watchlist for the current SME multibagger research set. NSE adapter only; unresolved/other-venue names are intentionally excluded rather than guessed.",
+  "purpose": "Bounded primary-document watchlist for the current SME multibagger research set. NSE SME names are scanned here; BSE-only names are intentionally routed to a separate adapter.",
   "symbols": [
     {"symbol": "SYSTANGO", "isin": "INE0O7R01011", "company_name": "Systango Technologies Limited", "nse_index": "sme"},
-    {"symbol": "KPGEL", "isin": null, "company_name": "KP Green Engineering Limited", "nse_index": "sme"},
-    {"symbol": "ORIANA", "isin": null, "company_name": "Oriana Power Limited", "nse_index": "sme"},
+    {"symbol": "ORIANA", "isin": "INE0OUT01019", "company_name": "Oriana Power Limited", "nse_index": "sme"},
     {"symbol": "TECHD", "isin": "INE0Y5H01014", "company_name": "TechD Cybersecurity Limited", "nse_index": "sme"},
-    {"symbol": "AIMTRON", "isin": "INE0RUV01018", "company_name": "Aimtron Electronics Limited", "nse_index": "sme"}
+    {"symbol": "AIMTRON", "isin": "INE0RUV01018", "company_name": "Aimtron Electronics Limited", "nse_index": "sme"},
+    {"symbol": "GENXAI", "isin": "INE1W0N01014", "company_name": "GenXAI Analytics Limited", "nse_index": "sme"},
+    {"symbol": "TECHLABS", "isin": "INE0QD201012", "company_name": "Trident Techlabs Limited", "nse_index": "sme"}
   ],
-  "excluded_until_bse_or_identity_adapter": [
-    "Bondada Engineering Limited",
-    "CFF Fluid Control Limited",
-    "GenXAI Analytics Limited",
-    "Millworks Technologies Limited",
-    "Trident Techlabs Limited"
+  "bse_adapter_required": [
+    {"symbol": "KPGEL", "scrip_code": "544150", "company_name": "KP Green Engineering Limited"},
+    {"symbol": "BONDADA", "scrip_code": "543971", "company_name": "Bondada Engineering Limited"},
+    {"symbol": "CFF", "scrip_code": "543920", "company_name": "CFF Fluid Control Limited"},
+    {"symbol": null, "scrip_code": null, "company_name": "Millworks Technologies Limited"}
   ]
 }
