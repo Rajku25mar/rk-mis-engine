@@ -53,6 +53,29 @@ class ProspectiveFeatureBridgeTests(unittest.TestCase):
         self.assertEqual(rows[0]["mf_holding_change_pp_4q"], 1.2)
         self.assertEqual(rows[0]["prospective_sources"], ["DOCUMENTARY", "SMART_MONEY"])
 
+    def test_symbol_only_catalyst_merges_into_unique_isin_documentary_identity(self) -> None:
+        documentary = [{
+            "isin": "INE000A01001", "symbol": "AAA",
+            "features": {"moat_evidence_score": 40.0},
+        }]
+        catalyst = [{
+            "isin": None, "symbol": "AAA",
+            "features": {"order_quality_score": 100.0, "capex_execution_score": 45.0},
+        }]
+        rows = combine_prospective_sources(documentary, [], catalyst)
+        self.assertEqual(len(rows), 1)
+        self.assertEqual(rows[0]["isin"], "INE000A01001")
+        self.assertEqual(rows[0]["moat_evidence_score"], 40.0)
+        self.assertEqual(rows[0]["order_quality_score"], 100.0)
+        self.assertEqual(rows[0]["capex_execution_score"], 45.0)
+        self.assertEqual(rows[0]["prospective_sources"], ["CATALYST", "DOCUMENTARY"])
+
+    def test_conflicting_isins_for_same_symbol_fail_closed(self) -> None:
+        documentary = [{"isin": "INE000A01001", "symbol": "AAA", "features": {"moat_evidence_score": 40.0}}]
+        catalyst = [{"isin": "INE999A01001", "symbol": "AAA", "features": {"order_quality_score": 100.0}}]
+        with self.assertRaises(ValueError):
+            combine_prospective_sources(documentary, [], catalyst)
+
 
 if __name__ == "__main__":
     unittest.main()
