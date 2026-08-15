@@ -1,49 +1,64 @@
 {
-  "version": "rk-mis-prospective-tracking-v1",
+  "version": "rk-mis-prospective-tracking-v1.2",
   "status": "IMPLEMENTED_POINT_IN_TIME_TRACKING_POLICY",
   "effective_date": "2026-08-15",
+  "operating_mode": "PUBLIC_GITHUB_EXECUTION_WITHOUT_NAS_OR_UPSTOX_LIVE_DEPENDENCY",
   "official_100_point_score_mutated": false,
   "purpose": "Accumulate current evidence prospectively so future RK-MIS validation does not depend on sparse retrospective reconstruction.",
   "smart_money": {
-    "state": "IMPLEMENTED",
-    "authorized_structured_source": "Upstox Company Fundamentals Share Holdings API",
-    "endpoint_template": "https://api.upstox.com/v2/fundamentals/{isin}/share-holdings",
-    "source_grade": "A",
-    "provider_field_mapping": {
-      "mutual_funds": "mf_holding_pct",
-      "fii": "fii_holding_pct",
-      "promoters": "promoter_holding_pct"
-    },
-    "explicit_non_mapping": {
-      "other_dii": "NOT_INSTITUTIONAL_BREADTH",
-      "retail_and_other": "NOT_A_SMART_MONEY_SCORE_FIELD"
-    },
-    "institutional_breadth": "MISSING_UNTIL_AN_AUTHORIZED_SOURCE_PROVIDES_THE_LOCKED_SHAREHOLDER_COUNT_OR_EQUIVALENT_DEFINITION",
-    "capture_rule": "Journal only the latest currently observable reporting quarter from each current provider response. Do not backfill older history returned in the same response as if RK-MIS had observed it at the historical date.",
-    "known_at_rule": "Use the RK-MIS capture date; later revisions replace a period only for as-of dates at or after the later observation.",
-    "feature_release_rule": "A 4Q change requires five point-in-time observed periods spanning 330-400 days. Missing component values are not imputed.",
+    "state": "POINT_IN_TIME_JOURNAL_IMPLEMENTED_LIVE_CAPTURE_SOURCE_DEFERRED",
+    "current_live_provider_dependency": null,
+    "reason": "Current RK-MIS operating mode is GitHub-only without Upstox/NAS dependency. The point-in-time journal and 4Q release guards remain available for a future authorized structured source, but no provider history is backfilled and no inactive provider is represented as live evidence.",
+    "feature_release_rule": "A 4Q change requires five actually observed point-in-time periods spanning 330-400 days. Missing component values are not imputed.",
     "scoring_eligible_source_grades": ["A", "B"],
+    "institutional_breadth": "MISSING_UNTIL_AN_AUTHORIZED_SOURCE_PROVIDES_THE_LOCKED_SHAREHOLDER_COUNT_OR_EQUIVALENT_DEFINITION",
     "historical_provider_quarters_backfilled": false,
-    "other_dii_mapped_to_institutional_breadth": false,
     "supporting_historical_feasibility_result": "validation/2022-07/smart_money_4q_coverage_expansion_result_v2.json"
   },
   "documentary_discovery": {
-    "state": "FRAMEWORK_AVAILABLE_PROSPECTIVE_REVIEW_REQUIRED",
+    "state": "IMPLEMENTED_ACTIVE_BOUNDED_SHORTLIST_TRACK",
+    "venues": ["NSE_SME", "BSE_SME"],
+    "nse_workflow": ".github/workflows/prospective-documentary-scan.yml",
+    "bse_workflow": ".github/workflows/prospective-documentary-bse-scan.yml",
+    "cadence": "WEEKLY_BOUNDED_120_DAY_ROLLING_WINDOW",
     "components": [
       "DOCUMENTARY_RUNWAY",
       "DOCUMENTARY_MOAT",
       "DOCUMENTARY_FORWARD_CATALYSTS",
       "MANAGEMENT_EXECUTION_HISTORY"
     ],
-    "rule": "Only chronology-safe reviewed evidence may fill approved feature fields. Automated candidates are not scores until the review gate approves them.",
+    "current_reviewed_snapshot": "validation/prospective_documentary_features_2026-08-15_v3.json",
+    "reviewed_identities": 7,
+    "rule": "Only chronology-safe, SHA-pinned, reviewed A/B primary evidence may fill approved feature fields. Automated candidates remain PENDING and are not scores.",
     "historical_reconstruction_status": "NSE_ONLY_2023_HOLDOUT_INFEASIBLE_AT_FROZEN_MINIMUM_COHORT"
   },
+  "catalyst_execution": {
+    "state": "IMPLEMENTED_REVIEWED_POINT_IN_TIME_LEDGER",
+    "current_review_ledger": "validation/prospective_catalyst_review_2026-08-15_v1.json",
+    "current_feature_snapshot": "validation/prospective_catalyst_features_2026-08-15_v1.json",
+    "frozen_order_type_weights": {
+      "CONFIRMED": 1.0,
+      "FRAMEWORK": 0.8,
+      "LOI": 0.65,
+      "L1": 0.5,
+      "MOU": 0.25,
+      "PIPELINE": 0.1
+    },
+    "orderbook_to_sales_rule": "Requires an explicitly aggregate order book plus an explicit TTM-revenue field from the matched base company input.",
+    "individual_purchase_order_rule": "May support order quality but must not be relabelled as aggregate order book.",
+    "capex_execution_rule": "Uses the frozen status score less delay penalty. Planned capacity increase remains missing without comparable current/planned capacity units.",
+    "official_runner_integration": "scripts/run_rk_mie.py --catalyst-ledger",
+    "full_pipeline_integration_run_id": 31864588798,
+    "full_pipeline_integration_status": "PASS_SYNTHETIC_DENOMINATOR_TEST_ONLY_NO_RESEARCH_SCORE_PUBLISHED"
+  },
   "global_rules": [
-    "ISIN-first identity where available.",
+    "ISIN-first identity where available; symbol-only evidence may merge only when identity is unambiguous.",
     "No missing-data imputation.",
     "No provider category relabelling merely to improve coverage.",
     "No score-band or pillar-weight change from prospective tracking itself.",
     "Future return testing must be preregistered before outcome load.",
-    "Management promise delivery remains unavailable until at least three closed reviewed promises."
+    "Management promise delivery remains unavailable until at least three closed reviewed promises.",
+    "Automated document keyword hits never become scores without review.",
+    "Full-market systematic corporate-document scraping is not enabled; live discovery remains bounded to the explicit RK-MIS shortlist."
   ]
 }
