@@ -3,7 +3,7 @@ from __future__ import annotations
 import hashlib
 import json
 import sqlite3
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 from datetime import UTC, date, datetime
 from pathlib import Path
 from typing import Any, Iterable
@@ -21,6 +21,7 @@ DERIVED_FIELDS = {
     "promoter_holding_pct": "promoter_holding_change_pp_4q",
 }
 SOURCE_GRADES = {"A", "B", "C", "D"}
+SCORING_ELIGIBLE_SOURCE_GRADES = {"A", "B"}
 
 
 def utcnow() -> str:
@@ -109,6 +110,8 @@ class SmartMoneyObservation:
             "institutional_shareholder_count": _count(self.institutional_shareholder_count),
             "promoter_holding_pct": _pct(self.promoter_holding_pct, "promoter_holding_pct"),
         }
+        if all(payload[field] is None for field in TRACKED_FIELDS):
+            raise ValueError("observation must contain at least one tracked Smart Money field")
         payload["observation_id"] = "SMO-" + _sha(
             identity,
             period_end,
@@ -188,25 +191,37 @@ class ProspectiveSmartMoneyStore:
             ).fetchall()
         return [dict(row) for row in rows]
 
-    def _point_in_time_period_rows(self, identity: str, as_of_date: str) -> list[dict[str, Any]]:
+    def _point_in_time_period_rows(
+        self,
+        identity: str,
+        as_of_date: str,
+        eligible_source_grades: Iterable[str] = SCORING_ELIGIBLE_SOURCE_GRADES,
+    ) -> tuple[list[dict[str, Any]], int]:
         as_of = _iso(as_of_date)
+        eligible = {str(x).upper() for x in eligible_source_grades}
         with self.connect() as conn:
             rows = conn.execute(
                 """
                 SELECT * FROM smart_money_observations
                 WHERE identity=? AND period_end<=? AND known_at<=?
-                ORDER BY period_end, known_at, observation_id
+                ORDER BY period_end, known_at, created_at, observation_id
                 """,
                 (identity, as_of, as_of),
             ).fetchall()
         latest_by_period: dict[str, dict[str, Any]] = {}
+        excluded_low_grade = 0
         for row in rows:
             item = dict(row)
+            if str(item.get("source_grade") or "").upper() not in eligible:
+                excluded_low_grade += 1
+                continue
             period = item["period_end"]
             prior = latest_by_period.get(period)
-            if prior is None or (item["known_at"], item["observation_id"]) > (prior["known_at"], prior["observation_id"]):
+            current_key = (item["known_at"], item["created_at"], item["observation_id"])
+            prior_key = None if prior is None else (prior["known_at"], prior["created_at"], prior["observation_id"])
+            if prior is None or current_key > prior_key:
                 latest_by_period[period] = item
-        return [latest_by_period[p] for p in sorted(latest_by_period)]
+        return [latest_by_period[p] for p in sorted(latest_by_period)], excluded_low_grade
 
     def derive_features(
         self,
@@ -217,11 +232,18 @@ class ProspectiveSmartMoneyStore:
         required_periods: int = 5,
         span_min_days: int = 330,
         span_max_days: int = 400,
+        eligible_source_grades: Iterable[str] = SCORING_ELIGIBLE_SOURCE_GRADES,
     ) -> dict[str, Any]:
         identity = _identity(isin, symbol)
-        periods = self._point_in_time_period_rows(identity, as_of_date)
+        periods, excluded_low_grade = self._point_in_time_period_rows(
+            identity,
+            as_of_date,
+            eligible_source_grades=eligible_source_grades,
+        )
         selected = periods[-required_periods:]
         warnings: list[str] = []
+        if excluded_low_grade:
+            warnings.append(f"LOW_GRADE_OBSERVATIONS_EXCLUDED:{excluded_low_grade}")
         features = {name: None for name in DERIVED_FIELDS.values()}
         if len(selected) < required_periods:
             warnings.append(f"INSUFFICIENT_DISTINCT_PERIODS:{len(selected)}/{required_periods}")
@@ -234,6 +256,7 @@ class ProspectiveSmartMoneyStore:
                 "available_features": [],
                 "warnings": warnings,
                 "point_in_time_safe": True,
+                "eligible_source_grades": sorted({str(x).upper() for x in eligible_source_grades}),
             }
 
         span = (date.fromisoformat(selected[-1]["period_end"]) - date.fromisoformat(selected[0]["period_end"])).days
@@ -248,6 +271,7 @@ class ProspectiveSmartMoneyStore:
                 "available_features": [],
                 "warnings": warnings,
                 "point_in_time_safe": True,
+                "eligible_source_grades": sorted({str(x).upper() for x in eligible_source_grades}),
             }
 
         for source_field, derived_field in DERIVED_FIELDS.items():
@@ -267,6 +291,7 @@ class ProspectiveSmartMoneyStore:
             "available_features": available,
             "warnings": warnings,
             "point_in_time_safe": True,
+            "eligible_source_grades": sorted({str(x).upper() for x in eligible_source_grades}),
         }
 
     def derive_all(self, *, as_of_date: str) -> list[dict[str, Any]]:
