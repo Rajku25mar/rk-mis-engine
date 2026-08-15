@@ -1,0 +1,64 @@
+name: RK-MIS Reviewed Prospective Documentary Compile v3
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/compile-prospective-documentary-2026-08-15-v3.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  compile-reviewed-evidence:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap layered prospective documentary snapshot v3')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile layered reviewed evidence
+        env:
+          PYTHONPATH: src
+        run: |
+          python scripts/compile_reviewed_prospective_documentary.py \
+            --ledger \
+              validation/prospective_documentary_review_2026-08-15_v1.json \
+              validation/prospective_documentary_review_2026-08-15_v2_delta.json \
+              validation/prospective_documentary_review_2026-08-15_v3_bse_delta.json \
+            --output artifacts/reviewed-prospective-documentary-v3
+      - name: Enforce reviewed v3 snapshot
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('artifacts/reviewed-prospective-documentary-v3')
+          report=json.loads((root/'report.json').read_text())
+          data=json.loads((root/'features.json').read_text())
+          rows={row['symbol']:row for row in data['rows']}
+          assert set(rows)=={'AIMTRON','ORIANA','TECHD','TECHLABS','KPGEL','BONDADA','CFF'}, rows.keys()
+          assert rows['KPGEL']['reinvestment_runway_score']==20.0
+          assert rows['KPGEL']['moat_evidence_score']==40.0
+          assert rows['KPGEL']['new_product_export_optionalities_score']==20.0
+          assert rows['KPGEL']['approved_order_claims']==1
+          assert rows['BONDADA']['reinvestment_runway_score'] is None
+          assert rows['BONDADA']['moat_evidence_score'] is None
+          assert rows['BONDADA']['new_product_export_optionalities_score'] is None
+          assert rows['BONDADA']['approved_order_claims']==3
+          assert rows['CFF']['approved_order_claims']==2
+          assert report['rows_with_management_execution_score']==0
+          assert report['automatic_keyword_candidates_scored'] is False
+          assert report['official_100_point_weights_changed'] is False
+          assert report['missing_data_imputed'] is False
+          print('RK_MIS_REVIEWED_PROSPECTIVE_DOCUMENTARY_V3=PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rk-mis-reviewed-prospective-documentary-2026-08-15-v3
+          path: |
+            artifacts/reviewed-prospective-documentary-v3/report.json
+            artifacts/reviewed-prospective-documentary-v3/features.json
+          retention-days: 30
+          if-no-files-found: error
