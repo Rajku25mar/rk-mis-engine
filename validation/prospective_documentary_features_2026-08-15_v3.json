@@ -1,0 +1,43 @@
+{
+  "version": "rk-mis-prospective-documentary-features-2026-08-15-v3",
+  "status": "FROZEN_REVIEWED_POINT_IN_TIME_SNAPSHOT",
+  "as_of_date": "2026-08-15",
+  "ledger_chain_sha256": "951688494bf5c13cd0037820dd916510cbc441de40ae6d853ebaae15f17b8e96",
+  "ledgers": [
+    {"path":"validation/prospective_documentary_review_2026-08-15_v1.json","sha256":"f4eede7df8fc4d5ed722f930c66190e5a82f9e84e64c43254364f5c26e4a661c","decision_rows":18},
+    {"path":"validation/prospective_documentary_review_2026-08-15_v2_delta.json","sha256":"4ecb2a7f1711fbdc5935a162729befc8851b28c1ff718a14b02c95dcb60a3c8d","decision_rows":5},
+    {"path":"validation/prospective_documentary_review_2026-08-15_v3_bse_delta.json","sha256":"1517795ecd348da3231c3ea8afe8259d2f9298f13fd0232cc6facb430b963793","decision_rows":11}
+  ],
+  "compile_workflow_run_id": 31864100746,
+  "artifact": {"id":9241469475,"name":"rk-mis-reviewed-prospective-documentary-2026-08-15-v3","sha256":"40f6773b3ce673ee10d7b3c775197da0d35bbe49ddd0408c600d1b84e1506b55"},
+  "summary": {
+    "approved_claims": 34,
+    "identities": 7,
+    "rows_with_runway": 5,
+    "rows_with_moat": 3,
+    "rows_with_optionality": 5,
+    "approved_order_claims": 9,
+    "open_management_promises": 5,
+    "closed_management_promises": 0,
+    "rows_with_management_execution_score": 0
+  },
+  "rows": [
+    {"symbol":"AIMTRON","isin":"INE0RUV01018","reinvestment_runway_score":40.0,"moat_evidence_score":20.0,"new_product_export_optionalities_score":20.0,"approved_order_claims":1},
+    {"symbol":"BONDADA","isin":null,"reinvestment_runway_score":null,"moat_evidence_score":null,"new_product_export_optionalities_score":null,"approved_order_claims":3},
+    {"symbol":"CFF","isin":null,"reinvestment_runway_score":null,"moat_evidence_score":null,"new_product_export_optionalities_score":null,"approved_order_claims":2},
+    {"symbol":"KPGEL","isin":null,"reinvestment_runway_score":20.0,"moat_evidence_score":40.0,"new_product_export_optionalities_score":20.0,"approved_order_claims":1},
+    {"symbol":"ORIANA","isin":null,"reinvestment_runway_score":60.0,"moat_evidence_score":null,"new_product_export_optionalities_score":40.0,"approved_order_claims":1},
+    {"symbol":"TECHD","isin":"INE0Y5H01014","reinvestment_runway_score":20.0,"moat_evidence_score":20.0,"new_product_export_optionalities_score":40.0,"approved_order_claims":0},
+    {"symbol":"TECHLABS","isin":"INE0QD201012","reinvestment_runway_score":20.0,"moat_evidence_score":null,"new_product_export_optionalities_score":40.0,"approved_order_claims":1}
+  ],
+  "guardrails": {
+    "automatic_keyword_candidates_scored": false,
+    "source_binary_sha256_required": true,
+    "review_required": true,
+    "cross_category_shared_basis_double_counting": false,
+    "cross_family_shared_basis_double_counting": false,
+    "management_minimum_closed_promises": 3,
+    "missing_data_imputed": false,
+    "official_100_point_weights_changed": false
+  }
+}
