@@ -1,0 +1,62 @@
+name: RK-MIS Reviewed Prospective Catalyst Compile
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/compile-prospective-catalysts-2026-08-15.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  compile-catalysts:
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap reviewed prospective catalyst snapshot')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Compile catalyst snapshot builder
+        run: python -m py_compile scripts/compile_reviewed_prospective_catalysts.py
+      - name: Compile reviewed catalyst ledger
+        env:
+          PYTHONPATH: src
+        run: |
+          python scripts/compile_reviewed_prospective_catalysts.py \
+            --ledger validation/prospective_catalyst_review_2026-08-15_v1.json \
+            --as-of 2026-08-15 \
+            --output artifacts/reviewed-prospective-catalysts
+      - name: Enforce catalyst snapshot guardrails
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('artifacts/reviewed-prospective-catalysts')
+          report=json.loads((root/'report.json').read_text())
+          data=json.loads((root/'features.json').read_text())
+          rows={r['symbol']:r for r in data['rows']}
+          assert set(rows)=={'ORIANA','KPGEL','BONDADA','TECHLABS','CFF'}
+          assert report['rows_with_order_quality']==5
+          assert report['rows_with_orderbook_to_sales']==0
+          assert report['rows_with_capex_execution']==1
+          assert report['rows_with_planned_capacity_increase']==0
+          assert rows['KPGEL']['order_quality_score']==100.0
+          assert rows['KPGEL']['capex_execution_score']==45.0
+          assert rows['CFF']['order_quality_score']==100.0
+          assert rows['CFF']['orderbook_to_sales'] is None
+          assert all(r['planned_capacity_increase_pct'] is None for r in rows.values())
+          assert report['official_100_point_weights_changed'] is False
+          assert report['missing_data_imputed'] is False
+          print('RK_MIS_REVIEWED_PROSPECTIVE_CATALYSTS=PASS')
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rk-mis-reviewed-prospective-catalysts-2026-08-15
+          path: |
+            artifacts/reviewed-prospective-catalysts/report.json
+            artifacts/reviewed-prospective-catalysts/features.json
+          retention-days: 30
+          if-no-files-found: error
