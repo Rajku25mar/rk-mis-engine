@@ -1,0 +1,61 @@
+{
+  "version": "rk-mis-prospective-documentary-discovery-v1",
+  "status": "IMPLEMENTED_BOUNDED_PRIMARY_DOCUMENT_DISCOVERY_POLICY",
+  "effective_date": "2026-08-15",
+  "purpose": "Discover current issuer evidence for RK-MIS candidates without allowing automated keyword/page hits to become scores.",
+  "source": {
+    "venue": "NSE",
+    "announcement_page": "https://www.nseindia.com/companies-listing/corporate-filings-announcements",
+    "announcement_endpoint": "https://www.nseindia.com/api/corporate-announcements",
+    "allowed_attachment_hosts": [
+      "nseindia.com",
+      "archives.nseindia.com",
+      "nsearchives.nseindia.com"
+    ],
+    "source_grade_for_binary_pinned_primary_documents": "A"
+  },
+  "bounds": {
+    "maximum_symbols_per_run": 40,
+    "maximum_lookback_days": 120,
+    "maximum_documents_per_symbol": 4,
+    "maximum_document_bytes": 15000000,
+    "maximum_pdf_pages": 220
+  },
+  "discovery": {
+    "keyword_families": {
+      "runway": ["capacity", "capex", "expansion", "plant", "facility", "utilisation", "utilization", "ramp up", "land bank"],
+      "moat": ["patent", "proprietary", "vendor approval", "qualification", "certification", "repeat order", "long-term agreement", "single source", "sole supplier", "market leader", "backward integration"],
+      "optionality": ["new product", "new customer", "export", "new geography", "new market", "new segment", "new vertical"],
+      "orders": ["order book", "orderbook", "letter of award", "purchase order", "order received", "contract award"]
+    },
+    "priority_subjects": [
+      "Investor Presentation",
+      "Press Release",
+      "Updates",
+      "Award of Order",
+      "Receipt of Order",
+      "Analysts/Institutional Investor Meet/Con. Call Updates",
+      "Expansion",
+      "Acquisition",
+      "New Product"
+    ]
+  },
+  "review_gate": {
+    "candidate_state": "PENDING",
+    "automated_candidates_are_scores": false,
+    "approved_review_required": true,
+    "minimum_extraction_confidence_for_scoring": 0.78,
+    "source_sha256_required_for_scoring": true,
+    "cross_category_shared_basis_double_counting": "FAIL_CLOSED",
+    "cross_family_shared_basis_double_counting": "FAIL_CLOSED",
+    "management_execution": "SEPARATE_ENGINE_AND_MINIMUM_3_CLOSED_REVIEWED_PROMISES"
+  },
+  "publication": {
+    "raw_pdf_published": false,
+    "raw_pdf_text_published": false,
+    "queue_may_include": ["source_url", "source_sha256", "page_number", "matched_categories", "matched_terms", "numeric_candidates"],
+    "queue_must_not_include": ["raw_full_page_text", "automatic_score"]
+  },
+  "official_100_point_score_mutated": false,
+  "missing_data_imputed": false
+}
