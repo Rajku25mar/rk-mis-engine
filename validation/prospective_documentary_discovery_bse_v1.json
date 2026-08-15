@@ -1,5 +1,5 @@
 {
-  "version": "rk-mis-prospective-documentary-discovery-bse-v1",
+  "version": "rk-mis-prospective-documentary-discovery-bse-v1.1",
   "status": "IMPLEMENTED_BOUNDED_PRIMARY_DOCUMENT_DISCOVERY_POLICY",
   "effective_date": "2026-08-15",
   "purpose": "Discover current BSE primary-document evidence for the explicit RK-MIS shortlist without systematic full-market acquisition and without turning automated hits into scores.",
@@ -16,7 +16,9 @@
     "maximum_documents_per_scrip": 4,
     "maximum_document_bytes": 15000000,
     "maximum_pdf_pages": 220,
-    "maximum_api_pages_per_scrip": 3
+    "maximum_api_pages_per_scrip": 3,
+    "maximum_review_excerpt_chars": 480,
+    "maximum_review_excerpts_per_document": 12
   },
   "discovery": {
     "keyword_families": {
@@ -53,7 +55,10 @@
     "raw_api_payload_published": false,
     "raw_pdf_published": false,
     "raw_pdf_text_published": false,
-    "automatic_score_published": false
+    "automatic_score_published": false,
+    "bounded_review_excerpt_allowed": true,
+    "review_excerpt_rule": "Only short context around matched evidence on candidate pages may be published for blinded review; never publish a full page or contiguous full document text.",
+    "review_excerpt_max_chars": 480
   },
   "official_100_point_score_mutated": false,
   "missing_data_imputed": false
