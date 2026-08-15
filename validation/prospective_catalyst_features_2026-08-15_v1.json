@@ -1,0 +1,30 @@
+{
+  "version": "rk-mis-prospective-catalyst-features-2026-08-15-v1",
+  "status": "FROZEN_REVIEWED_POINT_IN_TIME_SNAPSHOT",
+  "as_of_date": "2026-08-15",
+  "review_ledger": "validation/prospective_catalyst_review_2026-08-15_v1.json",
+  "review_ledger_sha256": "69937fed61276190f33e20b3526639e2a654802578165bc47c4f1b5856314d8d",
+  "ledger_chain_sha256": "af6c549ba0e8e90dfb85b1fbb1f4ae33a8d10e549d2ea8d8f892bf0d545b7b93",
+  "compile_workflow_run_id": 31864524435,
+  "artifact": {
+    "id": 9241596562,
+    "name": "rk-mis-reviewed-prospective-catalysts-2026-08-15",
+    "sha256": "cfcb5eda78e2db763078ec000f4783436d776249ac4dae522b50132349202849"
+  },
+  "rows": [
+    {"symbol":"BONDADA","order_quality_score":100.0,"orderbook_to_sales":null,"capex_execution_score":null,"planned_capacity_increase_pct":null},
+    {"symbol":"CFF","order_quality_score":100.0,"orderbook_to_sales":null,"capex_execution_score":null,"planned_capacity_increase_pct":null},
+    {"symbol":"KPGEL","order_quality_score":100.0,"orderbook_to_sales":null,"capex_execution_score":45.0,"planned_capacity_increase_pct":null},
+    {"symbol":"ORIANA","order_quality_score":100.0,"orderbook_to_sales":null,"capex_execution_score":null,"planned_capacity_increase_pct":null},
+    {"symbol":"TECHLABS","order_quality_score":100.0,"orderbook_to_sales":null,"capex_execution_score":null,"planned_capacity_increase_pct":null}
+  ],
+  "guardrails": {
+    "orderbook_to_sales_release_rule": "Only during an RK-MIS run when the matched base company row supplies explicit ttm_revenue_cr, revenue_ttm_cr, or sales_ttm_cr.",
+    "cff_individual_purchase_orders_are_not_aggregate_orderbook": true,
+    "aimtron_usd_orderbook_excluded_without_point_in_time_inr_conversion": true,
+    "planned_capacity_increase_withheld_without_comparable_capacity_units": true,
+    "source_binary_sha256_required": true,
+    "missing_data_imputed": false,
+    "official_100_point_weights_changed": false
+  }
+}
