@@ -1,17 +1,16 @@
 name: RK-MIS Prospective BSE Documentary Discovery
 
+# Bounded shortlist-only prospective evidence capture. This is intentionally not a full-market BSE scraper.
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - ".github/workflows/prospective-documentary-bse-scan.yml"
+  schedule:
+    - cron: "45 3 * * 6"
 
 permissions:
   contents: read
 
 jobs:
   discover-bse:
-    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, 'Bootstrap prospective BSE documentary discovery scan')
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -21,6 +20,10 @@ jobs:
           python-version: "3.12"
       - name: Install PDF parser
         run: python -m pip install --disable-pip-version-check pypdf
+      - name: Resolve rolling evidence window
+        run: |
+          echo "FROM_DATE=$(date -u -d '120 days ago' +%F)" >> "$GITHUB_ENV"
+          echo "TO_DATE=$(date -u +%F)" >> "$GITHUB_ENV"
       - name: Compile bounded BSE discovery runner
         run: python -m py_compile scripts/discover_prospective_bse_documentary.py
       - name: Run four-scrip BSE discovery
@@ -28,8 +31,8 @@ jobs:
           python scripts/discover_prospective_bse_documentary.py \
             --watchlist config/prospective_documentary_watchlist_v1.json \
             --policy validation/prospective_documentary_discovery_bse_v1.json \
-            --from-date 2026-04-17 \
-            --to-date 2026-08-15 \
+            --from-date "$FROM_DATE" \
+            --to-date "$TO_DATE" \
             --output artifacts/prospective-bse-documentary
       - name: Enforce candidate-only BSE boundary
         run: |
@@ -41,7 +44,7 @@ jobs:
           assert files=={'report.json','review_queue.json','document_manifest.json'}, files
           report=json.loads((root/'report.json').read_text())
           queue=json.loads((root/'review_queue.json').read_text())
-          assert report['watchlist_scrips']==4
+          assert report['watchlist_scrips']<=20
           assert report['automated_candidates_are_scores'] is False
           assert report['review_required_before_scoring'] is True
           assert report['raw_api_payload_published'] is False
@@ -56,7 +59,7 @@ jobs:
         run: cat artifacts/prospective-bse-documentary/report.json
       - uses: actions/upload-artifact@v4
         with:
-          name: rk-mis-prospective-bse-documentary-2026-08-15
+          name: rk-mis-prospective-bse-documentary-latest
           path: |
             artifacts/prospective-bse-documentary/report.json
             artifacts/prospective-bse-documentary/review_queue.json
