@@ -37,13 +37,14 @@ def main() -> None:
     diagnostics: list[dict[str, Any]] = []
 
     for member in watchlist:
-        rows, meta = PROBE.fetch_symbol_announcements(session, member["symbol"], args.from_date, args.to_date)
+        rows, meta = DISCOVERY.fetch_announcements(session, member, args.from_date, args.to_date)
         with_attachment = [r for r in rows if PROBE.official_attachment(r.get("attachment_url"))]
         priority = [r for r in with_attachment if PROBE.priority_subject_match(r.get("subject") or "", policy)]
         keyword = [r for r in with_attachment if PROBE.keyword_hits(r, policy)]
         selected = PROBE.select_candidates(rows, policy, args.to_date, max_per_symbol=12)
         diagnostics.append({
             "symbol": member["symbol"],
+            "nse_index": member["nse_index"],
             "request_status": meta.get("status"),
             "rows": len(rows),
             "rows_with_official_attachment": len(with_attachment),
@@ -58,7 +59,7 @@ def main() -> None:
         })
 
     report = {
-        "version": "rk-mis-prospective-nse-announcement-diagnostic-v1",
+        "version": "rk-mis-prospective-nse-announcement-diagnostic-v1.1",
         "window": {"from": args.from_date, "to": args.to_date},
         "symbols": diagnostics,
         "official_requests_made": session.requests_made,
