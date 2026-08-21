@@ -24,15 +24,26 @@ jobs:
         run: |
           mkdir -p scripts
           curl -fsSL https://raw.githubusercontent.com/Rajku25mar/rk-mis-engine/rk2x-public-backtest-20260821/scripts/rk2x_public_backtest.py -o scripts/rk2x_public_backtest.py
-      - name: Run candidate-only study
+      - name: Run adjusted-price challenger verification
         run: |
           python - <<'PY'
-          import importlib.util, pandas as pd
+          import importlib.util, pandas as pd, yfinance as yf
           from pathlib import Path
           p=Path.cwd()/'scripts'/'rk2x_public_backtest.py'
           spec=importlib.util.spec_from_file_location('rk2x', p)
           m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
-          m.OUT = Path.cwd()/'validation'/'rk2x_public_fast'; m.OUT.mkdir(parents=True, exist_ok=True)
+          m.OUT = Path.cwd()/'validation'/'rk2x_challenger_adjusted'; m.OUT.mkdir(parents=True, exist_ok=True)
+          m.CANDIDATES={
+              'TECHNOE':'TECHNOE.NS',
+              'NDRAUTO':'NDRAUTO.NS',
+              'NEULANDLAB':'NEULANDLAB.NS',
+              'ANANTRAJ':'ANANTRAJ.NS',
+              'ANANDRATHI':'ANANDRATHI.NS',
+          }
+          def adj_one(ticker, period='10y'):
+              raw=yf.download(ticker, period=period, interval='1d', auto_adjust=True, progress=False, threads=False)
+              return m.normalize_ohlcv(raw)
+          m.download_one=adj_one
           m.fetch_nse_universe=lambda: pd.DataFrame(columns=['ticker','board','isin'])
           m.fetch_bse_universe=lambda _: pd.DataFrame(columns=['ticker','board','isin'])
           m.main()
@@ -40,6 +51,6 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: rk2x-candidate-fast-results
-          path: validation/rk2x_public_fast/
+          name: rk2x-challenger-adjusted-results
+          path: validation/rk2x_challenger_adjusted/
           retention-days: 14
