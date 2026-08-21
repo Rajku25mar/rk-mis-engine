@@ -1,0 +1,52 @@
+name: RK2X Challenger Adjusted Verify
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/rk2x-challenger-adjusted.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install pandas numpy requests yfinance
+      - name: Fetch public RK2X runner into workspace
+        run: curl -fsSL https://raw.githubusercontent.com/Rajku25mar/rk-mis-engine/rk2x-public-backtest-20260821/scripts/rk2x_public_backtest.py -o scripts/_rk2x_runner.py
+      - name: Run adjusted-price challenger verification
+        run: |
+          python - <<'PY'
+          import importlib.util, pandas as pd, yfinance as yf
+          from pathlib import Path
+          spec=importlib.util.spec_from_file_location('rk2x','scripts/_rk2x_runner.py')
+          m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+          m.OUT=Path.cwd()/'validation'/'rk2x_challenger_adjusted'; m.OUT.mkdir(parents=True, exist_ok=True)
+          m.CANDIDATES={
+            'TECHNOE':'TECHNOE.NS',
+            'NDRAUTO':'NDRAUTO.NS',
+            'NEULANDLAB':'NEULANDLAB.NS',
+            'ANANTRAJ':'ANANTRAJ.NS',
+            'ANANDRATHI':'ANANDRATHI.NS',
+          }
+          def adj_one(ticker, period='10y'):
+              raw=yf.download(ticker, period=period, interval='1d', auto_adjust=True, progress=False, threads=False)
+              return m.normalize_ohlcv(raw)
+          m.download_one=adj_one
+          m.fetch_nse_universe=lambda: pd.DataFrame(columns=['ticker','board','isin'])
+          m.fetch_bse_universe=lambda _: pd.DataFrame(columns=['ticker','board','isin'])
+          m.main()
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rk2x-challenger-adjusted-results
+          path: validation/rk2x_challenger_adjusted/
+          retention-days: 14
