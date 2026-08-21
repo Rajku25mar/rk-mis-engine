@@ -20,16 +20,19 @@ jobs:
           python-version: '3.12'
       - name: Install dependencies
         run: python -m pip install pandas numpy requests yfinance
-      - name: Fetch public RK2X runner
-        run: curl -fsSL https://raw.githubusercontent.com/Rajku25mar/rk-mis-engine/rk2x-public-backtest-20260821/scripts/rk2x_public_backtest.py -o /tmp/rk2x_public_backtest.py
+      - name: Fetch public RK2X runner into workspace
+        run: |
+          mkdir -p scripts
+          curl -fsSL https://raw.githubusercontent.com/Rajku25mar/rk-mis-engine/rk2x-public-backtest-20260821/scripts/rk2x_public_backtest.py -o scripts/rk2x_public_backtest.py
       - name: Run candidate-only study
         run: |
           python - <<'PY'
           import importlib.util, pandas as pd
-          spec=importlib.util.spec_from_file_location('rk2x','/tmp/rk2x_public_backtest.py')
+          from pathlib import Path
+          p=Path.cwd()/'scripts'/'rk2x_public_backtest.py'
+          spec=importlib.util.spec_from_file_location('rk2x', p)
           m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
-          m.ROOT = __import__('pathlib').Path.cwd()
-          m.OUT = m.ROOT/'validation'/'rk2x_public_fast'; m.OUT.mkdir(parents=True, exist_ok=True)
+          m.OUT = Path.cwd()/'validation'/'rk2x_public_fast'; m.OUT.mkdir(parents=True, exist_ok=True)
           m.fetch_nse_universe=lambda: pd.DataFrame(columns=['ticker','board','isin'])
           m.fetch_bse_universe=lambda _: pd.DataFrame(columns=['ticker','board','isin'])
           m.main()
