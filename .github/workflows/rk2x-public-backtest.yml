@@ -1,0 +1,40 @@
+name: RK2X Public Backtest
+
+on:
+  pull_request:
+    paths:
+      - 'scripts/rk2x_public_backtest.py'
+      - '.github/workflows/rk2x-public-backtest.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  backtest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install research dependencies
+        run: python -m pip install --upgrade pip pandas numpy requests yfinance
+
+      - name: Run RK2X A/B/C studies
+        run: python scripts/rk2x_public_backtest.py
+
+      - name: Upload RK2X research outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rk2x-public-results
+          path: validation/rk2x_public/
+          if-no-files-found: warn
+          retention-days: 14
