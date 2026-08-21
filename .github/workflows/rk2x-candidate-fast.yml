@@ -1,0 +1,42 @@
+name: RK2X Candidate Fast
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/rk2x-candidate-fast.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  candidate-fast:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install pandas numpy requests yfinance
+      - name: Fetch public RK2X runner
+        run: curl -fsSL https://raw.githubusercontent.com/Rajku25mar/rk-mis-engine/rk2x-public-backtest-20260821/scripts/rk2x_public_backtest.py -o /tmp/rk2x_public_backtest.py
+      - name: Run candidate-only study
+        run: |
+          python - <<'PY'
+          import importlib.util, pandas as pd
+          spec=importlib.util.spec_from_file_location('rk2x','/tmp/rk2x_public_backtest.py')
+          m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+          m.ROOT = __import__('pathlib').Path.cwd()
+          m.OUT = m.ROOT/'validation'/'rk2x_public_fast'; m.OUT.mkdir(parents=True, exist_ok=True)
+          m.fetch_nse_universe=lambda: pd.DataFrame(columns=['ticker','board','isin'])
+          m.fetch_bse_universe=lambda _: pd.DataFrame(columns=['ticker','board','isin'])
+          m.main()
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rk2x-candidate-fast-results
+          path: validation/rk2x_public_fast/
+          retention-days: 14
