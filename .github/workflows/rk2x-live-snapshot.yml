@@ -1,0 +1,54 @@
+name: RK2X Live Snapshot
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/rk2x-live-snapshot.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install pandas numpy yfinance
+      - name: Build snapshot
+        run: |
+          python - <<'PY'
+          import pandas as pd, numpy as np, yfinance as yf
+          from pathlib import Path
+          tickers = {
+            'KRISHNADEF':'KRISHNADEF.NS','NDRAUTO':'NDRAUTO.NS','MUTHOOTFIN':'MUTHOOTFIN.NS',
+            'KERNEX':'KERNEX.NS','NEULANDLAB':'NEULANDLAB.NS','TECHNOE':'TECHNOE.NS',
+            'GESHIP':'GESHIP.NS','TRANSRAILL':'TRANSRAILL.NS','FINEOTEX':'FCL.NS','NETWEB':'NETWEB.NS'}
+          rows=[]
+          for s,t in tickers.items():
+            d=yf.download(t, period='2y', interval='1d', auto_adjust=False, progress=False, threads=False)
+            if isinstance(d.columns,pd.MultiIndex): d.columns=d.columns.get_level_values(0)
+            d=d[['Open','High','Low','Close','Volume']].dropna().copy()
+            if len(d)<30: continue
+            c=d['Close'].astype(float); v=d['Volume'].astype(float)
+            close=float(c.iloc[-1]); dt=str(pd.Timestamp(d.index[-1]).date())
+            ema20=float(c.ewm(span=20,adjust=False).mean().iloc[-1]); ema50=float(c.ewm(span=50,adjust=False).mean().iloc[-1])
+            sma200=float(c.rolling(200).mean().iloc[-1]) if len(c)>=200 else np.nan
+            high52=float(d['High'].tail(252).max())
+            def ret(n): return (close/float(c.iloc[-1-n])-1)*100 if len(c)>n else np.nan
+            rows.append(dict(symbol=s,date=dt,close=round(close,2),ema20=round(ema20,2),ema50=round(ema50,2),sma200=round(sma200,2) if np.isfinite(sma200) else None,
+              pct_from_52w_high=round((close/high52-1)*100,2),ret_1m=round(ret(21),2),ret_3m=round(ret(63),2),ret_6m=round(ret(126),2),
+              avg_vol20=round(float(v.tail(20).mean()),0),trend_ok=bool(close>ema50 and (not np.isfinite(sma200) or ema50>sma200))))
+          out=Path('validation/rk2x_live'); out.mkdir(parents=True,exist_ok=True)
+          df=pd.DataFrame(rows); df.to_csv(out/'rk2x_live_snapshot.csv',index=False); print(df.to_string(index=False))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rk2x-live-snapshot
+          path: validation/rk2x_live/
+          retention-days: 14
