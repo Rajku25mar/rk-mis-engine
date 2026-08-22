@@ -1,0 +1,68 @@
+name: RK2X Historical Top Live
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/rk2x-historical-top-live.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install
+        run: python -m pip install pandas numpy yfinance
+      - name: Scan adjusted current structures
+        run: |
+          mkdir -p validation/rk2x_hist_top_live
+          python - <<'PY'
+          import pandas as pd, numpy as np, yfinance as yf, json
+          from pathlib import Path
+          tickers='E2E.NS CHOICEIN.NS FORTIS.NS GODFRYPHLP.NS ARROWGREEN.NS PRUDENT.NS POWERINDIA.NS ANANTRAJ.NS PREMEXPLN.NS HUBTOWN.NS MAHSCOOTER.NS INDRAMEDCO.NS GALLANTT.NS IMFA.NS TSFINV.NS GABRIEL.NS MCX.NS SARDAEN.NS CEMPRO.NS PRECWIRE.NS RADICO.NS JSWHL.NS MANORAMA.NS GVT&D.NS BANCOINDIA.NS AMBER.NS SJS.NS GRSE.NS PGEL.NS NATIONALUM.NS TDPOWERSYS.NS EMKAY.NS IZMO.NS AXISCADES.NS PILANIINVS.NS VIVIANA.NS BEL.NS SALZERELEC.NS KIRLOSENG.NS KIRLOSBROS.NS NEWGEN.NS ANANDRATHI.NS GLENMARK.NS ANUP.NS NPST.NS GRPLTD.NS'.split()
+          raw=yf.download(tickers,period='2y',interval='1d',auto_adjust=True,progress=False,threads=True,group_by='ticker')
+          bench=yf.download('^NSEI',period='2y',interval='1d',auto_adjust=True,progress=False,threads=False)
+          if isinstance(bench.columns,pd.MultiIndex): bench.columns=bench.columns.get_level_values(0)
+          bc=bench['Close']
+          rows=[]
+          for t in tickers:
+              try:
+                  d=raw[t].dropna(subset=['Close']).copy() if isinstance(raw.columns,pd.MultiIndex) else pd.DataFrame()
+                  if len(d)<210: continue
+                  c,h,l,v=d.Close,d.High,d.Low,d.Volume
+                  s10,s20,s50=c.rolling(10).mean(),c.rolling(20).mean(),c.rolling(50).mean()
+                  comp=((pd.concat([s10,s20,s50],axis=1).max(axis=1)-pd.concat([s10,s20,s50],axis=1).min(axis=1))/c*100)
+                  cn=float(comp.iloc[-1]); cp=float(comp.iloc[-11]); conv=cp-cn
+                  tr=(h-l)/c*100; rc=float(tr.rolling(10).mean().iloc[-1]/tr.rolling(40).mean().iloc[-1])
+                  rs=c/bc.reindex(c.index,method='ffill'); rs50=rs.rolling(50).mean(); rsok=bool(rs.iloc[-1]>rs50.iloc[-1] and rs.iloc[-1]>rs.iloc[-22])
+                  pivot=float(h.shift(1).rolling(20).max().iloc[-1]); dist=(pivot-float(c.iloc[-1]))/pivot*100
+                  obv=(np.sign(c.diff().fillna(0))*v).cumsum(); obvup=bool(obv.iloc[-1]>obv.iloc[-11] and obv.iloc[-1]>obv.iloc[-31])
+                  hl=bool(l.iloc[-10:].min()>l.iloc[-20:-10].min())
+                  v5=float(v.iloc[-5:].mean()); pv5=float(v.iloc[-10:-5].mean()); v20=float(v.iloc[-20:].mean()); rise=bool(v5>pv5*1.08 and v5<v20*1.6)
+                  atr=((pd.concat([(h-l),(h-c.shift()).abs(),(l-c.shift()).abs()],axis=1).max(axis=1)).rolling(14).mean()/c*100)
+                  atrc=bool(atr.iloc[-2] < atr.shift(5).rolling(20).mean().iloc[-1])
+                  hi52=float(h.rolling(252,min_periods=210).max().iloc[-1]); dist52=(hi52-float(c.iloc[-1]))/hi52*100
+                  score=(16 if cn<=4 else 10 if cn<=6 else 0)+(12 if conv>=.8 else 7 if conv>=.3 else 0)+(12 if rc<=.75 else 6 if rc<=.9 else 0)+(12 if hl else 0)+(12 if obvup else 0)+(8 if rise else 4 if v5<=v20*1.05 else 0)+(12 if rsok else 0)+(8 if atrc else 0)
+                  b2=score>=62 and rsok and 1<=dist<=8 and s20.iloc[-1]>s50.iloc[-1]*.985
+                  b1=(not b2) and score>=52 and cn<=7 and (hl or obvup) and (rsok or conv>.5)
+                  stage='B2' if b2 else 'B1' if b1 else 'OTHER'
+                  rows.append(dict(ticker=t,stage=stage,score=score,close=float(c.iloc[-1]),dist_pivot=dist,dist52=dist52,compression=cn,convergence=conv,range_contract=rc,rs_ok=rsok,higher_low=hl,obv_up=obvup,rising_volume=rise,ret20=(float(c.iloc[-1]/c.iloc[-21]-1)*100),ret60=(float(c.iloc[-1]/c.iloc[-61]-1)*100)))
+              except Exception: pass
+          x=pd.DataFrame(rows).sort_values(['stage','score'],ascending=[True,False])
+          out=Path('validation/rk2x_hist_top_live'); x.to_csv(out/'historical_top_live.csv',index=False)
+          keep=x[x.stage.isin(['B1','B2'])].sort_values('score',ascending=False)
+          (out/'summary.json').write_text(json.dumps({'survivors':len(keep),'top':keep.to_dict('records')},indent=2))
+          print(keep.to_string(index=False))
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rk2x-historical-top-live
+          path: validation/rk2x_hist_top_live/
+          retention-days: 14
