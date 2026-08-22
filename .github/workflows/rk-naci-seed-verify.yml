@@ -36,7 +36,7 @@ jobs:
           cands={
             'BBOX':'BBOX.NS',
             'EXICOM':'EXICOM.NS',
-            'SHILCTECH':'SHILCTECH.NS',
+            'SHILCTECH':'531201.BO',
             'EMUDHRA':'EMUDHRA.NS',
             'BLUESTARCO':'BLUESTARCO.NS',
           }
