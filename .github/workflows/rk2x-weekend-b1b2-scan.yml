@@ -1,0 +1,130 @@
+name: RK2X Weekend B1B2 Scan
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/rk2x-weekend-b1b2-scan.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: python -m pip install pandas numpy requests yfinance
+      - name: Fetch public research engine
+        run: |
+          mkdir -p scripts validation/rk2x_weekend_scan
+          curl -fsSL https://raw.githubusercontent.com/Rajku25mar/rk-mis-engine/rk2x-public-backtest-20260821/scripts/rk2x_public_backtest.py -o scripts/rk2x_public_backtest.py
+      - name: Run full-universe B1 B2 scan
+        run: |
+          python - <<'PY'
+          import importlib.util
+          from pathlib import Path
+          import numpy as np
+          import pandas as pd
+          import yfinance as yf
+
+          p=Path.cwd()/'scripts'/'rk2x_public_backtest.py'
+          spec=importlib.util.spec_from_file_location('rk2x', p)
+          m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+          OUT=Path.cwd()/'validation'/'rk2x_weekend_scan'; OUT.mkdir(parents=True,exist_ok=True)
+
+          nse=m.fetch_nse_universe()
+          bse=m.fetch_bse_universe(set(nse['isin'].dropna().astype(str)))
+          u=pd.concat([nse,bse],ignore_index=True).drop_duplicates('ticker')
+          u.to_csv(OUT/'universe_requested.csv',index=False)
+          tickers=u['ticker'].astype(str).tolist()
+          bench=m.download_one('^NSEI','2y')
+          data=m.download_many(tickers,period='2y',chunk=45)
+
+          rows=[]
+          for j,(t,d) in enumerate(data.items(),1):
+              try:
+                  if len(d)<210: continue
+                  f=m.score_frame(d,bench)
+                  if f.empty or len(f)<30: continue
+                  i=-1; r=f.iloc[i]
+                  close=float(d['Close'].iloc[i]); vol=float(d['Volume'].iloc[i])
+                  if not bool(r.get('eligible',False)): continue
+
+                  c=d['Close']; h=d['High']; lo=d['Low']; v=d['Volume']
+                  s10=c.rolling(10).mean(); s20=c.rolling(20).mean(); s50=c.rolling(50).mean()
+                  comp=((pd.concat([s10,s20,s50],axis=1).max(axis=1)-pd.concat([s10,s20,s50],axis=1).min(axis=1))/c*100)
+                  comp_now=float(comp.iloc[-1]); comp_10=float(comp.iloc[-11]) if pd.notna(comp.iloc[-11]) else np.nan
+                  conv=(comp_10-comp_now) if np.isfinite(comp_10) else 0.0
+
+                  tr=(h-lo)/c*100
+                  range10=float(tr.rolling(10).mean().iloc[-1]); range40=float(tr.rolling(40).mean().iloc[-1])
+                  contraction=(range10/range40) if range40>0 else np.nan
+
+                  signed=np.sign(c.diff().fillna(0))*v
+                  obv=signed.cumsum()
+                  obv10=float(obv.iloc[-1]-obv.iloc[-11])
+                  obv30=float(obv.iloc[-1]-obv.iloc[-31])
+                  obv_up=(obv10>0 and obv30>0)
+
+                  low_recent=float(lo.iloc[-10:].min()); low_prior=float(lo.iloc[-20:-10].min())
+                  higher_low=low_recent>low_prior
+
+                  v5=float(v.iloc[-5:].mean()); pv5=float(v.iloc[-10:-5].mean()); v20=float(v.iloc[-20:].mean())
+                  rising_vol_seq=(v5>pv5*1.08) and (v5<max(v20*1.6,1))
+                  dry_or_orderly=(v5<=v20*1.05)
+
+                  dist=float(r.get('distance_to_pivot_pct',np.nan)); score=float(r.get('score',0))
+                  rs_ok=bool(r.get('rs_ok',False)); trend=bool(r.get('trend_ok',False)); base=bool(r.get('base_ok',False))
+                  atrc=bool(r.get('atr_contract',False)); dry=bool(r.get('volume_dryup',False)); struct=bool(r.get('structure_ok',False))
+                  state=str(r.get('state',''))
+                  if state in ('TRIGGER','SECOND_CHANCE') or (state=='ARMED' and dist<=1.0):
+                      continue
+
+                  early=0
+                  early += 16 if comp_now<=4.0 else (10 if comp_now<=6.0 else 0)
+                  early += 12 if conv>=0.8 else (7 if conv>=0.3 else 0)
+                  early += 12 if np.isfinite(contraction) and contraction<=0.75 else (6 if np.isfinite(contraction) and contraction<=0.9 else 0)
+                  early += 12 if higher_low else 0
+                  early += 12 if obv_up else 0
+                  early += 8 if rising_vol_seq else (4 if dry_or_orderly else 0)
+                  early += 12 if rs_ok else 0
+                  early += 8 if atrc else 0
+                  early += 5 if base else 0
+                  early += 3 if struct else 0
+
+                  near=(dist>=1.0 and dist<=8.0) if np.isfinite(dist) else False
+                  b2=(early>=62 and rs_ok and near and (trend or s20.iloc[-1]>s50.iloc[-1]*0.985))
+                  b1=(not b2 and early>=52 and comp_now<=7.0 and (higher_low or obv_up) and (rs_ok or conv>0.5))
+                  stage='B2' if b2 else ('B1' if b1 else '')
+                  if not stage: continue
+
+                  ret20=(close/float(c.iloc[-21])-1)*100 if len(c)>21 else np.nan
+                  ret60=(close/float(c.iloc[-61])-1)*100 if len(c)>61 else np.nan
+                  hi52=float(h.rolling(252,min_periods=210).max().iloc[-1]); dist52=(hi52-close)/hi52*100
+                  rows.append(dict(ticker=t,board=u.loc[u['ticker'].eq(t),'board'].iloc[0] if (u['ticker']==t).any() else '',stage=stage,early_score=early,rks_score=score,close=close,dist_pivot_pct=dist,dist52_pct=dist52,ret20_pct=ret20,ret60_pct=ret60,compression_pct=comp_now,convergence_10d=conv,range_contraction=contraction,higher_low=higher_low,obv_up=obv_up,rising_vol_seq=rising_vol_seq,rs_ok=rs_ok,trend_ok=trend,base_ok=base,atr_contract=atrc,value20=float(r.get('value20',0))))
+              except Exception as e:
+                  continue
+
+          out=pd.DataFrame(rows)
+          if not out.empty:
+              out['rank_score']=out['early_score'] + np.where(out['stage'].eq('B2'),8,0) + np.where(out['dist_pivot_pct'].between(1,4),4,0) + np.where(out['dist52_pct'].between(5,30),3,0)
+              out=out.sort_values(['rank_score','early_score','value20'],ascending=[False,False,False])
+          out.to_csv(OUT/'rk2x_b1b2_full_scan.csv',index=False)
+          out.head(150).to_csv(OUT/'rk2x_b1b2_top150.csv',index=False)
+          summary={'requested':int(len(u)),'usable_histories':int(len(data)),'b1':int((out.stage=='B1').sum()) if not out.empty else 0,'b2':int((out.stage=='B2').sum()) if not out.empty else 0,'survivors':int(len(out)),'top20':out.head(20).to_dict('records') if not out.empty else []}
+          import json
+          (OUT/'summary.json').write_text(json.dumps(summary,indent=2,default=str))
+          print(json.dumps(summary,indent=2,default=str))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rk2x-weekend-b1b2-scan
+          path: validation/rk2x_weekend_scan/
+          retention-days: 14
