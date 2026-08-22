@@ -1,0 +1,81 @@
+name: RK-NACI Seed Verify
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/rk-naci-seed-verify.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install
+        run: python -m pip install pandas numpy requests yfinance
+      - name: Fetch public RK2X engine
+        run: |
+          mkdir -p scripts
+          curl -fsSL https://raw.githubusercontent.com/Rajku25mar/rk-mis-engine/rk2x-public-backtest-20260821/scripts/rk2x_public_backtest.py -o scripts/rk2x_public_backtest.py
+      - name: Run adjusted history and live state
+        run: |
+          python - <<'PY'
+          import importlib.util, json, pandas as pd, yfinance as yf
+          from pathlib import Path
+          p=Path.cwd()/'scripts'/'rk2x_public_backtest.py'
+          spec=importlib.util.spec_from_file_location('rk2x', p)
+          m=importlib.util.module_from_spec(spec); spec.loader.exec_module(m)
+          out=Path.cwd()/'validation'/'rk_naci_seed_verify'; out.mkdir(parents=True, exist_ok=True)
+          cands={
+            'BBOX':'BBOX.NS',
+            'EXICOM':'EXICOM.NS',
+            'SHILCTECH':'531201.BO',
+            'EMUDHRA':'EMUDHRA.NS',
+            'BLUESTARCO':'BLUESTARCO.NS',
+          }
+          def dl(ticker, period='10y'):
+            raw=yf.download(ticker, period=period, interval='1d', auto_adjust=True, progress=False, threads=False)
+            return m.normalize_ohlcv(raw)
+          bench=dl('^NSEI','10y')
+          all_events=[]; live=[]; summary={}
+          for sym,t in cands.items():
+            d=dl(t,'10y')
+            if d.empty:
+              continue
+            ev=m.event_study(sym,t,d,bench)
+            all_events.extend(ev)
+            df=pd.DataFrame(ev)
+            summary[sym]={h:m.summarize(df,h) for h in m.HORIZONS}
+            f=m.score_frame(d,bench)
+            if not f.empty:
+              r=f.iloc[-1]
+              hi52=d['High'].rolling(252,min_periods=60).max().iloc[-1]
+              live.append({
+                'symbol':sym,'ticker':t,'date':str(d.index[-1].date()),'close':round(float(d['Close'].iloc[-1]),2),
+                'state':str(r.get('state','')),'score':int(r.get('score',0)) if pd.notna(r.get('score',0)) else 0,
+                'trend_ok':bool(r.get('trend_ok',False)),'rs_ok':bool(r.get('rs_ok',False)),
+                'distance_to_pivot_pct':round(float(r.get('distance_to_pivot_pct',999)),2) if pd.notna(r.get('distance_to_pivot_pct',None)) else None,
+                'pivot':round(float(r.get('pivot',0)),2) if pd.notna(r.get('pivot',None)) else None,
+                'dist52_pct':round(float((hi52-d['Close'].iloc[-1])/hi52*100),2) if pd.notna(hi52) and hi52 else None,
+                'base_range_pct':round(float(r.get('base_range_pct',0)),2) if pd.notna(r.get('base_range_pct',None)) else None,
+                'dryup_ratio':round(float(r.get('dryup_ratio',0)),2) if pd.notna(r.get('dryup_ratio',None)) else None,
+                'relvol':round(float(r.get('relvol',0)),2) if pd.notna(r.get('relvol',None)) else None,
+              })
+          pd.DataFrame(all_events).to_csv(out/'naci_seed_events.csv',index=False)
+          pd.DataFrame(live).to_csv(out/'naci_seed_live.csv',index=False)
+          (out/'naci_seed_summary.json').write_text(json.dumps(summary,indent=2))
+          print(json.dumps({'summary':summary,'live':live},indent=2))
+          PY
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: rk-naci-seed-verify
+          path: validation/rk_naci_seed_verify/
+          retention-days: 14
